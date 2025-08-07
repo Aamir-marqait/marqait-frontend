@@ -6,6 +6,7 @@ import Dashboard from "./pages/dashboard";
 
 import Header from "./components/Header";
 import Sidebar from "./components/app-sidebar";
+import ImageEditor from "./pages/image-editor";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -14,7 +15,7 @@ function App() {
   return (
     <Router>
       <div className="flex min-h-screen">
-        <Sidebar 
+        <Sidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           isCollapsed={isSidebarCollapsed}
@@ -26,6 +27,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/about" element={<About />} />
+              <Route path="/image-editor" element={<ImageEditor />} />
             </Routes>
           </main>
         </div>

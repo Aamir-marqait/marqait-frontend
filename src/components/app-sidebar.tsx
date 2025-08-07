@@ -122,7 +122,7 @@ export default function Sidebar({
               />
             )}
             {isCollapsed && (
-              <div className="w-8 h-8  flex items-center justify-center">
+              <div className="w-7 h-8  flex items-center justify-center">
                 <img
                   src={logo || "/placeholder.svg"}
                   alt="MARQAIT"
@@ -135,13 +135,13 @@ export default function Sidebar({
             {onToggleCollapse && (
               <button
                 onClick={onToggleCollapse}
-                className={`hidden lg:flex items-center cursor-pointer justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:shadow-sm ${
+                className={`hidden lg:flex items-center cursor-pointer justify-center w-8 h-8  bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:shadow-sm ${
                   isCollapsed ? "" : "ml-3"
                 }`}
                 title={isCollapsed ? "Expand sidebar " : "Collapse sidebar"}
               >
-                <ChevronLeft className="h-4 w-4" />
-                <ChevronRight className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4 text-black" />
+                <ChevronRight className="h-4 w-4 text-black" />
               </button>
             )}
           </div>
@@ -173,7 +173,7 @@ export default function Sidebar({
                   }
                 }}
                 className={`group flex items-center rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isCollapsed ? "justify-center p-3" : "gap-3 px-4 py-3"
+                  isCollapsed ? "justify-center p-3 w-12" : "gap-3 px-4 py-3"
                 } ${
                   isActive
                     ? "bg-purple-600 text-white shadow-sm"
@@ -190,7 +190,11 @@ export default function Sidebar({
                       : "group-hover:brightness-110"
                   }`}
                 />
-                {!isCollapsed && <span>{item.title}</span>}
+                {!isCollapsed && (
+                  <span className="truncate whitespace-nowrap overflow-hidden">
+                    {item.title}
+                  </span>
+                )}
               </Link>
             );
           })}
