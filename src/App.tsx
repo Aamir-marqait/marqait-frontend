@@ -15,16 +15,13 @@ function App() {
   return (
     <Router>
       <div className="flex min-h-screen">
-        {/* Desktop Sidebar */}
-        <div className="hidden lg:block z-1 min-h-screen">
-          <Sidebar
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-            isCollapsed={isSidebarCollapsed}
-            onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          />
-        </div>
-
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
+        
         <div className="flex-1 z-0 flex flex-col">
           <Header onMenuClick={() => setIsSidebarOpen(true)} />
           <main className="flex-1 overflow-auto">
