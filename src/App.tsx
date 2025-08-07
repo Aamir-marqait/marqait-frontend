@@ -23,9 +23,9 @@ function App() {
         />
         
         <div 
-          className={`fixed top-0 right-0 bottom-0 flex flex-col transition-all duration-300 ${
-            isSidebarCollapsed ? 'left-16' : 'left-64'
-          } lg:${isSidebarCollapsed ? 'left-16' : 'left-64'} left-0`}
+          className={`fixed top-0 right-0 bottom-0 left-0 flex flex-col transition-all duration-300 ${
+            isSidebarCollapsed ? 'lg:left-16' : 'lg:left-64'
+          }`}
         >
           <Header onMenuClick={() => setIsSidebarOpen(true)} />
           <main className="flex-1 overflow-auto">
