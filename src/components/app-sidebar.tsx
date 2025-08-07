@@ -99,9 +99,9 @@ export default function Sidebar({
 
       {/* Sidebar */}
       <div
-        className={`min-h-screen fixed inset-y-0 left-0 z-50 transform bg-[rgba(255,255,255,1)] transition-all duration-300 ease-in-out lg:static lg:translate-x-0 lg:shadow-[0px_2px_5px_0px_rgba(23,26,31,0.09),0px_0px_2px_0px_rgba(23,26,31,0.12)] ${
+        className={`h-screen fixed top-0 left-0 z-50 transform bg-[rgba(255,255,255,1)] transition-all duration-300 ease-in-out shadow-[0px_2px_5px_0px_rgba(23,26,31,0.09),0px_0px_2px_0px_rgba(23,26,31,0.12)] flex flex-col ${
           isCollapsed ? "w-16" : "w-64"
-        } ${isOpen ? "translate-x-0 lg:translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        } ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
         style={{
           boxShadow:
             "0px 2px 5px 0px rgba(23, 26, 31, 0.09), 0px 0px 2px 0px rgba(23, 26, 31, 0.12)",
@@ -158,7 +158,7 @@ export default function Sidebar({
         </div>
 
         {/* Navigation */}
-        <nav className={`flex-1 space-y-1 ${isCollapsed ? "p-2" : "p-4"}`}>
+        <nav className={`flex-1 space-y-1 overflow-y-auto ${isCollapsed ? "p-2" : "p-4"}`}>
           {navigationItems.map((item) => {
             const isActive = location.pathname === item.url;
 
