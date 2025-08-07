@@ -99,7 +99,7 @@ export default function Sidebar({
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 transform bg-[rgba(255,255,255,1)] transition-all duration-300 ease-in-out lg:static lg:translate-x-0 lg:shadow-[0px_2px_5px_0px_rgba(23,26,31,0.09),0px_0px_2px_0px_rgba(23,26,31,0.12)] ${
+        className={`lg:min-h-screen  fixed inset-y-0 left-0 z-50 transform bg-[rgba(255,255,255,1)] transition-all duration-300 ease-in-out lg:static lg:translate-x-0 lg:shadow-[0px_2px_5px_0px_rgba(23,26,31,0.09),0px_0px_2px_0px_rgba(23,26,31,0.12)] ${
           isCollapsed ? "w-16" : "w-64"
         } ${isOpen ? "translate-x-0" : "-translate-x-full"} relative`}
         style={{
