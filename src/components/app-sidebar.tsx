@@ -101,7 +101,7 @@ export default function Sidebar({
       <div
         className={`fixed inset-y-0 left-0 z-50 transform bg-[rgba(255,255,255,1)] transition-all duration-300 ease-in-out lg:static lg:translate-x-0 lg:shadow-[0px_2px_5px_0px_rgba(23,26,31,0.09),0px_0px_2px_0px_rgba(23,26,31,0.12)] ${
           isCollapsed ? "w-16" : "w-64"
-        } ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+        } ${isOpen ? "translate-x-0" : "-translate-x-full"} relative`}
         style={{
           boxShadow:
             "0px 2px 5px 0px rgba(23, 26, 31, 0.09), 0px 0px 2px 0px rgba(23, 26, 31, 0.12)",
@@ -130,21 +130,23 @@ export default function Sidebar({
                 />
               </div>
             )}
-          </div>
 
-          <div className="flex items-center ">
             {/* Collapse/Expand button for desktop */}
             {onToggleCollapse && (
               <button
                 onClick={onToggleCollapse}
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:shadow-sm"
-                title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                className={`hidden lg:flex items-center cursor-pointer justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:shadow-sm ${
+                  isCollapsed ? "" : "ml-3"
+                }`}
+                title={isCollapsed ? "Expand sidebar " : "Collapse sidebar"}
               >
                 <ChevronLeft className="h-4 w-4" />
                 <ChevronRight className="h-4 w-4" />
               </button>
             )}
+          </div>
 
+          <div className="flex items-center ">
             {/* Close button for mobile */}
             <button
               onClick={onClose}
