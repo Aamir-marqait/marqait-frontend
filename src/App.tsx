@@ -22,7 +22,7 @@ function App() {
           onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
         <div className="flex-1 flex flex-col">
-          <Header />
+          <Header onMenuClick={() => setIsSidebarOpen(true)} />
           <main className="flex-1 overflow-auto">
             <Routes>
               <Route path="/" element={<Dashboard />} />
