@@ -107,7 +107,6 @@ export default function ImageEditorPage() {
           <AIImageEditor
             originalImage={selectedImage}
             onBack={() => handleEditModeChange(null)}
-            onCancel={() => handleEditModeChange(null)}
             onGeneratedImagesChange={setHasGeneratedImages}
             onSetDownloadAll={setOnDownloadAll}
           />

@@ -185,8 +185,8 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
           <button
             type="button"
             onClick={handleGenerateImage}
-            aria-disabled={!prompt.trim() || isGenerating}
-            className="cursor-pointer inline-flex h-12 min-w-[122px] items-center justify-center gap-2 rounded-xl border border-[#8F00FF] px-5 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-white transition active:translate-y-px disabled:opacity-65 disabled:shadow-none bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] shadow-[0px_1px_2px_0px_#0A0D120D]"
+            disabled={!prompt.trim() || isGenerating}
+            className="cursor-pointer inline-flex h-12 min-w-[122px] items-center justify-center gap-2 rounded-xl border border-[#8F00FF] px-5 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-white transition active:translate-y-px disabled:opacity-65 disabled:cursor-not-allowed  disabled:shadow-none bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] shadow-[0px_1px_2px_0px_#0A0D120D]"
           >
             {isGenerating ? (
               <>
