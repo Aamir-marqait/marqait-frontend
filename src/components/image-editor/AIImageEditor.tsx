@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from "react";
 import {
   generateImageWithFlux,
+  generateImageVariants,
   validateImageFormat,
 } from "../../services/falAI";
 import { Lightbulb, RotateCw, Upload } from "lucide-react";
@@ -29,7 +30,7 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleDownloadImage = async (imageUrl: string) => {
+  const handleDownloadImage = async (imageUrl: string, index?: number) => {
     if (!imageUrl) return;
     try {
       const response = await fetch(imageUrl);
@@ -37,7 +38,8 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `ai-edited-image-${Date.now()}.png`;
+      const suffix = index !== undefined ? `-variant-${index + 1}` : '';
+      link.download = `ai-edited-image${suffix}-${Date.now()}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -50,7 +52,7 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
 
   const handleDownloadAll = async () => {
     for (let i = 0; i < generatedImages.length; i++) {
-      await handleDownloadImage(generatedImages[i]);
+      await handleDownloadImage(generatedImages[i], i);
       // Small delay between downloads to avoid overwhelming the browser
       if (i < generatedImages.length - 1) {
         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -80,18 +82,18 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
       if (!validateImageFormat(originalImage)) {
         throw new Error("Invalid image format. Please use JPEG or PNG.");
       }
-      const result = await generateImageWithFlux(originalImage, prompt);
-      if (result.success && result.imageUrl) {
-        setGeneratedImages([result.imageUrl]);
+      const result = await generateImageVariants(originalImage, prompt);
+      if (result.success && result.images) {
+        setGeneratedImages(result.images);
       } else {
-        throw new Error(result.error || "Failed to generate image");
+        throw new Error(result.error || "Failed to generate image variants");
       }
     } catch (err) {
       console.error("Error generating image:", err);
       setError(
         err instanceof Error
           ? err.message
-          : "Failed to generate image. Please try again."
+          : "Failed to generate image variants. Please try again."
       );
     } finally {
       setIsGenerating(false);
@@ -194,7 +196,7 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
         <section className="mt-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="m-0 font-inter font-bold text-2xl leading-none tracking-normal text-[#161E54]">
-              Generated Variant
+              Generated Variants ({generatedImages.length})
             </h2>
             <button
               type="button"
