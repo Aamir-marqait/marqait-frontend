@@ -50,23 +50,6 @@ export default function ImageEditorPage() {
     e.stopPropagation();
   };
 
-  // AI Image Editor
-  if (editMode === "ai" && selectedImage) {
-    return (
-      <AIImageEditor
-        originalImage={selectedImage}
-        onBack={() => setEditMode(null)}
-      />
-    );
-  }
-
-  // Manual Canvas Editor
-  if (editMode === "manual" && selectedImage) {
-    return (
-      <ImageEditor imageUrl={selectedImage} onClose={() => setEditMode(null)} />
-    );
-  }
-
   const editingDisabled = !selectedImage;
 
   return (
@@ -83,6 +66,18 @@ export default function ImageEditorPage() {
 
       {/* Main content container */}
       <div className="bg-white border border-[#E0E0E0] rounded-2xl shadow-[6px_6px_54px_rgba(0,0,0,0.10)] px-8 py-8">
+        {/* AI Image Editor */}
+        {editMode === "ai" && selectedImage ? (
+          <AIImageEditor
+            originalImage={selectedImage}
+            onBack={() => setEditMode(null)}
+          />
+        ) : /* Manual Canvas Editor */
+        editMode === "manual" && selectedImage ? (
+          <ImageEditor imageUrl={selectedImage} onClose={() => setEditMode(null)} />
+        ) : (
+          <>
+            {/* Upload and mode chooser sections */}
         {/* Upload card */}
         <section className="card p-6 md:p-8 bg-[#FFFFFF]">
           <h2 className="font-inter font-bold text-[24px] leading-none tracking-normal text-center text-[#8F00FF]">
@@ -264,6 +259,8 @@ export default function ImageEditorPage() {
             </div>
           </div>
         </section>
+          </>
+        )}
       </div>
     </div>
   );

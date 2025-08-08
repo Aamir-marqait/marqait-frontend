@@ -690,13 +690,24 @@ export function ImageEditor({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-6xl h-full max-h-[90vh] flex">
+    <div className="w-full h-full">
+      <div className="bg-white dark:bg-gray-800 w-full min-h-[600px] flex relative">
         {/* Header */}
-        <div className="absolute top-0 left-0 right-0 bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Image Editor
-          </h2>
+        <div className="absolute top-0 left-0 right-0 bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center z-10">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              title="Back to main"
+            >
+              <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              Manual Editor
+            </h2>
+          </div>
           <div className="flex gap-2">
             {/* AI Flow Integration Buttons */}
             {onPublish && (
@@ -751,12 +762,6 @@ export function ImageEditor({
               Save Draft
             </button>
             
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
-            >
-              Close
-            </button>
           </div>
         </div>
 
