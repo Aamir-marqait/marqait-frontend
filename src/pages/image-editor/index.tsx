@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import AIImageEditor from "../../components/image-editor/AIImageEditor";
 import { ImageEditor } from "../../components/image-editor/image-editor";
 import upload from "../../assets/image-editor/upload.svg";
@@ -12,6 +12,7 @@ export default function ImageEditorPage() {
   const [fileName, setFileName] = useState<string>("");
   const [editMode, setEditMode] = useState<EditMode>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pageHeadingRef = useRef<HTMLElement>(null);
 
   const handleFiles = (files: FileList | null) => {
     const file = files?.[0];
@@ -52,10 +53,38 @@ export default function ImageEditorPage() {
 
   const editingDisabled = !selectedImage;
 
+  // Scroll to page heading when edit mode changes
+  useEffect(() => {
+    if (editMode && pageHeadingRef.current) {
+      // Scroll to the page heading
+      const scrollToHeading = () => {
+        try {
+          pageHeadingRef.current?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest' 
+          });
+        } catch {
+          // Fallback for older browsers
+          window.scrollTo(0, 0);
+        }
+      };
+      
+      // Run immediately and with small delay
+      scrollToHeading();
+      setTimeout(scrollToHeading, 100);
+    }
+  }, [editMode]);
+
+  // Scroll to top when entering edit mode
+  const handleEditModeChange = (mode: EditMode) => {
+    setEditMode(mode);
+  };
+
   return (
     <div className="p-8 bg-[#FAFAFB] min-h-screen">
       {/* Page heading */}
-      <section className="mb-8">
+      <section ref={pageHeadingRef} className="mb-8">
         <h1 className="font-inter font-bold text-[32px] leading-none tracking-normal text-[#161E54]">
           {"Image Editor"}
         </h1>
@@ -65,16 +94,16 @@ export default function ImageEditorPage() {
       </section>
 
       {/* Main content container */}
-      <div className="bg-white border border-[#E0E0E0] rounded-2xl shadow-[6px_6px_54px_rgba(0,0,0,0.10)] px-8 py-8">
+      <div className={`bg-white border border-[#E0E0E0] rounded-2xl shadow-[6px_6px_54px_rgba(0,0,0,0.10)] px-8 py-8 ${editMode === 'manual' ? 'max-w-fit mx-auto' : ''}`}>
         {/* AI Image Editor */}
         {editMode === "ai" && selectedImage ? (
           <AIImageEditor
             originalImage={selectedImage}
-            onBack={() => setEditMode(null)}
+            onBack={() => handleEditModeChange(null)}
           />
         ) : /* Manual Canvas Editor */
         editMode === "manual" && selectedImage ? (
-          <ImageEditor imageUrl={selectedImage} onClose={() => setEditMode(null)} />
+          <ImageEditor imageUrl={selectedImage} onClose={() => handleEditModeChange(null)} />
         ) : (
           <>
             {/* Upload and mode chooser sections */}
@@ -179,7 +208,7 @@ export default function ImageEditorPage() {
                     : "bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] border-[#E0D3FA] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] cursor-pointer hover:shadow-card"
                 }`}
                 type="button"
-                onClick={() => setEditMode("ai")}
+                onClick={() => handleEditModeChange("ai")}
                 disabled={editingDisabled}
               >
                 <div className="text-center p-5">
@@ -223,7 +252,7 @@ export default function ImageEditorPage() {
                     : "bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] border-[#E0D3FA] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] cursor-pointer hover:shadow-card"
                 }`}
                 type="button"
-                onClick={() => setEditMode("manual")}
+                onClick={() => handleEditModeChange("manual")}
                 disabled={editingDisabled}
               >
                 <div className="text-center p-5">

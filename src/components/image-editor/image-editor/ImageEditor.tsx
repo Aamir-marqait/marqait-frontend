@@ -691,7 +691,7 @@ export function ImageEditor({
 
   return (
     <div className="w-full h-full">
-      <div className="bg-white dark:bg-gray-800 w-full min-h-[600px] flex relative">
+      <div className="bg-white dark:bg-gray-800 max-w-fit mx-auto min-h-[600px] flex relative shadow-2xl rounded-lg overflow-hidden">
         {/* Header */}
         <div className="absolute top-0 left-0 right-0 bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center z-10">
           <div className="flex items-center gap-3">
@@ -708,12 +708,12 @@ export function ImageEditor({
               Manual Editor
             </h2>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {/* AI Flow Integration Buttons */}
             {onPublish && (
               <button
                 onClick={publishImage}
-                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                className="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm"
                 title="Publish to platform"
               >
                 Publish
@@ -723,7 +723,7 @@ export function ImageEditor({
             {onSchedule && (
               <button
                 onClick={scheduleImage}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors text-sm"
                 title="Schedule for later"
               >
                 Schedule
@@ -738,7 +738,7 @@ export function ImageEditor({
                   if (format) exportImage(format);
                   e.target.value = '';
                 }}
-                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors appearance-none cursor-pointer"
+                className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors appearance-none cursor-pointer text-sm"
                 defaultValue=""
               >
                 <option value="" disabled>Export as...</option>
@@ -756,7 +756,7 @@ export function ImageEditor({
                   alert('Draft saved successfully!');
                 }
               }}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
               title="Save current work as draft"
             >
               Save Draft
@@ -766,9 +766,9 @@ export function ImageEditor({
         </div>
 
         {/* Main Content */}
-        <div className="flex w-full pt-16">
+        <div className="flex pt-16">
           {/* Canvas Area */}
-          <div className="flex-1 p-4">
+          <div className="p-4">
             <CanvasEditor
               imageUrl={originalImageUrl}
               textLayers={textLayers}
@@ -789,7 +789,7 @@ export function ImageEditor({
           </div>
 
           {/* Controls Panel */}
-          <div className="w-80 border-l border-gray-200 dark:border-gray-700">
+          <div className="w-80 border-l border-gray-200 dark:border-gray-700 flex-shrink-0">
             <ControlsPanel
               textLayers={textLayers}
               mediaLayers={mediaLayers}
