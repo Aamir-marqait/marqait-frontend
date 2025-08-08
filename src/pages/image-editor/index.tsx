@@ -1,6 +1,5 @@
-"use client";
-
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { UploadCloud, Stars, Pencil } from "lucide-react";
 import AIImageEditor from "../../components/image-editor/AIImageEditor";
 import { ImageEditor } from "../../components/image-editor/image-editor";
 
@@ -8,154 +7,223 @@ type EditMode = "ai" | "manual" | null;
 
 export default function ImageEditorPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string>("");
   const [editMode, setEditMode] = useState<EditMode>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleFiles = (files: FileList | null) => {
+    const file = files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setSelectedImage((e.target?.result as string) ?? null);
+      setFileName(file.name);
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleEditImage = (mode: "ai" | "manual") => {
-    setEditMode(mode);
+  const onBrowse = () => fileInputRef.current?.click();
+
+  const onDrop: React.DragEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleFiles(e.dataTransfer.files);
   };
 
-  const handleCloseEditor = () => {
-    setEditMode(null);
+  const onDragOver: React.DragEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   const handleReset = () => {
     setSelectedImage(null);
+    setFileName("");
     setEditMode(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   // AI Image Editor
   if (editMode === "ai" && selectedImage) {
     return (
-      <AIImageEditor originalImage={selectedImage} onBack={handleCloseEditor} />
+      <AIImageEditor
+        originalImage={selectedImage}
+        onBack={() => setEditMode(null)}
+      />
     );
   }
 
   // Manual Canvas Editor
   if (editMode === "manual" && selectedImage) {
-    return <ImageEditor imageUrl={selectedImage} onClose={handleCloseEditor} />;
+    return (
+      <ImageEditor imageUrl={selectedImage} onClose={() => setEditMode(null)} />
+    );
   }
 
+  const editingDisabled = !selectedImage;
+
   return (
-    <>
-      <div className="min-h-screen p-8 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-2xl w-full space-y-6 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-          <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white">
-            AI Image Editor
-          </h1>
+    <div className="space-y-8 ">
+      {/* Page heading */}
+      <section>
+        <h1 className="heading-xl">{"Image Editor"}</h1>
+        <p className="mt-2 subtle">
+          {"Professional image editing powered by AI"}
+        </p>
+      </section>
 
-          <div className="space-y-6">
-            <div>
-              <label
-                htmlFor="image-upload"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Choose an image
-              </label>
-              <input
-                id="image-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="block w-full text-sm text-gray-500 dark:text-gray-400
-                           file:mr-4 file:py-2 file:px-4
-                           file:rounded-full file:border-0
-                           file:text-sm file:font-semibold
-                           file:bg-blue-50 file:text-blue-700
-                           hover:file:bg-blue-100
-                           dark:file:bg-blue-900 dark:file:text-blue-300
-                           dark:hover:file:bg-blue-800"
-              />
+      {/* Upload card */}
+      <section className="card p-6 md:p-8">
+        <h2 className="text-center text-xl font-semibold text-brand-700">
+          {"Transform Your Images"}
+        </h2>
+
+        <div
+          className="mt-6 rounded-xl2 border-2 border-dashed"
+          style={{ borderColor: "rgba(124, 58, 237, 0.5)" }} // brand-600 at 50% for the dashed look
+        >
+          <div
+            role="button"
+            aria-label="Upload image by dropping a file or browsing"
+            tabIndex={0}
+            onClick={onBrowse}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onBrowse();
+              }
+            }}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl2 px-6 py-16 text-center"
+          >
+            <div className="rounded-full bg-brand-50 p-3">
+              <UploadCloud className="h-7 w-7 text-brand-600" aria-hidden />
             </div>
-
-            {selectedImage && (
-              <div className="space-y-6">
-                <div className="relative">
-                  <img
-                    src={selectedImage}
-                    alt="Uploaded image"
-                    className="w-full h-64 object-cover rounded-lg"
-                  />
-                </div>
+            <div className="space-y-1">
+              <div className="font-medium text-ink-700">
+                {"Drop file or browse"}
               </div>
-            )}
-
-            <div className="space-y-6">
-              <div className="text-center">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                  Choose Your Editing Mode
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Select how you'd like to edit your image
-                </p>
+              <div className="text-sm text-ink-500">
+                {"Format: jpeg, .png & Max file size: 25 MB"}
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button
-                  onClick={() => handleEditImage("ai")}
-                  disabled={!selectedImage}
-                  className={`font-semibold py-6 px-6 rounded-lg transition duration-200 ease-in-out transform text-center ${
-                    selectedImage
-                      ? "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white hover:scale-105"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
-                  }`}
-                >
-                  <div className="text-2xl mb-2">🎨</div>
-                  <div className="text-lg font-bold mb-1">
-                    Edit via Prompt
-                  </div>
-                  <div className="text-sm opacity-90">
-                    AI-powered smart editing
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => handleEditImage("manual")}
-                  disabled={!selectedImage}
-                  className={`font-semibold py-6 px-6 rounded-lg transition duration-200 ease-in-out transform text-center ${
-                    selectedImage
-                      ? "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white hover:scale-105"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
-                  }`}
-                >
-                  <div className="text-2xl mb-2">✏️</div>
-                  <div className="text-lg font-bold mb-1">Edit Manually</div>
-                  <div className="text-sm opacity-90">
-                    Canvas-based text overlays
-                  </div>
-                </button>
-              </div>
-
-              {!selectedImage && (
-                <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                  Please select an image first to enable editing options
-                </p>
-              )}
-
-              {selectedImage && (
-                <div className="text-center">
-                  <button
-                    onClick={handleReset}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200 ease-in-out"
-                  >
-                    🔄 Upload New Image
-                  </button>
+              {fileName && (
+                <div className="text-xs text-ink-400">
+                  {"Selected: "}
+                  {fileName}
                 </div>
               )}
             </div>
+            <button
+              type="button"
+              onClick={onBrowse}
+              className="mt-2 rounded-full bg-brand-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-400"
+            >
+              {"Browse Files"}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="sr-only"
+              onChange={(e) => handleFiles(e.target.files)}
+            />
           </div>
         </div>
-      </div>
-    </>
+
+        {/* Optional small preview once selected */}
+        {selectedImage && (
+          <div className="mt-6">
+            <div className="rounded-xl overflow-hidden border border-slate-200">
+              <img
+                src={selectedImage || "/placeholder.svg"}
+                alt="Selected preview"
+                className="h-56 w-full object-cover"
+              />
+            </div>
+            <div className="mt-3 text-right">
+              <button
+                type="button"
+                onClick={handleReset}
+                className="text-sm font-medium text-brand-700 hover:underline"
+              >
+                {"Upload a different image"}
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Mode chooser */}
+      <section className="space-y-2">
+        <h3 className="text-center text-lg font-semibold text-ink-900">
+          {"Choose Your Editing Mode"}
+        </h3>
+        <p className="text-center subtle">
+          {"Select how you would like to edit your image"}
+        </p>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <button
+            type="button"
+            onClick={() => setEditMode("ai")}
+            disabled={editingDisabled}
+            className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-brand-50/30 p-5 text-left shadow-sm ring-brand-300 transition focus:outline-none focus:ring-2 ${
+              editingDisabled
+                ? "opacity-60 cursor-not-allowed"
+                : "hover:shadow-card"
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <div className="rounded-xl bg-brand-50 p-2 text-brand-600">
+                <Stars className="h-5 w-5" aria-hidden />
+              </div>
+              <div>
+                <div className="text-base font-semibold text-ink-900">
+                  {"Edit via Prompt"}
+                </div>
+                <div className="mt-1 text-sm text-ink-600">
+                  {
+                    "Use AI to transform your image with simple text descriptions."
+                  }
+                </div>
+              </div>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setEditMode("manual")}
+            disabled={editingDisabled}
+            className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-brand-50/30 p-5 text-left shadow-sm ring-brand-300 transition focus:outline-none focus:ring-2 ${
+              editingDisabled
+                ? "opacity-60 cursor-not-allowed"
+                : "hover:shadow-card"
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              <div className="rounded-xl bg-brand-50 p-2 text-brand-600">
+                <Pencil className="h-5 w-5" aria-hidden />
+              </div>
+              <div>
+                <div className="text-base font-semibold text-ink-900">
+                  {"Edit Manually"}
+                </div>
+                <div className="mt-1 text-sm text-ink-600">
+                  {"Full control with professional editing tools and layers."}
+                </div>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {!selectedImage && (
+          <p className="mt-2 text-center text-sm text-ink-500">
+            {"Please upload an image to enable editing options."}
+          </p>
+        )}
+      </section>
+    </div>
   );
 }
