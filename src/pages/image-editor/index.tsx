@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
-import { Stars, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import AIImageEditor from "../../components/image-editor/AIImageEditor";
 import { ImageEditor } from "../../components/image-editor/image-editor";
 import upload from "../../assets/image-editor/upload.svg";
+import prompt from "../../assets/image-editor/prompt.svg";
+import manually from "../../assets/image-editor/manually.svg";
 
 type EditMode = "ai" | "manual" | null;
 
@@ -175,55 +177,69 @@ export default function ImageEditorPage() {
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <button
+              aria-label="Edit via Prompt. Use AI to transform your image with simple text descriptions."
+              className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] border-[#E0D3FA] bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] opacity-100 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+                editingDisabled
+                  ? "opacity-60 cursor-not-allowed"
+                  : "hover:shadow-card"
+              }`}
               type="button"
               onClick={() => setEditMode("ai")}
               disabled={editingDisabled}
-              className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-brand-50/30 p-5 text-left shadow-sm ring-brand-300 transition focus:outline-none focus:ring-2 ${
+            >
+              <div className="text-center p-5">
+                <div className="mx-auto mb-6 flex w-[50px] h-[50px] items-center justify-center rounded-full bg-[#FFFFFF] opacity-100">
+                  <img src={prompt} alt="prompt-based" />
+                </div>
+
+                {/* Heading */}
+                <h1 className="font-inter font-semibold text-xl leading-[100%] tracking-[0%] text-center text-[#161E54]">
+                  Edit via Prompt
+                </h1>
+
+                {/* Description */}
+                <p className="mt-4 w-[266px] h-12 font-inter font-normal text-base leading-[150%] tracking-[0%] text-center align-middle text-[#4B4B4B] opacity-100 mx-auto">
+                  Use AI to transform your image with simple text descriptions.
+                </p>
+              </div>
+
+              <span
+                className="pointer-events-none absolute inset-0 rounded-[20px] ring-1 ring-[#E7DAFF]/60"
+                aria-hidden="true"
+              />
+            </button>
+            <button
+              aria-label="Edit via Prompt. Use AI to transform your image with simple text descriptions."
+              className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] border-[#E0D3FA] bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] opacity-100 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                 editingDisabled
                   ? "opacity-60 cursor-not-allowed"
                   : "hover:shadow-card"
               }`}
-            >
-              <div className="flex items-start gap-3">
-                <div className="rounded-xl bg-brand-50 p-2 text-brand-600">
-                  <Stars className="h-5 w-5" aria-hidden />
-                </div>
-                <div>
-                  <div className="text-base font-semibold text-ink-900">
-                    {"Edit via Prompt"}
-                  </div>
-                  <div className="mt-1 text-sm text-ink-600">
-                    {
-                      "Use AI to transform your image with simple text descriptions."
-                    }
-                  </div>
-                </div>
-              </div>
-            </button>
-
-            <button
               type="button"
               onClick={() => setEditMode("manual")}
               disabled={editingDisabled}
-              className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-brand-50/30 p-5 text-left shadow-sm ring-brand-300 transition focus:outline-none focus:ring-2 ${
-                editingDisabled
-                  ? "opacity-60 cursor-not-allowed"
-                  : "hover:shadow-card"
-              }`}
             >
-              <div className="flex items-start gap-3">
-                <div className="rounded-xl bg-brand-50 p-2 text-brand-600">
-                  <Pencil className="h-5 w-5" aria-hidden />
+              <div className="text-center p-5">
+                <div className="mx-auto mb-6 flex w-[50px] h-[50px] items-center justify-center rounded-full bg-[#FFFFFF] opacity-100">
+                  <img src={manually} alt="prompt-based" />
                 </div>
-                <div>
-                  <div className="text-base font-semibold text-ink-900">
-                    {"Edit Manually"}
-                  </div>
-                  <div className="mt-1 text-sm text-ink-600">
-                    {"Full control with professional editing tools and layers."}
-                  </div>
-                </div>
+
+                {/* Heading */}
+                <h1 className="font-inter font-semibold text-xl leading-[100%] tracking-[0%] text-center text-[#161E54]">
+                  {"Edit Manually"}
+                </h1>
+
+                {/* Description */}
+                <p className="mt-4 w-[266px] h-12 font-inter font-normal text-base leading-[150%] tracking-[0%] text-center align-middle text-[#4B4B4B] opacity-100 mx-auto">
+                  {"Full control with professional editing tools and layers."}
+                </p>
               </div>
+
+              {/* Subtle outer ring to match screenshot edge treatment */}
+              <span
+                className="pointer-events-none absolute inset-0 rounded-[20px] ring-1 ring-[#E7DAFF]/60"
+                aria-hidden="true"
+              />
             </button>
           </div>
         </section>
