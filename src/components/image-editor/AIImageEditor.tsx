@@ -436,7 +436,7 @@
 
 // export default AIImageEditor;
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   generateImageWithFlux,
   validateImageFormat,
@@ -445,47 +445,27 @@ import {
 interface AIImageEditorProps {
   originalImage: string;
   onBack: () => void;
+  onCancel?: () => void;
+  onGeneratedImagesChange?: (hasImages: boolean) => void;
+  onSetDownloadAll?: (downloadFn: (() => void) | null) => void;
 }
 
 const AIImageEditor: React.FC<AIImageEditorProps> = ({
   originalImage,
   onBack,
+  onCancel,
+  onGeneratedImagesChange,
+  onSetDownloadAll,
 }) => {
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [prompt, setPrompt] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleGenerateImage = async () => {
-    if (!prompt.trim() || isGenerating) return;
-    setIsGenerating(true);
-    setError(null);
+  const handleDownloadImage = async (imageUrl: string) => {
+    if (!imageUrl) return;
     try {
-      if (!validateImageFormat(originalImage)) {
-        throw new Error("Invalid image format. Please use JPEG or PNG.");
-      }
-      const result = await generateImageWithFlux(originalImage, prompt);
-      if (result.success && result.imageUrl) {
-        setGeneratedImage(result.imageUrl);
-      } else {
-        throw new Error(result.error || "Failed to generate image");
-      }
-    } catch (err) {
-      console.error("Error generating image:", err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to generate image. Please try again."
-      );
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleDownloadImage = async () => {
-    if (!generatedImage) return;
-    try {
-      const response = await fetch(generatedImage);
+      const response = await fetch(imageUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -501,8 +481,58 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
     }
   };
 
+  const handleDownloadAll = async () => {
+    for (let i = 0; i < generatedImages.length; i++) {
+      await handleDownloadImage(generatedImages[i]);
+      // Small delay between downloads to avoid overwhelming the browser
+      if (i < generatedImages.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+  };
+
+  // Notify parent when generated images change
+  useEffect(() => {
+    onGeneratedImagesChange?.(generatedImages.length > 0);
+  }, [generatedImages.length, onGeneratedImagesChange]);
+
+  // Set up download function for parent - but don't auto-trigger
+  useEffect(() => {
+    if (generatedImages.length > 0) {
+      onSetDownloadAll?.(() => handleDownloadAll);
+    } else {
+      onSetDownloadAll?.(null);
+    }
+  }, [generatedImages.length, onSetDownloadAll]);
+
+  const handleGenerateImage = async () => {
+    if (!prompt.trim() || isGenerating) return;
+    setIsGenerating(true);
+    setError(null);
+    try {
+      if (!validateImageFormat(originalImage)) {
+        throw new Error("Invalid image format. Please use JPEG or PNG.");
+      }
+      const result = await generateImageWithFlux(originalImage, prompt);
+      if (result.success && result.imageUrl) {
+        setGeneratedImages([result.imageUrl]);
+      } else {
+        throw new Error(result.error || "Failed to generate image");
+      }
+    } catch (err) {
+      console.error("Error generating image:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to generate image. Please try again."
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const handleRegenerateImage = () => {
-    setGeneratedImage(null);
+    setGeneratedImages([]);
     setError(null);
   };
 
@@ -525,78 +555,111 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
         </p>
       </header>
 
-        {/* Controls Row */}
-        <section
-          aria-label="Topic input and actions"
-          className="grid grid-cols-[1fr_auto] items-end gap-4 mt-4 max-[840px]:grid-cols-1"
-        >
-          <div className="grid gap-2">
-            <label
-              htmlFor="topic"
-              className="text-[13px] font-semibold text-[#1f2340]"
-            >
-              Topic<span className="ml-0.5 text-[#ef4444]">*</span>
-            </label>
-            <input
-              id="topic"
-              type="text"
-              inputMode="text"
-              placeholder="Eg: Make festive image with firecrackers"
-              className="h-12 w-full rounded-xl border border-[#e7e8ee] px-4 text-[15px] text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              onKeyDown={onInputKeyDown}
-              aria-invalid={Boolean(error)}
-              aria-describedby={error ? "error-text" : undefined}
-            />
-          </div>
+      {/* Controls Row */}
+      <section
+        aria-label="Topic input and actions"
+        className="grid grid-cols-[1fr_auto] items-end gap-4 mt-4 max-[840px]:grid-cols-1"
+      >
+        <div className="grid gap-2">
+          <label
+            htmlFor="topic"
+            className="text-[13px] font-semibold text-[#1f2340]"
+          >
+            Topic<span className="ml-0.5 text-[#ef4444]">*</span>
+          </label>
+          <input
+            id="topic"
+            type="text"
+            inputMode="text"
+            placeholder="Eg: Make festive image with firecrackers"
+            className="h-12 w-full rounded-xl border border-[#e7e8ee] px-4 text-[15px] text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            onKeyDown={onInputKeyDown}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? "error-text" : undefined}
+          />
+        </div>
 
-          <div className="flex gap-3">
-            {/* Upload = go back to previous step to pick another image */}
+        <div className="flex gap-3">
+          {/* Upload = go back to previous step to pick another image */}
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex h-12 items-center gap-2 rounded-xl border border-[#9f67ff] bg-white px-4 text-[14.5px] font-semibold text-[#6d28d9] transition hover:bg-[#faf5ff]"
+            aria-label="Upload a different image"
+          >
+            <span aria-hidden="true" className="text-base leading-none">
+              ⤴︎
+            </span>
+            Upload
+          </button>
+
+          <button
+            type="button"
+            onClick={handleGenerateImage}
+            disabled={!prompt.trim() || isGenerating}
+            aria-disabled={!prompt.trim() || isGenerating}
+            className="inline-flex h-12 min-w-[122px] items-center justify-center gap-2 rounded-xl border-0 px-5 text-[14.5px] font-bold text-white shadow-[0_8px_18px_rgba(106,0,255,0.25)] transition active:translate-y-px disabled:opacity-65 disabled:shadow-none bg-[linear-gradient(90deg,#c148ff_0%,#6a00ff_100%)] hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)]"
+          >
+            {isGenerating ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                Generating…
+              </>
+            ) : (
+              <>
+                <span aria-hidden="true" className="text-base leading-none">
+                  ⚡
+                </span>
+                Generate
+              </>
+            )}
+          </button>
+        </div>
+      </section>
+
+      {/* Generated Variant Section - only show if generated */}
+      {generatedImages.length > 0 && (
+        <section className="mt-5">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="m-0 text-[20px] font-bold text-[#1f2340]">
+              Generated Variant
+            </h2>
             <button
               type="button"
-              onClick={onBack}
-              className="inline-flex h-12 items-center gap-2 rounded-xl border border-[#9f67ff] bg-white px-4 text-[14.5px] font-semibold text-[#6d28d9] transition hover:bg-[#faf5ff]"
-              aria-label="Upload a different image"
+              onClick={handleRegenerateImage}
+              className="inline-flex items-center gap-2 rounded-xl border border-[#9f67ff] bg-white px-4 py-2 text-[14.5px] font-semibold text-[#6d28d9] transition hover:bg-[#faf5ff]"
             >
               <span aria-hidden="true" className="text-base leading-none">
-                ⤴︎
+                🔄
               </span>
-              Upload
-            </button>
-
-            <button
-              type="button"
-              onClick={handleGenerateImage}
-              disabled={!prompt.trim() || isGenerating}
-              aria-disabled={!prompt.trim() || isGenerating}
-              className="inline-flex h-12 min-w-[122px] items-center justify-center gap-2 rounded-xl border-0 px-5 text-[14.5px] font-bold text-white shadow-[0_8px_18px_rgba(106,0,255,0.25)] transition active:translate-y-px disabled:opacity-65 disabled:shadow-none bg-[linear-gradient(90deg,#c148ff_0%,#6a00ff_100%)] hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)]"
-            >
-              {isGenerating ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                  Generating…
-                </>
-              ) : (
-                <>
-                  <span aria-hidden="true" className="text-base leading-none">
-                    ⚡
-                  </span>
-                  Generate
-                </>
-              )}
+              Regenerate
             </button>
           </div>
+          <div className="flex gap-4 flex-wrap">
+            {generatedImages.map((imageUrl, index) => (
+              <div
+                key={index}
+                className="relative h-[300px] w-[300px] overflow-hidden rounded-xl bg-[#f0f2f6] border border-[#e7e8ee]"
+              >
+                <img
+                  src={imageUrl}
+                  alt={`Generated variant ${index + 1}`}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
         </section>
+      )}
 
-        {/* Thumbnail row */}
+      {/* Thumbnail row - only show if no generated images */}
+      {generatedImages.length === 0 && (
         <section aria-label="Image preview" className="mt-5">
           <div className="relative h-[240px] w-[240px] overflow-hidden rounded-xl bg-[#f0f2f6] max-[840px]:h-[200px] max-[840px]:w-[200px]">
             <img
-              src={
-                originalImage ||
-                "/placeholder.svg?height=240&width=240&query=uploaded%20image%20preview"
-              }
+              src={originalImage}
               alt="Selected to edit"
               className="h-full w-full object-cover"
             />
@@ -611,8 +674,10 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
             </button>
           </div>
         </section>
+      )}
 
-        {/* Pro Tip */}
+      {/* Pro Tip - only show if no generated images */}
+      {generatedImages.length === 0 && (
         <section
           role="note"
           aria-label="Pro Tip"
@@ -630,41 +695,16 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
             </p>
           </div>
         </section>
+      )}
 
-        {error && (
-          <div
-            id="error-text"
-            role="alert"
-            className="mt-3 rounded-xl border border-[#ffd4d4] bg-[#fff2f2] p-3 text-sm text-[#b42318]"
-          >
-            ⚠️ {error}
-          </div>
-        )}
-
-      {/* Generated image actions (kept to preserve functionality) */}
-      {generatedImage && (
-        <aside className="fixed bottom-5 right-5 flex gap-2 rounded-xl border border-[#e7e8ee] bg-white p-2 shadow-[0_12px_28px_rgba(0,0,0,0.12)]">
-          <a
-            href={generatedImage}
-            target="_blank"
-            rel="noreferrer"
-            className="self-center rounded-lg px-2 py-1 font-bold text-[#6d28d9] transition hover:bg-[#faf5ff]"
-          >
-            View result
-          </a>
-          <button
-            onClick={handleDownloadImage}
-            className="h-9 rounded-lg border border-[#e7e8ee] px-3 font-semibold transition hover:bg-[#f8f9fb]"
-          >
-            📥 Download
-          </button>
-          <button
-            onClick={handleRegenerateImage}
-            className="h-9 rounded-lg border border-[#e7e8ee] px-3 font-semibold transition hover:bg-[#f8f9fb]"
-          >
-            🔄 Regenerate
-          </button>
-        </aside>
+      {error && (
+        <div
+          id="error-text"
+          role="alert"
+          className="mt-3 rounded-xl border border-[#ffd4d4] bg-[#fff2f2] p-3 text-sm text-[#b42318]"
+        >
+          ⚠️ {error}
+        </div>
       )}
     </>
   );

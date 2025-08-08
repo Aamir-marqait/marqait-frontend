@@ -11,6 +11,8 @@ export default function ImageEditorPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
   const [editMode, setEditMode] = useState<EditMode>(null);
+  const [hasGeneratedImages, setHasGeneratedImages] = useState<boolean>(false);
+  const [onDownloadAll, setOnDownloadAll] = useState<(() => void) | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pageHeadingRef = useRef<HTMLElement>(null);
 
@@ -100,6 +102,9 @@ export default function ImageEditorPage() {
           <AIImageEditor
             originalImage={selectedImage}
             onBack={() => handleEditModeChange(null)}
+            onCancel={() => handleEditModeChange(null)}
+            onGeneratedImagesChange={setHasGeneratedImages}
+            onSetDownloadAll={setOnDownloadAll}
           />
         ) : /* Manual Canvas Editor */
         editMode === "manual" && selectedImage ? (
@@ -291,6 +296,29 @@ export default function ImageEditorPage() {
           </>
         )}
       </div>
+
+      {/* Action buttons for generated images */}
+      {editMode === "ai" && hasGeneratedImages && (
+        <div className="mt-6 flex justify-center gap-4">
+          <button
+            type="button"
+            onClick={() => handleEditModeChange(null)}
+            className="inline-flex h-12 items-center gap-2 rounded-xl border border-[#E0E0E0] bg-white px-6 text-[14.5px] font-semibold text-[#4B4B4B] transition hover:bg-[#F8F9FB]"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => onDownloadAll && onDownloadAll()}
+            className="inline-flex h-12 items-center gap-2 rounded-xl border-0 px-6 text-[14.5px] font-bold text-white shadow-[0_8px_18px_rgba(106,0,255,0.25)] transition hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] bg-[linear-gradient(90deg,#c148ff_0%,#6a00ff_100%)]"
+          >
+            <span aria-hidden="true" className="text-base leading-none">
+              📥
+            </span>
+            Download
+          </button>
+        </div>
+      )}
     </div>
   );
 }
