@@ -1,5 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import dashboardIcon from "../assets/nav-icon/dashboard.svg";
 import adCampaign from "../assets/nav-icon/AdCampaigns.svg";
 import analytics from "../assets/nav-icon/analytics.svg";
@@ -89,25 +89,22 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50  bg-opacity-50 lg:hidden"
           onClick={onClose}
         />
       )}
 
-      {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 transform bg-[rgba(255,255,255,1)] transition-all duration-300 ease-in-out lg:static lg:translate-x-0 lg:shadow-[0px_2px_5px_0px_rgba(23,26,31,0.09),0px_0px_2px_0px_rgba(23,26,31,0.12)] ${
+        className={`h-screen fixed top-0 left-0 z-50 transform bg-[rgba(255,255,255,1)] transition-all duration-300 ease-in-out shadow-[0px_2px_5px_0px_rgba(23,26,31,0.09),0px_0px_2px_0px_rgba(23,26,31,0.12)] flex flex-col ${
           isCollapsed ? "w-16" : "w-64"
-        } ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+        } ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
         style={{
           boxShadow:
             "0px 2px 5px 0px rgba(23, 26, 31, 0.09), 0px 0px 2px 0px rgba(23, 26, 31, 0.12)",
         }}
       >
-        {/* Header */}
         <div
           className={`flex items-center justify-between border-b border-gray-200 p-6 ${
             isCollapsed ? "px-3" : "px-6"
@@ -122,7 +119,7 @@ export default function Sidebar({
               />
             )}
             {isCollapsed && (
-              <div className="w-8 h-8  flex items-center justify-center">
+              <div className="w-7 h-8  flex items-center justify-center">
                 <img
                   src={logo || "/placeholder.svg"}
                   alt="MARQAIT"
@@ -130,33 +127,27 @@ export default function Sidebar({
                 />
               </div>
             )}
-          </div>
 
-          <div className="flex items-center ">
-            {/* Collapse/Expand button for desktop */}
             {onToggleCollapse && (
               <button
                 onClick={onToggleCollapse}
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:shadow-sm"
-                title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                className={`hidden lg:flex items-center cursor-pointer justify-center w-8 h-8  bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:shadow-sm ${
+                  isCollapsed ? "" : "ml-3"
+                }`}
+                title={isCollapsed ? "Expand sidebar " : "Collapse sidebar"}
               >
-                <ChevronLeft className="h-4 w-4" />
-                <ChevronRight className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4 text-black" />
+                <ChevronRight className="h-4 w-4 text-black" />
               </button>
             )}
-
-            {/* Close button for mobile */}
-            <button
-              onClick={onClose}
-              className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden"
-            >
-              <X className="h-5 w-5" />
-            </button>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className={`flex-1 space-y-1 ${isCollapsed ? "p-2" : "p-4"}`}>
+        <nav
+          className={`flex-1 space-y-1 overflow-y-auto ${
+            isCollapsed ? "p-2" : "p-4"
+          }`}
+        >
           {navigationItems.map((item) => {
             const isActive = location.pathname === item.url;
 
@@ -165,22 +156,21 @@ export default function Sidebar({
                 key={item.title}
                 to={item.url}
                 onClick={() => {
-                  // Close mobile sidebar when navigating
                   if (window.innerWidth < 1024) {
                     onClose();
                   }
                 }}
                 className={`group flex items-center rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isCollapsed ? "justify-center p-3" : "gap-3 px-4 py-3"
+                  isCollapsed ? "justify-center p-3 w-12" : "gap-3 px-4 py-3"
                 } ${
                   isActive
-                    ? "bg-purple-600 text-white shadow-sm"
+                    ? "bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] text-white shadow-sm font-semibold"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 }`}
                 title={isCollapsed ? item.title : undefined}
               >
                 <img
-                  src={item.icon || "/placeholder.svg"}
+                  src={item.icon}
                   alt={item.title}
                   className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
                     isActive
@@ -188,7 +178,11 @@ export default function Sidebar({
                       : "group-hover:brightness-110"
                   }`}
                 />
-                {!isCollapsed && <span>{item.title}</span>}
+                {!isCollapsed && (
+                  <span className="truncate whitespace-nowrap overflow-hidden font-Inter">
+                    {item.title}
+                  </span>
+                )}
               </Link>
             );
           })}
