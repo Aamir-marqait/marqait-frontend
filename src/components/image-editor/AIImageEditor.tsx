@@ -100,9 +100,30 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
     }
   };
 
-  const handleRegenerateImage = () => {
-    setGeneratedImages([]);
+  const handleRegenerateImage = async () => {
+    if (!prompt.trim() || isGenerating) return;
+    setIsGenerating(true);
     setError(null);
+    try {
+      if (!validateImageFormat(originalImage)) {
+        throw new Error("Invalid image format. Please use JPEG or PNG.");
+      }
+      const result = await generateImageVariants(originalImage, prompt);
+      if (result.success && result.images) {
+        setGeneratedImages(result.images);
+      } else {
+        throw new Error(result.error || "Failed to regenerate image variants");
+      }
+    } catch (err) {
+      console.error("Error regenerating image:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to regenerate image variants. Please try again."
+      );
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const onInputKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -141,6 +162,7 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
             type="text"
             inputMode="text"
             placeholder="Eg: Make festive image with firecrackers"
+            autoComplete="off"
             className="h-12 w-full rounded-lg border border-[#D5D7DA] px-4 font-['Inter'] font-normal text-base leading-6 tracking-normal text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20 shadow-[0px_1px_2px_0px_#0A0D120D]"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -201,12 +223,17 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
             <button
               type="button"
               onClick={handleRegenerateImage}
-              className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 py-2 font-inter font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D]"
+              disabled={isGenerating}
+              className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 py-2 font-inter font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span aria-hidden="true" className="text-base leading-none">
-               <RotateCw className="h-4 w-4" />
+               {isGenerating ? (
+                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#8F00FF]/40 border-t-[#8F00FF]" />
+               ) : (
+                 <RotateCw className="h-4 w-4" />
+               )}
               </span>
-              Regenerate
+              {isGenerating ? 'Regenerating...' : 'Regenerate'}
             </button>
           </div>
           <div className="flex gap-4 flex-wrap">
