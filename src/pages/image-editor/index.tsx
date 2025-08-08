@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { Pencil } from "lucide-react";
 import AIImageEditor from "../../components/image-editor/AIImageEditor";
 import { ImageEditor } from "../../components/image-editor/image-editor";
 import upload from "../../assets/image-editor/upload.svg";
@@ -83,7 +82,7 @@ export default function ImageEditorPage() {
       </section>
 
       {/* Main content container */}
-      <div className="bg-white border border-[#E0E0E0] rounded-2xl shadow-[6px_6px_54px_rgba(0,0,0,0.10)] px-8 py-1">
+      <div className="bg-white border border-[#E0E0E0] rounded-2xl shadow-[6px_6px_54px_rgba(0,0,0,0.10)] px-8 py-8">
         {/* Upload card */}
         <section className="card p-6 md:p-8 bg-[#FFFFFF]">
           <h2 className="font-inter font-bold text-[24px] leading-none tracking-normal text-center text-[#8F00FF]">
@@ -175,13 +174,13 @@ export default function ImageEditorPage() {
             {"Select how you would like to edit your image"}
           </p>
 
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="mt-4 flex justify-center gap-10">
             <button
               aria-label="Edit via Prompt. Use AI to transform your image with simple text descriptions."
-              className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] border-[#E0D3FA] bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] opacity-100 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+              className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                 editingDisabled
-                  ? "opacity-60 cursor-not-allowed"
-                  : "hover:shadow-card"
+                  ? "opacity-40 cursor-not-allowed bg-gray-100 border-gray-200"
+                  : "bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] border-[#E0D3FA] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] cursor-pointer hover:shadow-card"
               }`}
               type="button"
               onClick={() => setEditMode("ai")}
@@ -209,11 +208,11 @@ export default function ImageEditorPage() {
               />
             </button>
             <button
-              aria-label="Edit via Prompt. Use AI to transform your image with simple text descriptions."
-              className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] border-[#E0D3FA] bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] opacity-100 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+              aria-label="Edit Manually. Full control with professional editing tools and layers."
+              className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                 editingDisabled
-                  ? "opacity-60 cursor-not-allowed"
-                  : "hover:shadow-card"
+                  ? "opacity-40 cursor-not-allowed bg-gray-100 border-gray-200"
+                  : "bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] border-[#E0D3FA] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] cursor-pointer hover:shadow-card"
               }`}
               type="button"
               onClick={() => setEditMode("manual")}
