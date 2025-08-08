@@ -6,7 +6,7 @@ import {
   generateImageWithFlux,
   validateImageFormat,
 } from "../../services/falAI";
-import { Lightbulb, Upload } from "lucide-react";
+import { Lightbulb, RotateCw, Upload } from "lucide-react";
 import prompts from "../../assets/image-editor/prompt.svg";
 
 interface AIImageEditorProps {
@@ -193,16 +193,16 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
       {generatedImages.length > 0 && (
         <section className="mt-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="m-0 text-[20px] font-bold text-[#1f2340]">
+            <h2 className="m-0 font-inter font-bold text-2xl leading-none tracking-normal text-[#161E54]">
               Generated Variant
             </h2>
             <button
               type="button"
               onClick={handleRegenerateImage}
-              className="inline-flex items-center gap-2 rounded-xl border border-[#9f67ff] bg-white px-4 py-2 text-[14.5px] font-semibold text-[#6d28d9] transition hover:bg-[#faf5ff]"
+              className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 py-2 font-inter font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D]"
             >
               <span aria-hidden="true" className="text-base leading-none">
-                🔄
+               <RotateCw className="h-4 w-4" />
               </span>
               Regenerate
             </button>
@@ -211,7 +211,7 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
             {generatedImages.map((imageUrl, index) => (
               <div
                 key={index}
-                className="relative h-[300px] w-[300px] overflow-hidden rounded-xl bg-[#f0f2f6] border border-[#e7e8ee]"
+                className="relative h-[300px] w-[300px] overflow-hidden bg-[#f0f2f6] border border-[#e7e8ee]"
               >
                 <img
                   src={imageUrl}
