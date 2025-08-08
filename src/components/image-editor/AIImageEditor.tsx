@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useState, useEffect } from "react";
 import {
-  generateImageWithFlux,
   generateImageVariants,
   validateImageFormat,
 } from "../../services/falAI";
@@ -13,7 +11,6 @@ import prompts from "../../assets/image-editor/prompt.svg";
 interface AIImageEditorProps {
   originalImage: string;
   onBack: () => void;
-  onCancel?: () => void;
   onGeneratedImagesChange?: (hasImages: boolean) => void;
   onSetDownloadAll?: (downloadFn: (() => void) | null) => void;
 }
@@ -21,7 +18,6 @@ interface AIImageEditorProps {
 const AIImageEditor: React.FC<AIImageEditorProps> = ({
   originalImage,
   onBack,
-  onCancel,
   onGeneratedImagesChange,
   onSetDownloadAll,
 }) => {
