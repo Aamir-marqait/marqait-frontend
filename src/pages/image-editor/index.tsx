@@ -104,11 +104,11 @@ export default function ImageEditorPage() {
                 <img src={upload} alt="upload-logo" />
               </div>
               <div className="space-y-1">
-                <div className="font-medium text-ink-700">
+                <div className="font-dm-sans font-medium text-base leading-6 text-[#181D27]">
                   {"Drop file or browse"}
                 </div>
-                <div className="text-sm text-ink-500">
-                  {"Format: jpeg, .png & Max file size: 25 MB"}
+                <div className="font-dm-sans font-normal text-sm leading-5 text-[#6C606C]">
+                  {"Format: .jpeg, .png & Max file size: 25 MB"}
                 </div>
                 {fileName && (
                   <div className="text-xs text-ink-400">
@@ -120,7 +120,7 @@ export default function ImageEditorPage() {
               <button
                 type="button"
                 onClick={onBrowse}
-                className="mt-2 rounded-full bg-brand-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-400"
+                className="cursor-pointer h-9 rounded-lg border border-[#8F00FF] opacity-100 gap-2 py-2 px-4 bg-gradient-to-r from-[#7000CC] via-[#8000E5] to-[#8E07F8] shadow-[0px_1px_2px_0px_#0A0D120D] font-Inter font-semibold text-sm leading-5 text-white align-middle hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#8F00FF]"
               >
                 {"Browse Files"}
               </button>
