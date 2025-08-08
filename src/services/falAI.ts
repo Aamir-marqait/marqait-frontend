@@ -39,6 +39,13 @@ interface GenerateImageResult {
   error?: string;
 }
 
+interface GenerateVariantsResult {
+  success: boolean;
+  images?: string[];
+  data?: unknown;
+  error?: string;
+}
+
 // Convert file to base64 data URL
 export const fileToDataURL = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -64,6 +71,36 @@ export const imageUrlToBase64 = async (imageUrl: string): Promise<string> => {
     console.error('Error converting image to base64:', error);
     throw error;
   }
+};
+
+// Generate related prompt variations
+const generatePromptVariations = (originalPrompt: string): string[] => {
+  const variations: string[] = [];
+  const lowerPrompt = originalPrompt.toLowerCase();
+  
+  // Always include the original prompt first
+  variations.push(originalPrompt);
+  
+  // Generate creative variations based on prompt type
+  if (lowerPrompt.includes('festive') || lowerPrompt.includes('celebration')) {
+    variations.push(originalPrompt + ' with sparkles and glitter effects');
+    variations.push(originalPrompt + ' in bright, vibrant colors');
+  } else if (lowerPrompt.includes('remove')) {
+    variations.push(originalPrompt + ' and replace with natural background');
+    variations.push(originalPrompt + ' and fill with matching texture');
+  } else if (lowerPrompt.includes('color')) {
+    variations.push(originalPrompt + ' with enhanced saturation');
+    variations.push(originalPrompt + ' with complementary color scheme');
+  } else if (lowerPrompt.includes('style')) {
+    variations.push(originalPrompt + ' with artistic enhancement');
+    variations.push(originalPrompt + ' with modern aesthetic');
+  } else {
+    // Generic variations for other prompts
+    variations.push(originalPrompt + ' with enhanced details');
+    variations.push(originalPrompt + ' with improved lighting');
+  }
+  
+  return variations.slice(0, 3); // Return only first 3 variations
 };
 
 // Analyze user prompt to determine best editing approach
@@ -244,6 +281,61 @@ export const generateImageWithFlux = async (
   }
 };
 
+// Generate 3 image variants with different prompts
+export const generateImageVariants = async (
+  imageData: string, 
+  originalPrompt: string
+): Promise<GenerateVariantsResult> => {
+  try {
+    console.log('🎨 AI Image Variants - Processing request:', originalPrompt);
+    
+    // Generate 3 prompt variations
+    const promptVariations = generatePromptVariations(originalPrompt);
+    console.log('📝 Prompt Variations:', promptVariations);
+    
+    // Generate images for each prompt variation
+    const imagePromises = promptVariations.map(async (prompt, index) => {
+      try {
+        console.log(`🔄 Generating variant ${index + 1}: ${prompt}`);
+        const result = await generateImageWithFlux(imageData, prompt);
+        return result.success ? result.imageUrl : null;
+      } catch (error) {
+        console.error(`Error generating variant ${index + 1}:`, error);
+        return null;
+      }
+    });
+    
+    // Wait for all images to be generated
+    const generatedImages = await Promise.all(imagePromises);
+    
+    // Filter out failed generations
+    const successfulImages = generatedImages.filter(img => img !== null) as string[];
+    
+    if (successfulImages.length === 0) {
+      throw new Error('Failed to generate any image variants');
+    }
+    
+    return {
+      success: true,
+      images: successfulImages,
+      data: { variations: promptVariations }
+    };
+    
+  } catch (error) {
+    console.error('Error generating image variants:', error);
+    
+    let errorMessage = 'Failed to generate image variants';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    
+    return {
+      success: false,
+      error: errorMessage
+    };
+  }
+};
+
 // Helper function to validate image format
 export const validateImageFormat = (imageData: string): boolean => {
   const validFormats = ['data:image/jpeg', 'data:image/jpg', 'data:image/png'];
@@ -252,5 +344,6 @@ export const validateImageFormat = (imageData: string): boolean => {
 
 export default {
   generateImageWithFlux,
+  generateImageVariants,
   validateImageFormat
 };
