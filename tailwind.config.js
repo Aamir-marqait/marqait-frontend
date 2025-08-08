@@ -2,7 +2,7 @@
 export default {
   theme: {
     fontFamily: {
-      Inter: [
+      inter: [
         "Inter",
         "ui-sans-serif",
         "system-ui",

@@ -81,7 +81,7 @@ export default function ImageEditorPage() {
       </section>
 
       {/* Main content container */}
-      <div className="bg-white border border-[#E0E0E0] rounded-2xl shadow-[6px_6px_54px_rgba(0,0,0,0.10)] px-8 py-1 space-y-8">
+      <div className="bg-white border border-[#E0E0E0] rounded-2xl shadow-[6px_6px_54px_rgba(0,0,0,0.10)] px-8 py-1">
         {/* Upload card */}
         <section className="card p-6 md:p-8 bg-[#FFFFFF]">
           <h2 className="font-inter font-bold text-[24px] leading-none tracking-normal text-center text-[#8F00FF]">
@@ -121,7 +121,7 @@ export default function ImageEditorPage() {
                     e.stopPropagation();
                     onBrowse();
                   }}
-                  className="cursor-pointer h-9 rounded-lg border border-[#8F00FF] opacity-100 gap-2 py-2 px-4 bg-gradient-to-r from-[#7000CC] via-[#8000E5] to-[#8E07F8] shadow-[0px_1px_2px_0px_#0A0D120D] font-Inter font-semibold text-sm leading-5 text-white align-middle hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#8F00FF]"
+                  className="cursor-pointer h-9 rounded-lg border border-[#8F00FF] opacity-100 gap-2 py-2 px-4 bg-gradient-to-r from-[#7000CC] via-[#8000E5] to-[#8E07F8] shadow-[0px_1px_2px_0px_#0A0D120D] font-inter font-semibold text-sm leading-5 text-white align-middle hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#8F00FF]"
                 >
                   {"Browse Files"}
                 </button>
@@ -142,6 +142,15 @@ export default function ImageEditorPage() {
                     Change Image
                   </button>
                 </div>
+                <div className="hidden top-4 right-4">
+                  <button
+                    type="button"
+                    onClick={handleChangeImage}
+                    className="bg-white/90 hover:bg-white text-gray-700 text-sm font-medium px-3 py-1 rounded-lg shadow-sm border border-gray-200 hover:border-gray-300 transition-colors"
+                  >
+                    {fileName}
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -156,11 +165,11 @@ export default function ImageEditorPage() {
         </section>
 
         {/* Mode chooser */}
-        <section className="space-y-2">
-          <h3 className="text-center text-lg font-semibold text-ink-900">
+        <section className="space-y-1">
+          <h3 className="font-inter text-[#30005E] font-semibold text-xl leading-[100%] tracking-[0%] text-center text-ink-900">
             {"Choose Your Editing Mode"}
           </h3>
-          <p className="text-center subtle">
+          <p className="font-inter font-normal text-base leading-[100%] tracking-[0%] text-center text-[#4B4B4B]">
             {"Select how you would like to edit your image"}
           </p>
 
