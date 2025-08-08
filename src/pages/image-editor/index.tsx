@@ -87,42 +87,62 @@ export default function ImageEditorPage() {
                     className="w-full h-64 object-cover rounded-lg"
                   />
                 </div>
+              </div>
+            )}
 
-                <div className="text-center">
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    Choose Your Editing Mode
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6">
-                    Select how you'd like to edit your image
-                  </p>
-                </div>
+            <div className="space-y-6">
+              <div className="text-center">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  Choose Your Editing Mode
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Select how you'd like to edit your image
+                </p>
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <button
-                    onClick={() => handleEditImage("ai")}
-                    className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold py-6 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 text-center"
-                  >
-                    <div className="text-2xl mb-2">🎨</div>
-                    <div className="text-lg font-bold mb-1">
-                      Edit via Prompt
-                    </div>
-                    <div className="text-sm opacity-90">
-                      AI-powered smart editing
-                    </div>
-                  </button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button
+                  onClick={() => handleEditImage("ai")}
+                  disabled={!selectedImage}
+                  className={`font-semibold py-6 px-6 rounded-lg transition duration-200 ease-in-out transform text-center ${
+                    selectedImage
+                      ? "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white hover:scale-105"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
+                  }`}
+                >
+                  <div className="text-2xl mb-2">🎨</div>
+                  <div className="text-lg font-bold mb-1">
+                    Edit via Prompt
+                  </div>
+                  <div className="text-sm opacity-90">
+                    AI-powered smart editing
+                  </div>
+                </button>
 
-                  <button
-                    onClick={() => handleEditImage("manual")}
-                    className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white font-semibold py-6 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 text-center"
-                  >
-                    <div className="text-2xl mb-2">✏️</div>
-                    <div className="text-lg font-bold mb-1">Edit Manually</div>
-                    <div className="text-sm opacity-90">
-                      Canvas-based text overlays
-                    </div>
-                  </button>
-                </div>
+                <button
+                  onClick={() => handleEditImage("manual")}
+                  disabled={!selectedImage}
+                  className={`font-semibold py-6 px-6 rounded-lg transition duration-200 ease-in-out transform text-center ${
+                    selectedImage
+                      ? "bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white hover:scale-105"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400"
+                  }`}
+                >
+                  <div className="text-2xl mb-2">✏️</div>
+                  <div className="text-lg font-bold mb-1">Edit Manually</div>
+                  <div className="text-sm opacity-90">
+                    Canvas-based text overlays
+                  </div>
+                </button>
+              </div>
 
+              {!selectedImage && (
+                <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                  Please select an image first to enable editing options
+                </p>
+              )}
+
+              {selectedImage && (
                 <div className="text-center">
                   <button
                     onClick={handleReset}
@@ -131,8 +151,8 @@ export default function ImageEditorPage() {
                     🔄 Upload New Image
                   </button>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
