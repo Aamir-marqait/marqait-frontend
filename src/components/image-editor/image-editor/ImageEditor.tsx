@@ -582,7 +582,7 @@ export function ImageEditor({
     if (!canvasRef) return null;
 
     try {
-      const canvasState = canvasRef.toJSON(['data']);
+      const canvasState = canvasRef.toJSON();
       const projectData = {
         id: `draft-${Date.now()}`,
         name: draftName || `Draft ${new Date().toLocaleDateString()}`,

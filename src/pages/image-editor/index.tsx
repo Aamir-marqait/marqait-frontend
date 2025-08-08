@@ -175,71 +175,93 @@ export default function ImageEditorPage() {
           </p>
 
           <div className="mt-4 flex justify-center gap-10">
-            <button
-              aria-label="Edit via Prompt. Use AI to transform your image with simple text descriptions."
-              className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
-                editingDisabled
-                  ? "opacity-40 cursor-not-allowed bg-gray-100 border-gray-200"
-                  : "bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] border-[#E0D3FA] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] cursor-pointer hover:shadow-card"
-              }`}
-              type="button"
-              onClick={() => setEditMode("ai")}
-              disabled={editingDisabled}
-            >
-              <div className="text-center p-5">
-                <div className="mx-auto mb-6 flex w-[50px] h-[50px] items-center justify-center rounded-full bg-[#FFFFFF] opacity-100">
-                  <img src={prompt} alt="prompt-based" />
+            <div className="relative group">
+              <button
+                aria-label="Edit via Prompt. Use AI to transform your image with simple text descriptions."
+                className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+                  editingDisabled
+                    ? "opacity-40 cursor-not-allowed bg-gray-100 border-gray-200"
+                    : "bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] border-[#E0D3FA] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] cursor-pointer hover:shadow-card"
+                }`}
+                type="button"
+                onClick={() => setEditMode("ai")}
+                disabled={editingDisabled}
+              >
+                <div className="text-center p-5">
+                  <div className="mx-auto mb-6 flex w-[50px] h-[50px] items-center justify-center rounded-full bg-[#FFFFFF] opacity-100">
+                    <img src={prompt} alt="prompt-based" />
+                  </div>
+
+                  {/* Heading */}
+                  <h1 className="font-inter font-semibold text-xl leading-[100%] tracking-[0%] text-center text-[#161E54]">
+                    Edit via Prompt
+                  </h1>
+
+                  {/* Description */}
+                  <p className="mt-4 w-[266px] h-12 font-inter font-normal text-base leading-[150%] tracking-[0%] text-center align-middle text-[#4B4B4B] opacity-100 mx-auto">
+                    Use AI to transform your image with simple text
+                    descriptions.
+                  </p>
                 </div>
 
-                {/* Heading */}
-                <h1 className="font-inter font-semibold text-xl leading-[100%] tracking-[0%] text-center text-[#161E54]">
-                  Edit via Prompt
-                </h1>
+                <span
+                  className="pointer-events-none absolute inset-0 rounded-[20px] ring-1 ring-[#E7DAFF]/60"
+                  aria-hidden="true"
+                />
+              </button>
 
-                {/* Description */}
-                <p className="mt-4 w-[266px] h-12 font-inter font-normal text-base leading-[150%] tracking-[0%] text-center align-middle text-[#4B4B4B] opacity-100 mx-auto">
-                  Use AI to transform your image with simple text descriptions.
-                </p>
-              </div>
+              {/* Hover tooltip for disabled state */}
+              {editingDisabled && (
+                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-200 text-black text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                  Upload an image first to enable editing
+                  <div className=" absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-200"></div>
+                </div>
+              )}
+            </div>
 
-              <span
-                className="pointer-events-none absolute inset-0 rounded-[20px] ring-1 ring-[#E7DAFF]/60"
-                aria-hidden="true"
-              />
-            </button>
-            <button
-              aria-label="Edit Manually. Full control with professional editing tools and layers."
-              className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
-                editingDisabled
-                  ? "opacity-40 cursor-not-allowed bg-gray-100 border-gray-200"
-                  : "bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] border-[#E0D3FA] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] cursor-pointer hover:shadow-card"
-              }`}
-              type="button"
-              onClick={() => setEditMode("manual")}
-              disabled={editingDisabled}
-            >
-              <div className="text-center p-5">
-                <div className="mx-auto mb-6 flex w-[50px] h-[50px] items-center justify-center rounded-full bg-[#FFFFFF] opacity-100">
-                  <img src={manually} alt="prompt-based" />
+            <div className="relative group">
+              <button
+                aria-label="Edit Manually. Full control with professional editing tools and layers."
+                className={`relative w-[338px] h-[198px] rounded-[12px] border-[1.61px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A78BFA] focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
+                  editingDisabled
+                    ? "opacity-40 cursor-not-allowed bg-gray-100 border-gray-200"
+                    : "bg-gradient-to-b from-[#F5EDFF] via-[#FAF6FF] to-[#FFFFFF] border-[#E0D3FA] shadow-[0px_6.42px_9.64px_-3.21px_rgba(16,24,40,0.03),0px_19.27px_25.7px_-6.42px_rgba(16,24,40,0.08)] cursor-pointer hover:shadow-card"
+                }`}
+                type="button"
+                onClick={() => setEditMode("manual")}
+                disabled={editingDisabled}
+              >
+                <div className="text-center p-5">
+                  <div className="mx-auto mb-6 flex w-[50px] h-[50px] items-center justify-center rounded-full bg-[#FFFFFF] opacity-100">
+                    <img src={manually} alt="prompt-based" />
+                  </div>
+
+                  {/* Heading */}
+                  <h1 className="font-inter font-semibold text-xl leading-[100%] tracking-[0%] text-center text-[#161E54]">
+                    {"Edit Manually"}
+                  </h1>
+
+                  {/* Description */}
+                  <p className="mt-4 w-[266px] h-12 font-inter font-normal text-base leading-[150%] tracking-[0%] text-center align-middle text-[#4B4B4B] opacity-100 mx-auto">
+                    {"Full control with professional editing tools and layers."}
+                  </p>
                 </div>
 
-                {/* Heading */}
-                <h1 className="font-inter font-semibold text-xl leading-[100%] tracking-[0%] text-center text-[#161E54]">
-                  {"Edit Manually"}
-                </h1>
+                {/* Subtle outer ring to match screenshot edge treatment */}
+                <span
+                  className="pointer-events-none absolute inset-0 rounded-[20px] ring-1 ring-[#E7DAFF]/60"
+                  aria-hidden="true"
+                />
+              </button>
 
-                {/* Description */}
-                <p className="mt-4 w-[266px] h-12 font-inter font-normal text-base leading-[150%] tracking-[0%] text-center align-middle text-[#4B4B4B] opacity-100 mx-auto">
-                  {"Full control with professional editing tools and layers."}
-                </p>
-              </div>
-
-              {/* Subtle outer ring to match screenshot edge treatment */}
-              <span
-                className="pointer-events-none absolute inset-0 rounded-[20px] ring-1 ring-[#E7DAFF]/60"
-                aria-hidden="true"
-              />
-            </button>
+              {/* Hover tooltip for disabled state */}
+              {editingDisabled && (
+                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-200 text-black text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                  Upload an image first to enable editing
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-200"></div>
+                </div>
+              )}
+            </div>
           </div>
         </section>
       </div>
