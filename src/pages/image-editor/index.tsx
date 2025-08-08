@@ -27,6 +27,17 @@ export default function ImageEditorPage() {
 
   const onBrowse = () => fileInputRef.current?.click();
 
+  const handleChangeImage = () => {
+    // Reset the current state first
+    setSelectedImage(null);
+    setFileName("");
+    // Reset input value and trigger click
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+      fileInputRef.current.click();
+    }
+  };
+
   const onDrop: React.DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -36,13 +47,6 @@ export default function ImageEditorPage() {
   const onDragOver: React.DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
     e.stopPropagation();
-  };
-
-  const handleReset = () => {
-    setSelectedImage(null);
-    setFileName("");
-    setEditMode(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   // AI Image Editor
@@ -85,76 +89,70 @@ export default function ImageEditorPage() {
           </h2>
 
           <div className="mt-6 w-[747px] h-[324px] rounded-lg border border-dashed border-[#8F00FF] mx-auto">
-            <div
-              role="button"
-              aria-label="Upload image by dropping a file or browsing"
-              tabIndex={0}
-              onClick={onBrowse}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  onBrowse();
-                }
-              }}
-              onDrop={onDrop}
-              onDragOver={onDragOver}
-              className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl2 px-6 py-16 text-center"
-            >
-              <div className="rounded-full bg-brand-50 p-3">
-                <img src={upload} alt="upload-logo" />
-              </div>
-              <div className="space-y-1">
-                <div className="font-dm-sans font-medium text-base leading-6 text-[#181D27]">
-                  {"Drop file or browse"}
-                </div>
-                <div className="font-dm-sans font-normal text-sm leading-5 text-[#6C606C]">
-                  {"Format: .jpeg, .png & Max file size: 25 MB"}
-                </div>
-                {fileName && (
-                  <div className="text-xs text-ink-400">
-                    {"Selected: "}
-                    {fileName}
-                  </div>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={onBrowse}
-                className="cursor-pointer h-9 rounded-lg border border-[#8F00FF] opacity-100 gap-2 py-2 px-4 bg-gradient-to-r from-[#7000CC] via-[#8000E5] to-[#8E07F8] shadow-[0px_1px_2px_0px_#0A0D120D] font-Inter font-semibold text-sm leading-5 text-white align-middle hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#8F00FF]"
+            {!selectedImage ? (
+              <div
+                role="button"
+                aria-label="Upload image by dropping a file or browsing"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onBrowse();
+                  }
+                }}
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl2 px-6 py-16 text-center h-full"
               >
-                {"Browse Files"}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="sr-only"
-                onChange={(e) => handleFiles(e.target.files)}
-              />
-            </div>
-          </div>
-
-          {/* Optional small preview once selected */}
-          {selectedImage && (
-            <div className="mt-6">
-              <div className="rounded-xl overflow-hidden border border-slate-200">
-                <img
-                  src={selectedImage || "/placeholder.svg"}
-                  alt="Selected preview"
-                  className="h-56 w-full object-cover"
-                />
-              </div>
-              <div className="mt-3 text-right">
+                <div className="rounded-full bg-brand-50 p-3">
+                  <img src={upload} alt="upload-logo" />
+                </div>
+                <div className="space-y-1">
+                  <div className="font-dm-sans font-medium text-base leading-6 text-[#181D27]">
+                    {"Drop file or browse"}
+                  </div>
+                  <div className="font-dm-sans font-normal text-sm leading-5 text-[#6C606C]">
+                    {"Format: .jpeg, .png & Max file size: 25 MB"}
+                  </div>
+                </div>
                 <button
                   type="button"
-                  onClick={handleReset}
-                  className="text-sm font-medium text-brand-700 hover:underline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onBrowse();
+                  }}
+                  className="cursor-pointer h-9 rounded-lg border border-[#8F00FF] opacity-100 gap-2 py-2 px-4 bg-gradient-to-r from-[#7000CC] via-[#8000E5] to-[#8E07F8] shadow-[0px_1px_2px_0px_#0A0D120D] font-Inter font-semibold text-sm leading-5 text-white align-middle hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#8F00FF]"
                 >
-                  {"Upload a different image"}
+                  {"Browse Files"}
                 </button>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="relative h-full rounded-lg overflow-hidden">
+                <img
+                  src={selectedImage}
+                  alt="Selected preview"
+                  className="h-full w-full object-contain"
+                />
+                <div className="absolute top-4 right-4">
+                  <button
+                    type="button"
+                    onClick={handleChangeImage}
+                    className="bg-white/90 hover:bg-white text-gray-700 text-sm font-medium px-3 py-1 rounded-lg shadow-sm border border-gray-200 hover:border-gray-300 transition-colors"
+                  >
+                    Change Image
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={(e) => handleFiles(e.target.files)}
+          />
         </section>
 
         {/* Mode chooser */}
