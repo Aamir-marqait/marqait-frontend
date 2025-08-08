@@ -38,7 +38,7 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      const suffix = index !== undefined ? `-variant-${index + 1}` : '';
+      const suffix = index !== undefined ? `-variant-${index + 1}` : "";
       link.download = `ai-edited-image${suffix}-${Date.now()}.png`;
       document.body.appendChild(link);
       link.click();
@@ -227,13 +227,9 @@ const AIImageEditor: React.FC<AIImageEditorProps> = ({
               className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 py-2 font-inter font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span aria-hidden="true" className="text-base leading-none">
-               {isGenerating ? (
-                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#8F00FF]/40 border-t-[#8F00FF]" />
-               ) : (
-                 <RotateCw className="h-4 w-4" />
-               )}
+                <RotateCw className="h-4 w-4" />
               </span>
-              {isGenerating ? 'Regenerating...' : 'Regenerate'}
+              {isGenerating ? "Regenerating..." : "Regenerate"}
             </button>
           </div>
           <div className="flex gap-4 flex-wrap">
