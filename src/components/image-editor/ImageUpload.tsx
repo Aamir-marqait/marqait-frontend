@@ -156,12 +156,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             textAlign: 'center'
           }}
           onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-3px)';
-            e.target.style.boxShadow = '0 8px 25px rgba(255, 107, 107, 0.6)';
+            const target = e.target as HTMLElement;
+            target.style.transform = 'translateY(-3px)';
+            target.style.boxShadow = '0 8px 25px rgba(255, 107, 107, 0.6)';
           }}
           onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 5px 15px rgba(255, 107, 107, 0.4)';
+            const target = e.target as HTMLElement;
+            target.style.transform = 'translateY(0)';
+            target.style.boxShadow = '0 5px 15px rgba(255, 107, 107, 0.4)';
           }}
         >
           <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🎨</div>
@@ -188,12 +190,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             textAlign: 'center'
           }}
           onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-3px)';
-            e.target.style.boxShadow = '0 8px 25px rgba(0, 184, 148, 0.6)';
+            const target = e.target as HTMLElement;
+            target.style.transform = 'translateY(-3px)';
+            target.style.boxShadow = '0 8px 25px rgba(0, 184, 148, 0.6)';
           }}
           onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 5px 15px rgba(0, 184, 148, 0.4)';
+            const target = e.target as HTMLElement;
+            target.style.transform = 'translateY(0)';
+            target.style.boxShadow = '0 5px 15px rgba(0, 184, 148, 0.4)';
           }}
         >
           <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>✏️</div>
@@ -225,12 +229,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             boxShadow: '0 5px 15px rgba(116, 185, 255, 0.4)'
           }}
           onMouseOver={(e) => {
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 8px 20px rgba(116, 185, 255, 0.6)';
+            const target = e.target as HTMLElement;
+            target.style.transform = 'translateY(-2px)';
+            target.style.boxShadow = '0 8px 20px rgba(116, 185, 255, 0.6)';
           }}
           onMouseOut={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = '0 5px 15px rgba(116, 185, 255, 0.4)';
+            const target = e.target as HTMLElement;
+            target.style.transform = 'translateY(0)';
+            target.style.boxShadow = '0 5px 15px rgba(116, 185, 255, 0.4)';
           }}
         >
           🔄 Upload New Image
