@@ -93,7 +93,7 @@ export function CanvasEditor({
             { offset: 1, color: layer.gradient.endColor }
           ]
         });
-        fillValue = gradient as any;
+        fillValue = gradient as unknown as string;
       }
 
       const textObj = new FabricText(layer.content, {
@@ -320,7 +320,7 @@ export function CanvasEditor({
               { offset: 1, color: layer.gradient.endColor }
             ]
           });
-          fillValue = gradient as any;
+          fillValue = gradient as unknown as string;
         }
 
         existingObject.set({
