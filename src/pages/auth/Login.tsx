@@ -143,12 +143,6 @@ const Login = () => {
             </div>
           )}
 
-          {error && (
-            <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg mb-6">
-              <AlertCircle className="h-5 w-5 flex-shrink-0" />
-              <span className="text-sm">{error}</span>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit}>
             {/* Email Field */}
@@ -200,10 +194,20 @@ const Login = () => {
                   )}
                 </button>
               </div>
-              <div className="w-[640px] flex justify-end mt-2">
+              <div className="w-[640px] flex justify-between items-center mt-2">
+                <div className="flex items-center space-x-2">
+                  {error && (
+                    <>
+                      <AlertCircle className="h-4 w-4 text-[#C20B26] flex-shrink-0" />
+                      <span className="text-[14px] font-normal leading-[130%] tracking-[-0.05em] text-[#C20B26] font-inter">
+                        Invalid email or double check your password
+                      </span>
+                    </>
+                  )}
+                </div>
                 <Link
                   to="/forgot-password"
-                  className="text-[15px] font-medium leading-[130%] tracking-[-0.02em]  underline decoration-solid text-[#383838] font-inter hover:text-gray-800 transition-colors cursor-pointer"
+                  className="text-[15px] font-medium leading-[130%] tracking-[-0.02em] underline decoration-solid text-[#383838] font-inter hover:text-gray-800 transition-colors cursor-pointer"
                 >
                   Forgot password?
                 </Link>
@@ -245,7 +249,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading || !agreeToTerms || !email || !password}
-                className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed"
+                className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
                 style={{
                   background: isLoading || !agreeToTerms || !email || !password
                     ? 'linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%)'
@@ -256,7 +260,30 @@ const Login = () => {
                     : 'linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%) 1'
                 }}
               >
-                {isLoading ? "Signing in..." : "Sign in"}
+                {isLoading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Sign in"
+                )}
               </button>
             </div>
           </form>
