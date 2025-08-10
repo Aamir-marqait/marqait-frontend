@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Mail, AlertCircle } from "lucide-react";
+import { Mail } from "lucide-react";
 import dummy from "../../assets/dummy.jpg";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
 
@@ -9,7 +9,6 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [error, setError] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const carouselSlides = [
@@ -36,7 +35,6 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setIsLoading(true);
 
     try {
@@ -44,7 +42,7 @@ const ForgotPassword = () => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       setIsSubmitted(true);
     } catch {
-      setError("Unable to send reset email. Please try again.");
+      // Handle error silently for now
     } finally {
       setIsLoading(false);
     }
