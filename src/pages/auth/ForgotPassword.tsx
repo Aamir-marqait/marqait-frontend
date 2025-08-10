@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Mail } from "lucide-react";
+
 import dummy from "../../assets/dummy.jpg";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
 
@@ -93,41 +93,48 @@ const ForgotPassword = () => {
         <div className="w-full lg:w-3/5 flex items-center justify-start pl-20 pr-8 py-8 bg-white">
           <div className="w-full max-w-lg">
             <div className="mb-11">
-              <div className="mb-[24px]">
-                <img src={fullLogo} alt="MARQAIT" className="h-6" />
+              <div className="mb-8">
+                <div className="mb-[24px]">
+                  <img src={fullLogo} alt="MARQAIT" className="h-6" />
+                </div>
+
+                <h2 className="text-[26px] font-semibold leading-[120%] tracking-[-2%] text-[#1E1E1E] font-inter mb-2">
+                  Verify Your Email Address
+                </h2>
               </div>
             </div>
 
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Mail className="h-8 w-8 text-green-600" />
-              </div>
-              <h2 className="text-[26px] font-semibold leading-[120%] tracking-[-0.02em] text-[#1E1E1E] font-inter mb-[8px]">
-                Check your email
-              </h2>
-              <p className="text-base font-normal leading-[144%] tracking-[-0.04em] text-[#2E2E2E] font-inter mb-4">
-                We sent a password reset link to
+            <div className="w-[640px] text-left mb-8">
+              <p className="text-[20px] font-normal leading-[156%] tracking-[-4%] text-[#2E2E2E] font-inter">
+                We've sent a verification link to{" "}
+                <span className="font-semibold whitespace-nowrap">{email}</span>
               </p>
-              <p className="text-base font-medium text-purple-600 mb-6">
-                {email}
-              </p>
-              <p className="text-sm text-gray-500 mb-8">
-                Didn't receive the email? Check your spam folder or try again.
+              <p className="text-[20px] font-normal leading-[156%] tracking-[-4%] text-[#2E2E2E] font-inter">
+                Please check your inbox and click the link to proceed.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="w-[640px] flex justify-center">
               <button
-                onClick={() => setIsSubmitted(false)}
-                className="w-full h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                onClick={() => {}}
+                className="w-[512px] cursor-pointer h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-5%] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                 style={{
                   background:
                     "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%)",
                   backdropFilter: "blur(200px)",
+
+                  borderImage:
+                    "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%) 1",
                 }}
               >
-                Try different email
+                Resend Verification Email
               </button>
+            </div>
+
+            <div className="w-[640px] flex justify-center mt-4">
+              <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-[#6E7191] font-inter">
+                Didn't receive the email? Check your spam folder.
+              </p>
             </div>
           </div>
         </div>
