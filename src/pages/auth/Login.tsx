@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import type React from "react";
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
 import { useAuthStore } from "../../stores/authStore";
 import dummy from "../../assets/dummy.jpg";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
@@ -71,13 +72,11 @@ const Login = () => {
   };
 
   const handleGoogleSignIn = () => {
-    // Google sign-in logic would go here
     console.log("Google sign-in clicked");
   };
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Carousel */}
       <div
         className="hidden lg:flex lg:w-2/5 relative overflow-hidden"
         style={{
@@ -85,7 +84,6 @@ const Login = () => {
             "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.8) 100%)",
         }}
       >
-        {/* Background Image Placeholder */}
         <div className="absolute inset-0 bg-black/40 z-10"></div>
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -94,7 +92,6 @@ const Login = () => {
           }}
         ></div>
 
-        {/* Content */}
         <div className="relative z-20 flex flex-col justify-end p-12 text-white">
           <div className="mb-8">
             <h1 className="text-[40px] font-medium leading-[120%] tracking-[-0.05em] mb-4 font-inter whitespace-pre-line">
@@ -105,8 +102,7 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Carousel Indicators */}
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 justify-start">
             {carouselSlides.map((_, index) => (
               <button
                 key={index}
@@ -120,7 +116,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Right Side - Login Form */}
       <div className="w-full lg:w-3/5 flex items-center justify-start pl-20 pr-8 py-8 bg-white">
         <div className="w-full max-w-lg">
           <div className="mb-11">
@@ -135,16 +130,7 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Success/Error Messages */}
-          {successMessage && (
-            <div className="flex items-center space-x-2 text-green-600 bg-green-50 p-3 rounded-lg mb-6">
-              <CheckCircle className="h-5 w-5 flex-shrink-0" />
-              <span className="text-sm">{successMessage}</span>
-            </div>
-          )}
-
           <form onSubmit={handleSubmit}>
-            {/* Email Field */}
             <div className="mb-[24px]">
               <label
                 htmlFor="email"
@@ -163,7 +149,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Password Field */}
             <div className="mb-[16px]">
               <label
                 htmlFor="password"
@@ -213,7 +198,6 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Terms Checkbox */}
             <div className="flex items-center space-x-2 mb-10">
               <input
                 id="terms"
@@ -243,7 +227,6 @@ const Login = () => {
               </label>
             </div>
 
-            {/* Sign In Button */}
             <div className="w-[640px] flex justify-center">
               <button
                 type="submit"
@@ -289,7 +272,6 @@ const Login = () => {
             </div>
           </form>
 
-          {/* Divider */}
           <div className="w-[640px] mx-auto my-6 flex items-center">
             <div className="flex-1 border-t border-[#EEEEEE]"></div>
             <span className="px-4 text-[14px] font-normal leading-[130%] tracking-[-0.05em] text-center text-[#444444] font-inter">
@@ -298,7 +280,6 @@ const Login = () => {
             <div className="flex-1 border-t border-[#EEEEEE]"></div>
           </div>
 
-          {/* Google Sign In */}
           <div className="w-[640px] mx-auto">
             <button
               onClick={handleGoogleSignIn}
@@ -328,7 +309,6 @@ const Login = () => {
             </button>
           </div>
 
-          {/* Sign Up Link */}
           <div className="w-[640px] mx-auto mt-6 flex justify-center items-center">
             <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-gray-600 font-inter">
               Don't have an account?{" "}

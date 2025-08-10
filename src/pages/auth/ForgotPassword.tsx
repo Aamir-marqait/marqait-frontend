@@ -51,7 +51,6 @@ const ForgotPassword = () => {
   if (isSubmitted) {
     return (
       <div className="min-h-screen flex">
-        {/* Left Side - Image */}
         <div
           className="hidden lg:flex lg:w-2/5 relative overflow-hidden"
           style={{
@@ -77,8 +76,7 @@ const ForgotPassword = () => {
               </p>
             </div>
 
-            {/* Carousel Indicators */}
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 justify-start">
               {carouselSlides.map((_, index) => (
                 <button
                   key={index}
@@ -92,7 +90,6 @@ const ForgotPassword = () => {
           </div>
         </div>
 
-        {/* Right Side - Success Message */}
         <div className="w-full lg:w-3/5 flex items-center justify-start pl-20 pr-8 py-8 bg-white">
           <div className="w-full max-w-lg">
             <div className="mb-11">
@@ -166,8 +163,7 @@ const ForgotPassword = () => {
             </p>
           </div>
 
-          {/* Carousel Indicators */}
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 justify-start">
             {carouselSlides.map((_, index) => (
               <button
                 key={index}
