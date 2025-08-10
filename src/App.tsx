@@ -11,6 +11,7 @@ import Dashboard from "./pages/dashboard";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 import PlaceholderPage from "./pages/PlaceholderPage";
 
 import Header from "./components/Header";
@@ -63,6 +64,12 @@ function App() {
           path="/accounts/password/reset/"
           element={
             isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPassword />
+          }
+        />
+        <Route
+          path="/accounts/password/reset/confirm/"
+          element={
+            isAuthenticated ? <Navigate to="/dashboard" replace /> : <ResetPassword />
           }
         />
         <Route
