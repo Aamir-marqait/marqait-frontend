@@ -19,6 +19,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -88,6 +89,34 @@ const Signup = () => {
 
   const handleGoogleSignUp = () => {
     console.log("Google sign-up clicked");
+  };
+
+  const handlePasswordBlur = () => {
+    if (password && confirmPassword && password !== confirmPassword) {
+      setPasswordError("Passwords do not match. Please re-enter.");
+    }
+  };
+
+  const handleConfirmPasswordBlur = () => {
+    if (password && confirmPassword && password !== confirmPassword) {
+      setPasswordError("Passwords do not match. Please re-enter.");
+    }
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    setPasswordError("");
+    if (confirmPassword && value === confirmPassword) {
+      setPasswordError("");
+    }
+  };
+
+  const handleConfirmPasswordChange = (value: string) => {
+    setConfirmPassword(value);
+    setPasswordError("");
+    if (password && value === password) {
+      setPasswordError("");
+    }
   };
 
   return (
@@ -214,7 +243,8 @@ const Signup = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => handlePasswordChange(e.target.value)}
+                    onBlur={handlePasswordBlur}
                     className="flex-1 outline-none text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680] bg-transparent"
                     placeholder="Create your password"
                     required
@@ -244,7 +274,8 @@ const Signup = () => {
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+                    onBlur={handleConfirmPasswordBlur}
                     className="flex-1 outline-none text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680] bg-transparent"
                     placeholder="Confirm your password"
                     required
@@ -263,6 +294,15 @@ const Signup = () => {
                 </div>
               </div>
             </div>
+
+            {passwordError && (
+              <div className="w-[640px] flex justify-end items-center space-x-2 mb-2">
+                <AlertCircle className="h-4 w-4 text-[#C20B26] flex-shrink-0" />
+                <span className="text-[14px] font-normal leading-[130%] tracking-[-0.05em] text-[#C20B26] font-inter">
+                  {passwordError}
+                </span>
+              </div>
+            )}
 
             <div className="mb-4 flex space-x-4 w-[640px]">
               <div className="flex-1">
