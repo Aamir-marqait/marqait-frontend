@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import type React from "react";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
 import dummy from "../../assets/dummy.jpg";
@@ -44,7 +45,7 @@ const ResetPassword = () => {
     const hasUppercase = /[A-Z]/.test(password);
     const hasNumber = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    
+
     return minLength && hasUppercase && hasNumber && hasSpecialChar;
   };
 
@@ -68,7 +69,12 @@ const ResetPassword = () => {
       // Simulate API call for password reset
       await new Promise((resolve) => setTimeout(resolve, 1500));
       // Navigate to login with success message
-      navigate("/", { state: { message: "Password reset successfully. Please log in with your new password." } });
+      navigate("/", {
+        state: {
+          message:
+            "Password reset successfully. Please log in with your new password.",
+        },
+      });
     } catch {
       setError("An error occurred while resetting password");
     } finally {
@@ -76,7 +82,11 @@ const ResetPassword = () => {
     }
   };
 
-  const isFormValid = newPassword && confirmPassword && validatePassword(newPassword) && newPassword === confirmPassword;
+  const isFormValid =
+    newPassword &&
+    confirmPassword &&
+    validatePassword(newPassword) &&
+    newPassword === confirmPassword;
 
   return (
     <div className="min-h-screen flex">
@@ -209,7 +219,8 @@ const ResetPassword = () => {
 
             <div className="w-[640px] mb-6">
               <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-[#717680] font-inter">
-                Password must be at least 8 characters, include uppercase, number, and special character.
+                Password must be at least 8 characters, include uppercase,
+                number, and special character.
               </p>
             </div>
 
@@ -257,19 +268,6 @@ const ResetPassword = () => {
               </button>
             </div>
           </form>
-
-          {/* Back to Login */}
-          <div className="w-[640px] mx-auto mt-6 flex justify-center">
-            <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-gray-600 font-inter">
-              Remembered your password?{" "}
-              <Link
-                to="/"
-                className="text-[14px] font-medium leading-5 tracking-[-0.5px] text-center underline decoration-solid text-purple-600 hover:text-purple-700 font-inter transition-colors cursor-pointer"
-              >
-                Login here
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>
