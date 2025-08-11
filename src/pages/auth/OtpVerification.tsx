@@ -1,15 +1,16 @@
 import type React from "react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, AlertCircle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
 import AuthLayout from "../../components/auth/AuthLayout";
 
 const OtpVerification = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [error, setError] = useState("");
+  const [, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [isShaking, setIsShaking] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,6 +37,7 @@ const OtpVerification = () => {
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
     setError("");
+    setIsShaking(false);
 
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
@@ -60,6 +62,7 @@ const OtpVerification = () => {
       const newOtp = pastedData.split("");
       setOtp(newOtp);
       setError("");
+      setIsShaking(false);
       inputRefs.current[5]?.focus();
       
       setTimeout(() => {
@@ -76,6 +79,7 @@ const OtpVerification = () => {
 
     setIsLoading(true);
     setError("");
+    setIsShaking(false);
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -83,10 +87,14 @@ const OtpVerification = () => {
       if (otpValue === "123456") {
         navigate("/dashboard");
       } else {
-        setError("Invalid OTP. Please try again.");
+        setIsShaking(true);
+        setOtp(["", "", "", "", "", ""]);
+        inputRefs.current[0]?.focus();
+        setTimeout(() => setIsShaking(false), 600);
       }
     } catch {
-      setError("An error occurred. Please try again.");
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 600);
     } finally {
       setIsLoading(false);
     }
@@ -97,6 +105,7 @@ const OtpVerification = () => {
 
     setResendCooldown(30);
     setError("");
+    setIsShaking(false);
     
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -140,32 +149,26 @@ const OtpVerification = () => {
         <label className="block text-[15px] font-medium leading-[130%] tracking-[-0.02em] text-[#2E2E2E] font-inter mb-4">
           Verification Code
         </label>
-        <div className="flex space-x-3 mb-4">
+        <div className={`flex space-x-3 mb-4 ${isShaking ? 'animate-shake' : ''}`}>
           {otp.map((digit, index) => (
             <input
               key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
+              ref={(el) => { inputRefs.current[index] = el; }}
               type="text"
               inputMode="numeric"
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={index === 0 ? handlePaste : undefined}
-              className="w-12 h-12 text-center text-[20px] font-semibold border border-[#D5D7DA] rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+              className={`w-12 h-12 text-center text-[20px] font-semibold border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
+                isShaking ? 'border-red-500 bg-red-50' : 'border-[#D5D7DA]'
+              }`}
               maxLength={1}
               disabled={isLoading}
             />
           ))}
         </div>
 
-        {error && (
-          <div className="flex items-center space-x-2 mb-4">
-            <AlertCircle className="h-4 w-4 text-[#C20B26] flex-shrink-0" />
-            <span className="text-[14px] font-normal leading-[130%] tracking-[-0.05em] text-[#C20B26] font-inter">
-              {error}
-            </span>
-          </div>
-        )}
       </div>
 
       <div className="flex justify-center mb-6">
