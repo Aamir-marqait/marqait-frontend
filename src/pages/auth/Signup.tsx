@@ -50,10 +50,9 @@ const Signup = () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      navigate("/", {
+      navigate("/accounts/emailsignup/otp-verification", {
         state: {
-          message:
-            "Account created successfully! Please sign in with your credentials.",
+          email: email,
         },
       });
     } catch {
