@@ -1,13 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
-import carousel1 from "../../assets/carousel/1.png";
-import carousel2 from "../../assets/carousel/2.png";
-import carousel3 from "../../assets/carousel/3.png";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
 import lockIcon from "../../assets/lock.svg";
+import AuthLayout from "../../components/auth/AuthLayout";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -17,32 +14,6 @@ const ResetPassword = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const carouselSlides = [
-    {
-      title: "AI That Works Like\nYour Best Marketer",
-      subtitle: "Boost productivity and results with intelligent automation.",
-      image: carousel1,
-    },
-    {
-      title: "One Platform.\nEndless Possibilities.",
-      subtitle: "From branding to ads - AI powers every step.",
-      image: carousel2,
-    },
-    {
-      title: "Power Your Brand\nwith Intelligence",
-      subtitle: "AI-driven strategies to grow your reach and revenue.",
-      image: carousel3,
-    },
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   const validatePassword = (password: string) => {
     const minLength = password.length >= 8;
@@ -88,67 +59,8 @@ const ResetPassword = () => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex">
-        <div
-          className="hidden lg:flex lg:w-2/5 relative overflow-hidden"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.8) 100%)",
-          }}
-        >
-          <div className="absolute inset-0 bg-black/40 z-10"></div>
-          <div className="absolute inset-0 overflow-hidden">
-            <div 
-              className="flex h-full transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-            >
-              {carouselSlides.map((slide, index) => (
-                <div
-                  key={index}
-                  className="min-w-full h-full bg-cover bg-center"
-                  style={{ backgroundImage: `url(${slide.image})` }}
-                ></div>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative z-20 flex flex-col justify-end p-12 text-white">
-            <div className="mb-8">
-              <div className="overflow-hidden">
-                <div 
-                  className="flex transition-transform duration-700 ease-in-out"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                >
-                  {carouselSlides.map((slide, index) => (
-                    <div key={index} className="min-w-full">
-                      <h1 className="text-[40px] font-medium leading-[120%] tracking-[-0.05em] mb-4 font-inter whitespace-pre-line">
-                        {slide.title}
-                      </h1>
-                      <p className="text-base font-normal leading-[154%] tracking-[-0.04em] font-inter text-[#FAFAFA]">
-                        {slide.subtitle}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex space-x-2 justify-start">
-              {carouselSlides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
-                    index === currentSlide ? "w-8 bg-white" : "w-6 bg-white/50"
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full lg:w-3/5 flex items-center justify-center pl-20 pr-8 py-8 bg-white">
-          <div className="w-full max-w-lg text-center">
+      <AuthLayout>
+        <div className="w-full max-w-lg text-center">
             <div className="mb-11">
               <div className="mb-8">
                 <div className="flex justify-center mb-6">
@@ -180,76 +92,13 @@ const ResetPassword = () => {
                 Go to Login
               </Link>
             </div>
-          </div>
         </div>
-      </div>
+      </AuthLayout>
     );
   }
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Side - Image */}
-      <div
-        className="hidden lg:flex lg:w-2/5 relative overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.8) 100%)",
-        }}
-      >
-        <div className="absolute inset-0 bg-black/40 z-10"></div>
-        <div className="absolute inset-0 overflow-hidden">
-          <div 
-            className="flex h-full transition-transform duration-700 ease-in-out"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            {carouselSlides.map((slide, index) => (
-              <div
-                key={index}
-                className="min-w-full h-full bg-cover bg-center"
-                style={{ backgroundImage: `url(${slide.image})` }}
-              ></div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative z-20 flex flex-col justify-end p-12 text-white">
-          <div className="mb-8">
-            <div className="overflow-hidden">
-              <div 
-                className="flex transition-transform duration-700 ease-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {carouselSlides.map((slide, index) => (
-                  <div key={index} className="min-w-full">
-                    <h1 className="text-[40px] font-medium leading-[120%] tracking-[-0.05em] mb-4 font-inter whitespace-pre-line">
-                      {slide.title}
-                    </h1>
-                    <p className="text-base font-normal leading-[154%] tracking-[-0.04em] font-inter text-[#FAFAFA]">
-                      {slide.subtitle}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex space-x-2 justify-start">
-            {carouselSlides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
-                  index === currentSlide ? "w-8 bg-white" : "w-6 bg-white/50"
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Right Side - Reset Form */}
-      <div className="w-full lg:w-3/5 flex items-center justify-start pl-20 pr-8 py-8 bg-white">
-        <div className="w-full max-w-lg">
+    <AuthLayout>
           <div className="mb-8">
             <div className="mb-[24px]">
               <img src={fullLogo} alt="MARQAIT" className="h-6" />
@@ -385,9 +234,7 @@ const ResetPassword = () => {
               </button>
             </div>
           </form>
-        </div>
-      </div>
-    </div>
+    </AuthLayout>
   );
 };
 

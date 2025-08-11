@@ -1,13 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import type React from "react";
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
-import carousel1 from "../../assets/carousel/1.png";
-import carousel2 from "../../assets/carousel/2.png";
-import carousel3 from "../../assets/carousel/3.png";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
+import AuthLayout from "../../components/auth/AuthLayout";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -23,40 +19,15 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
 
   const navigate = useNavigate();
-
-  const carouselSlides = [
-    {
-      title: "AI That Works Like\nYour Best Marketer",
-      subtitle: "Boost productivity and results with intelligent automation.",
-      image: carousel1,
-    },
-    {
-      title: "One Platform.\nEndless Possibilities.",
-      subtitle: "From branding to ads - AI powers every step.",
-      image: carousel2,
-    },
-    {
-      title: "Power Your Brand\nwith Intelligence",
-      subtitle: "AI-driven strategies to grow your reach and revenue.",
-      image: carousel3,
-    },
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   const validateForm = () => {
     if (!firstName.trim()) return "First name is required";
     if (!lastName.trim()) return "Last name is required";
     if (!email.trim()) return "Email address is required";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Please enter a valid email";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      return "Please enter a valid email";
     if (password.length < 8) return "Password must be at least 8 characters";
     if (password !== confirmPassword) return "Passwords do not match";
     if (!companyName.trim()) return "Company name is required";
@@ -77,12 +48,13 @@ const Signup = () => {
     }
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      navigate("/", { 
-        state: { 
-          message: "Account created successfully! Please sign in with your credentials." 
-        }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      navigate("/", {
+        state: {
+          message:
+            "Account created successfully! Please sign in with your credentials.",
+        },
       });
     } catch {
       setError("An error occurred during registration");
@@ -124,67 +96,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
-      <div
-        className="hidden lg:flex lg:w-2/5 relative overflow-hidden"
-        style={{
-          background:
-            "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.8) 100%)",
-        }}
-      >
-        <div className="absolute inset-0 bg-black/40 z-10"></div>
-        <div className="absolute inset-0 overflow-hidden">
-          <div 
-            className="flex h-full transition-transform duration-700 ease-in-out"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            {carouselSlides.map((slide, index) => (
-              <div
-                key={index}
-                className="min-w-full h-full bg-cover bg-center"
-                style={{ backgroundImage: `url(${slide.image})` }}
-              ></div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative z-20 flex flex-col justify-end p-12 text-white">
-          <div className="mb-8">
-            <div className="overflow-hidden">
-              <div 
-                className="flex transition-transform duration-700 ease-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {carouselSlides.map((slide, index) => (
-                  <div key={index} className="min-w-full">
-                    <h1 className="text-[40px] font-medium leading-[120%] tracking-[-0.05em] mb-4 font-inter whitespace-pre-line">
-                      {slide.title}
-                    </h1>
-                    <p className="text-base font-normal leading-[154%] tracking-[-0.04em] font-inter text-[#FAFAFA]">
-                      {slide.subtitle}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex space-x-2 justify-start">
-            {carouselSlides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`h-1 rounded-full transition-all duration-300 cursor-pointer ${
-                  index === currentSlide ? "w-8 bg-white" : "w-6 bg-white/50"
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full lg:w-3/5 flex items-center justify-start pl-20 pr-8 py-8 bg-white">
-        <div className="w-full max-w-lg">
+    <AuthLayout>
           <div className="mb-8">
             <div className="mb-4">
               <img src={fullLogo} alt="MARQAIT" className="h-6" />
@@ -297,7 +209,9 @@ const Signup = () => {
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+                    onChange={(e) =>
+                      handleConfirmPasswordChange(e.target.value)
+                    }
                     onBlur={handleConfirmPasswordBlur}
                     className="flex-1 outline-none text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680] bg-transparent"
                     placeholder="Confirm your password"
@@ -364,7 +278,6 @@ const Signup = () => {
               </div>
             </div>
 
-
             <div className="w-[640px] flex justify-between items-center mt-2 mb-3">
               <div className="flex items-center space-x-2">
                 {error && (
@@ -410,16 +323,42 @@ const Signup = () => {
             <div className="w-[640px] flex justify-center">
               <button
                 type="submit"
-                disabled={isLoading || !agreeToTerms || !firstName || !lastName || !email || !password || !confirmPassword || !companyName || !domain}
+                disabled={
+                  isLoading ||
+                  !agreeToTerms ||
+                  !firstName ||
+                  !lastName ||
+                  !email ||
+                  !password ||
+                  !confirmPassword ||
+                  !companyName ||
+                  !domain
+                }
                 className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
                 style={{
                   background:
-                    isLoading || !agreeToTerms || !firstName || !lastName || !email || !password || !confirmPassword || !companyName || !domain
+                    isLoading ||
+                    !agreeToTerms ||
+                    !firstName ||
+                    !lastName ||
+                    !email ||
+                    !password ||
+                    !confirmPassword ||
+                    !companyName ||
+                    !domain
                       ? "linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%)"
                       : "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%)",
                   backdropFilter: "blur(200px)",
                   borderImage:
-                    isLoading || !agreeToTerms || !firstName || !lastName || !email || !password || !confirmPassword || !companyName || !domain
+                    isLoading ||
+                    !agreeToTerms ||
+                    !firstName ||
+                    !lastName ||
+                    !email ||
+                    !password ||
+                    !confirmPassword ||
+                    !companyName ||
+                    !domain
                       ? "linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%) 1"
                       : "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%) 1",
                 }}
@@ -500,9 +439,7 @@ const Signup = () => {
               </Link>
             </p>
           </div>
-        </div>
-      </div>
-    </div>
+    </AuthLayout>
   );
 };
 
