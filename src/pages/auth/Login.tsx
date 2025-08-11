@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import type React from "react";
 
@@ -39,7 +38,7 @@ const Login = () => {
 
   useEffect(() => {
     if (location.state?.message) {
-      setSuccessMessage(location.state.message);
+      // setSuccessMessage(location.state.message);
       window.history.replaceState({}, document.title);
     }
   }, [location]);
