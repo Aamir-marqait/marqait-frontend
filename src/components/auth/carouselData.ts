@@ -24,9 +24,4 @@ export const carouselSlides: CarouselSlide[] = [
     subtitle: "AI-driven strategies to grow your reach\nand revenue.",
     image: carousel3,
   },
-  {
-    title: "Transform Your Marketing\nWith AI Innovation",
-    subtitle: "Experience the future of automated\nmarketing strategies.",
-    image: carousel1, // Reusing first image as 4th slide
-  },
 ];
