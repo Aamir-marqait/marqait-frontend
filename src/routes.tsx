@@ -45,7 +45,13 @@ export const createRoutes = (
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element: (
+      <ProtectedRoute>
+        <AppLayout>
+          <Dashboard />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/about",
