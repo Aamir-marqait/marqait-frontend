@@ -2,22 +2,12 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
 import { useState } from "react";
-
-import About from "./pages/About";
-import Dashboard from "./pages/dashboard";
-import Login from "./pages/auth/Login";
-import Signup from "./pages/auth/Signup";
-import ForgotPassword from "./pages/auth/ForgotPassword";
-import ResetPassword from "./pages/auth/ResetPassword";
-import PlaceholderPage from "./pages/PlaceholderPage";
+import { createRoutes } from "./routes";
 
 import Header from "./components/Header";
 import Sidebar from "./components/app-sidebar";
-import ImageEditor from "./pages/image-editor";
-import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuthStore } from "./stores/authStore";
 
 function App() {
@@ -45,180 +35,14 @@ function App() {
     </div>
   );
 
+  const routes = createRoutes(isAuthenticated, AppLayout);
+
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
-          }
-        />
-        <Route
-          path="/accounts/emailsignup"
-          element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />
-          }
-        />
-        <Route
-          path="/accounts/password/reset/"
-          element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPassword />
-          }
-        />
-        <Route
-          path="/accounts/password/reset/confirm/"
-          element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <ResetPassword />
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <Dashboard />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <About />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/image-editor"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <ImageEditor />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/strategy"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderPage
-                  title="Strategy Generator"
-                  description="Create comprehensive marketing strategies with AI assistance"
-                />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/brand-book"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderPage
-                  title="Brand Book Creator"
-                  description="Design and generate professional brand guidelines"
-                />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/campaign"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderPage
-                  title="Campaign Generator"
-                  description="Create powerful marketing campaigns with AI"
-                />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/content"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderPage
-                  title="Content Generator"
-                  description="Generate engaging content for all your marketing needs"
-                />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/social-post"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderPage
-                  title="Social Post Creator"
-                  description="Design stunning social media posts"
-                />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ad-campaigns"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderPage
-                  title="Ad Campaigns"
-                  description="Manage and optimize your advertising campaigns"
-                />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/content-calendar"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderPage
-                  title="Content Calendar"
-                  description="Plan and schedule your content strategy"
-                />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/analytics"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderPage
-                  title="Analytics"
-                  description="Track performance and gain insights"
-                />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <PlaceholderPage
-                  title="Settings"
-                  description="Customize your MARQAIT experience"
-                />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
+        {routes.map((route, index) => (
+          <Route key={index} path={route.path} element={route.element} />
+        ))}
       </Routes>
     </Router>
   );
