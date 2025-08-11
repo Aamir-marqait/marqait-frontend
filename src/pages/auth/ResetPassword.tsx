@@ -6,7 +6,7 @@ import { Eye, EyeOff, AlertCircle } from "lucide-react";
 
 import dummy from "../../assets/dummy.jpg";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
-import lockIcon from "../../assets/lock.png";
+import lockIcon from "../../assets/lock.svg";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
