@@ -63,13 +63,21 @@ function App() {
         <Route
           path="/accounts/password/reset/"
           element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPassword />
+            isAuthenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <ForgotPassword />
+            )
           }
         />
         <Route
           path="/accounts/password/reset/confirm/"
           element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <ResetPassword />
+            isAuthenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <ResetPassword />
+            )
           }
         />
         <Route
