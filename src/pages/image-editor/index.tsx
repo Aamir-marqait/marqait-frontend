@@ -97,11 +97,7 @@ export default function ImageEditorPage() {
       </section>
 
       {/* Main content container */}
-      <div
-        className={`bg-white border border-[#E0E0E0] rounded-2xl shadow-[6px_6px_54px_rgba(0,0,0,0.10)] px-8 py-8 ${
-          editMode === "manual" ? "max-w-fit mx-auto" : ""
-        }`}
-      >
+      <div className="bg-white border border-[#E0E0E0] rounded-2xl shadow-[6px_6px_54px_rgba(0,0,0,0.10)] px-8 py-8">
         {/* AI Image Editor */}
         {editMode === "ai" && selectedImage ? (
           <AIImageEditor

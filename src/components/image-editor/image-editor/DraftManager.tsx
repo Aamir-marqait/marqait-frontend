@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { Trash2, Edit, Clock } from "lucide-react";
+import type { TextLayer, MediaLayer, ImageFilters } from "./ImageEditor";
 
 interface DraftData {
   id: string;
   name: string;
   timestamp: number;
   originalImageUrl: string;
-  canvasState: any;
-  textLayers: any[];
-  mediaLayers: any[];
-  imageFilters: any;
+  canvasState: object;
+  textLayers: TextLayer[];
+  mediaLayers: MediaLayer[];
+  imageFilters: ImageFilters;
   canvasWidth: number;
   canvasHeight: number;
 }

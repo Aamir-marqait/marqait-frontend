@@ -17,7 +17,7 @@ import logo from "../assets/app-logo/logo.png";
 const navigationItems = [
   {
     title: "Dashboard",
-    url: "/",
+    url: "/dashboard",
     icon: dashboardIcon,
   },
   {

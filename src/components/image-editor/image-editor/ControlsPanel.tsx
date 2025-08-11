@@ -1,8 +1,23 @@
 "use client";
 
+import { useMemo } from "react";
 import type { TextLayer, MediaLayer, ImageFilters } from "./ImageEditor";
 import { CropControls } from "./CropTool";
 import type { AspectRatio, CropData } from "./CropTool";
+import {
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  Bold,
+  Italic,
+  Underline,
+  SendToBack,
+  BringToFront,
+  Copy,
+  Trash2,
+  Droplet,
+} from "lucide-react";
 
 interface ControlsPanelProps {
   textLayers: TextLayer[];
@@ -11,7 +26,7 @@ interface ControlsPanelProps {
   onUpdateTextLayer: (id: string, updates: Partial<TextLayer>) => void;
   onUpdateMediaLayer: (id: string, updates: Partial<MediaLayer>) => void;
   onUpdateImageFilters: (filters: Partial<ImageFilters>) => void;
-  onAddTextLayer: (type?: TextLayer['type'], customContent?: string) => void;
+  onAddTextLayer: (type?: TextLayer["type"], customContent?: string) => void;
   onAddMediaLayer: (layer: MediaLayer) => void;
   onRemoveLayer: (id: string) => void;
   onSendToBack?: (id: string) => void;
@@ -26,784 +41,613 @@ interface ControlsPanelProps {
   onCancelCrop?: () => void;
 }
 
-const FONT_FAMILIES = [
-  // System fonts
-  'Arial',
-  'Arial Black',
-  'Helvetica',
-  'Times New Roman',
-  'Georgia',
-  'Verdana',
-  'Courier New',
-  'Impact',
-  'Comic Sans MS',
-  'Trebuchet MS',
-  'Lucida Console',
-  'Tahoma',
-  
-  // Google Fonts - Sans Serif
-  'Inter',
-  'Roboto',
-  'Open Sans',
-  'Lato',
-  'Montserrat',
-  'Poppins',
-  'Source Sans Pro',
-  'Nunito',
-  'Raleway',
-  'Ubuntu',
-  'PT Sans',
-  'Oswald',
-  
-  // Google Fonts - Serif
-  'Playfair Display',
-  'Merriweather',
-  'Libre Baskerville',
-  'Crimson Text',
-  
-  // Google Fonts - Display/Decorative
-  'Dancing Script',
-  'Pacifico',
-  'Lobster',
-  'Righteous',
-  'Bangers'
-];
+/**
++ Visual-only helpers (no business logic change)
+*/
+function Section({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-xl border border-neutral-200 bg-white p-3">
+      <div className="text-sm font-medium text-neutral-600 mb-2">{title}</div>
+      {children}
+    </div>
+  );
+}
 
-const FONT_WEIGHTS = [
-  { value: 'normal', label: 'Normal' },
-  { value: 'bold', label: 'Bold' },
-  { value: '100', label: 'Thin' },
-  { value: '200', label: 'Light' },
-  { value: '300', label: 'Book' },
-  { value: '400', label: 'Regular' },
-  { value: '500', label: 'Medium' },
-  { value: '600', label: 'Semi-Bold' },
-  { value: '700', label: 'Bold' },
-  { value: '800', label: 'Extra-Bold' },
-  { value: '900', label: 'Black' }
-];
-
-const PRESET_EMOJIS = [
-  "😊", "🎉", "❤️", "🔥", "👍", "✨", "💯", "🚀",
-  "🌟", "🎯", "⚡", "🌈", "🎨", "🔮", "🎪", "🎭",
-  "🎸", "🎤", "🎵", "🎶", "🎺", "🎻", "🥳", "🤩",
-  "😍", "🤗", "😎", "🤯", "💝", "💖", "💕", "💘"
-];
-
-const PRESET_ICONS = [
-  { name: "Star", emoji: "⭐" },
-  { name: "Heart", emoji: "💖" },
-  { name: "Lightning", emoji: "⚡" },
-  { name: "Fire", emoji: "🔥" },
-  { name: "Crown", emoji: "👑" },
-  { name: "Diamond", emoji: "💎" },
-  { name: "Trophy", emoji: "🏆" },
-  { name: "Medal", emoji: "🥇" },
-  { name: "Rocket", emoji: "🚀" },
-  { name: "Target", emoji: "🎯" },
-  { name: "Magic", emoji: "✨" },
-  { name: "Rainbow", emoji: "🌈" }
-];
+function IconBtn({
+  children,
+  onClick,
+  disabled,
+  title,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+  title?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      className={[
+        "h-8 w-8 inline-flex items-center justify-center rounded-md border border-neutral-200 bg-white",
+        "text-neutral-700 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed",
+      ].join(" ")}
+    >
+      {children}
+    </button>
+  );
+}
 
 export function ControlsPanel({
   textLayers,
   mediaLayers,
-  imageFilters,
   onUpdateTextLayer,
   onUpdateMediaLayer,
-  onUpdateImageFilters,
   onAddTextLayer,
-  onAddMediaLayer,
   onRemoveLayer,
   onSendToBack,
   onBringToFront,
-  // Crop props
+  // Crop
   cropData,
-  aspectRatio = 'freeform',
+  aspectRatio = "freeform",
   isCropActive = false,
   onToggleCrop,
   onCropAspectRatioChange,
   onApplyCrop,
   onCancelCrop,
 }: ControlsPanelProps) {
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageUrl = e.target?.result as string;
-        const newMediaLayer: MediaLayer = {
-          id: `media-${Date.now()}`,
-          type: 'image',
-          url: imageUrl,
-          x: 100,
-          y: 100,
-          width: 200,
-          height: 200,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0,
-          opacity: 1
-        };
-        onAddMediaLayer(newMediaLayer);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // Choose an "active" text layer (latest). This mirrors many editors’ defaults.
+  const activeText = useMemo(
+    () => (textLayers.length > 0 ? textLayers[textLayers.length - 1] : null),
+    [textLayers]
+  );
 
-  const addEmojiLayer = (emoji: string) => {
-    // Create a custom emoji layer by calling addTextLayer with custom content
-    onAddTextLayer('emoji', emoji);
+  // Choose an "active" media layer (latest) for opacity-only demo control
+  const activeMedia = useMemo(
+    () => (mediaLayers.length > 0 ? mediaLayers[mediaLayers.length - 1] : null),
+    [mediaLayers]
+  );
+
+  const handleDuplicate = () => {
+    if (!activeText) return;
+    onAddTextLayer(activeText.type, activeText.content);
   };
 
   return (
-    <div className="p-4 h-full overflow-y-auto">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        Layer Controls
-      </h3>
-
-      {/* Crop Tool Controls */}
-      <CropControls
-        aspectRatio={aspectRatio}
-        onAspectRatioChange={onCropAspectRatioChange || (() => {})}
-        onApplyCrop={onApplyCrop || (() => {})}
-        onCancelCrop={onCancelCrop || (() => {})}
-        isActive={isCropActive}
-        cropData={cropData}
-      />
-
-      {/* Add New Elements */}
-      <div className="mb-6 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-        <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-          Add Elements
-        </h4>
-        <div className="grid grid-cols-2 gap-2 mb-3">
-          <button
-            onClick={() => onAddTextLayer('heading')}
-            className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm transition-colors"
-            disabled={isCropActive}
+    <div className="h-full w-full overflow-y-auto bg-white px-3 py-4 space-y-4">
+      {/* Position */}
+      <Section title="Position">
+        <div className="flex flex-wrap gap-2">
+          <IconBtn
+            title="Align left"
+            disabled={!activeText}
+            onClick={() =>
+              activeText &&
+              onUpdateTextLayer(activeText.id, { textAlign: "left" })
+            }
           >
-            + Heading
-          </button>
-          <button
-            onClick={() => onAddTextLayer('paragraph')}
-            className="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm transition-colors"
-            disabled={isCropActive}
+            <AlignLeft className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn
+            title="Align center"
+            disabled={!activeText}
+            onClick={() =>
+              activeText &&
+              onUpdateTextLayer(activeText.id, { textAlign: "center" })
+            }
           >
-            + Paragraph
-          </button>
+            <AlignCenter className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn
+            title="Align right"
+            disabled={!activeText}
+            onClick={() =>
+              activeText &&
+              onUpdateTextLayer(activeText.id, { textAlign: "right" })
+            }
+          >
+            <AlignRight className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn title="Justify" disabled>
+            <AlignJustify className="h-4 w-4" />
+          </IconBtn>
+
+          {/* Spacing to resemble screenshot’s button group count */}
+          <IconBtn title="Placeholder" disabled>
+            {"·"}
+          </IconBtn>
+          <IconBtn title="Placeholder" disabled>
+            {"·"}
+          </IconBtn>
+          <IconBtn title="Placeholder" disabled>
+            {"·"}
+          </IconBtn>
+          <IconBtn title="Placeholder" disabled>
+            {"·"}
+          </IconBtn>
+          <IconBtn title="Placeholder" disabled>
+            {"·"}
+          </IconBtn>
         </div>
-        
-        {/* Crop Tool Toggle Button */}
-        {onToggleCrop && (
-          <button
-            onClick={onToggleCrop}
-            className={`w-full mb-3 px-3 py-2 rounded-md text-sm transition-colors ${
-              isCropActive 
-                ? 'bg-red-600 hover:bg-red-700 text-white' 
-                : 'bg-yellow-600 hover:bg-yellow-700 text-white'
-            }`}
+      </Section>
+
+      {/* Layer */}
+      <Section title="Layer">
+        <div className="flex items-center gap-2">
+          <IconBtn
+            title="Send to back"
+            disabled={!activeText || !onSendToBack}
+            onClick={() =>
+              activeText && onSendToBack && onSendToBack(activeText.id)
+            }
           >
-            {isCropActive ? '🚫 Exit Crop' : '✂️ Crop Image'}
-          </button>
-        )}
-        <div className="mb-3">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Upload Image/Logo
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            disabled={isCropActive}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
-                     bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-          />
-        </div>
-      </div>
-
-      {/* Image Filters */}
-      <div className="mb-6 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-        <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-          Image Filters
-        </h4>
-        <div className="space-y-3">
-          {/* Brightness */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Brightness ({imageFilters.brightness})
-            </label>
-            <input
-              type="range"
-              min="-100"
-              max="100"
-              value={imageFilters.brightness}
-              onChange={(e) => onUpdateImageFilters({ brightness: parseInt(e.target.value) })}
-              className="w-full"
-            />
-          </div>
-
-          {/* Contrast */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Contrast ({imageFilters.contrast})
-            </label>
-            <input
-              type="range"
-              min="-100"
-              max="100"
-              value={imageFilters.contrast}
-              onChange={(e) => onUpdateImageFilters({ contrast: parseInt(e.target.value) })}
-              className="w-full"
-            />
-          </div>
-
-          {/* Sepia */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Sepia ({Math.round(imageFilters.sepia * 100)}%)
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={imageFilters.sepia}
-              onChange={(e) => onUpdateImageFilters({ sepia: parseFloat(e.target.value) })}
-              className="w-full"
-            />
-          </div>
-
-          {/* Blur */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Blur ({imageFilters.blur}px)
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="20"
-              value={imageFilters.blur}
-              onChange={(e) => onUpdateImageFilters({ blur: parseInt(e.target.value) })}
-              className="w-full"
-            />
-          </div>
-
-          {/* Grayscale */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Grayscale ({Math.round(imageFilters.grayscale * 100)}%)
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={imageFilters.grayscale}
-              onChange={(e) => onUpdateImageFilters({ grayscale: parseFloat(e.target.value) })}
-              className="w-full"
-            />
-          </div>
-
-          {/* Reset Filters */}
-          <button
-            onClick={() => onUpdateImageFilters({ 
-              brightness: 0, 
-              contrast: 0, 
-              sepia: 0, 
-              blur: 0, 
-              grayscale: 0 
-            })}
-            className="w-full px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md text-sm transition-colors"
+            <SendToBack className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn
+            title="Bring to front"
+            disabled={!activeText || !onBringToFront}
+            onClick={() =>
+              activeText && onBringToFront && onBringToFront(activeText.id)
+            }
           >
-            Reset All Filters
-          </button>
+            <BringToFront className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn
+            title="Duplicate"
+            disabled={!activeText}
+            onClick={handleDuplicate}
+          >
+            <Copy className="h-4 w-4" />
+          </IconBtn>
+          <div className="ml-auto" />
+          <IconBtn
+            title="Delete"
+            disabled={!activeText}
+            onClick={() => activeText && onRemoveLayer(activeText.id)}
+          >
+            <Trash2 className="h-4 w-4" />
+          </IconBtn>
         </div>
-      </div>
+      </Section>
 
-      {/* Quick Emojis & Icons */}
-      <div className="mb-6 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-        <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-          Quick Emojis & Icons
-        </h4>
-        <div className="grid grid-cols-6 gap-2 mb-3">
-          {PRESET_EMOJIS.slice(0, 12).map((emoji) => (
-            <button
-              key={emoji}
-              onClick={() => addEmojiLayer(emoji)}
-              className="p-2 text-xl bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 
-                       rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+      {/* Text */}
+      <Section title="Text">
+        {/* Top row: font family + size */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <select
+              value={activeText?.fontFamily || "Inter"}
+              onChange={(e) =>
+                activeText &&
+                onUpdateTextLayer(activeText.id, { fontFamily: e.target.value })
+              }
+              className="w-full h-9 rounded-md border border-neutral-200 bg-white px-3 pr-8 text-sm text-neutral-800"
+              style={{ fontFamily: activeText?.fontFamily || "Inter" }}
+              disabled={!activeText}
+              title="Font family"
             >
-              {emoji}
-            </button>
-          ))}
-        </div>
-        <div className="grid grid-cols-4 gap-2">
-          {PRESET_ICONS.slice(0, 8).map((icon) => (
-            <button
-              key={icon.name}
-              onClick={() => addEmojiLayer(icon.emoji)}
-              className="p-2 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 
-                       rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              title={icon.name}
-            >
-              {icon.emoji}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Text Layers */}
-      <div className="space-y-4">
-        {textLayers.length === 0 && mediaLayers.length === 0 && (
-          <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center">
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
-              No elements added yet. Use the buttons above to add text, images, or emojis to your canvas.
-            </p>
+              <option>Inter</option>
+              <option>Arial</option>
+              <option>Helvetica</option>
+              <option>Times New Roman</option>
+              <option>Georgia</option>
+              <option>Verdana</option>
+              <option>Comic Sans MS</option>
+            </select>
           </div>
-        )}
-        {textLayers.map((layer) => (
-          <div key={layer.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-            <div className="flex justify-between items-center mb-3">
-              <h4 className="font-medium text-gray-900 dark:text-white capitalize">
-                {layer.type} Text
-              </h4>
-              <div className="flex gap-2">
-                {onSendToBack ? (
-                  <button
-                    onClick={() => {
-                      console.log('Behind button clicked for layer:', layer.id);
-                      onSendToBack(layer.id);
-                    }}
-                    className="text-blue-600 hover:text-blue-700 text-xs px-2 py-1 border border-blue-300 rounded"
-                    title="Send behind image (Ctrl+[)"
-                  >
-                    Behind
-                  </button>
-                ) : (
-                  <span className="text-gray-400 text-xs">No Behind Function</span>
-                )}
-                {onBringToFront ? (
-                  <button
-                    onClick={() => {
-                      console.log('Front button clicked for layer:', layer.id);
-                      onBringToFront(layer.id);
-                    }}
-                    className="text-green-600 hover:text-green-700 text-xs px-2 py-1 border border-green-300 rounded"
-                    title="Bring to front (Ctrl+])"
-                  >
-                    Front
-                  </button>
-                ) : (
-                  <span className="text-gray-400 text-xs">No Front Function</span>
-                )}
-                <button
-                  onClick={() => onRemoveLayer(layer.id)}
-                  className="text-red-600 hover:text-red-700 text-xs px-2 py-1 border border-red-300 rounded"
-                >
-                  Remove
-                </button>
-              </div>
+          <div className="relative w-[84px]">
+            <select
+              value={activeText?.fontSize || 24}
+              onChange={(e) =>
+                activeText &&
+                onUpdateTextLayer(activeText.id, {
+                  fontSize: parseInt(e.target.value, 10),
+                })
+              }
+              className="w-full h-9 rounded-md border border-neutral-200 bg-white px-3 pr-7 text-sm text-neutral-800"
+              disabled={!activeText}
+              title="Font size"
+            >
+              {[12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 48].map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Style buttons */}
+        <div className="mt-2 flex flex-wrap gap-2">
+          <IconBtn
+            title="Bold"
+            disabled={!activeText}
+            onClick={() =>
+              activeText &&
+              onUpdateTextLayer(activeText.id, {
+                fontWeight:
+                  activeText.fontWeight === "700" ||
+                  activeText.fontWeight === "bold"
+                    ? "400"
+                    : "700",
+              })
+            }
+          >
+            <Bold className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn title="Italic (visual only)" disabled>
+            <Italic className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn title="Underline (visual only)" disabled>
+            <Underline className="h-4 w-4" />
+          </IconBtn>
+
+          {/* Text and background color */}
+          <div className="inline-flex items-center gap-2 ml-1">
+            <div className="relative">
+              <IconBtn title="Text color" disabled={!activeText}>
+                <Droplet className="h-4 w-4" />
+              </IconBtn>
+              <input
+                type="color"
+                value={activeText?.color || "#111827"}
+                onChange={(e) =>
+                  activeText &&
+                  onUpdateTextLayer(activeText.id, { color: e.target.value })
+                }
+                className="absolute left-0 top-0 h-8 w-8 opacity-0 cursor-pointer"
+                disabled={!activeText}
+                aria-label="Pick text color"
+              />
             </div>
-            
-            <div className="space-y-3">
-              {/* Content */}
+            <div className="relative">
+              <IconBtn title="Background color" disabled={!activeText}>
+                <div
+                  className="h-3 w-3 rounded-sm"
+                  style={{
+                    background:
+                      !activeText ||
+                      activeText.backgroundColor === "transparent"
+                        ? "#10B981"
+                        : activeText.backgroundColor,
+                    outline: "2px solid #E5E7EB",
+                    outlineOffset: "2px",
+                  }}
+                />
+              </IconBtn>
+              <input
+                type="color"
+                value={
+                  activeText?.backgroundColor &&
+                  activeText.backgroundColor !== "transparent"
+                    ? activeText.backgroundColor
+                    : "#10B981"
+                }
+                onChange={(e) =>
+                  activeText &&
+                  onUpdateTextLayer(activeText.id, {
+                    backgroundColor: e.target.value,
+                  })
+                }
+                className="absolute left-0 top-0 h-8 w-8 opacity-0 cursor-pointer"
+                disabled={!activeText}
+                aria-label="Pick background color"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Alignment row */}
+        <div className="mt-2 flex flex-wrap gap-2">
+          <IconBtn
+            title="Align left"
+            disabled={!activeText}
+            onClick={() =>
+              activeText &&
+              onUpdateTextLayer(activeText.id, { textAlign: "left" })
+            }
+          >
+            <AlignLeft className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn
+            title="Align center"
+            disabled={!activeText}
+            onClick={() =>
+              activeText &&
+              onUpdateTextLayer(activeText.id, { textAlign: "center" })
+            }
+          >
+            <AlignCenter className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn
+            title="Align right"
+            disabled={!activeText}
+            onClick={() =>
+              activeText &&
+              onUpdateTextLayer(activeText.id, { textAlign: "right" })
+            }
+          >
+            <AlignRight className="h-4 w-4" />
+          </IconBtn>
+          <IconBtn title="Justify (visual only)" disabled>
+            <AlignJustify className="h-4 w-4" />
+          </IconBtn>
+        </div>
+      </Section>
+
+      {/* Text Effects */}
+      <Section title="Text Effects">
+        {/* Shadow toggle */}
+        <div className="rounded-lg border border-neutral-200 p-3">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              className="accent-[#7C3AED]"
+              checked={!!activeText?.shadow}
+              onChange={(e) => {
+                if (!activeText) return;
+                if (e.target.checked) {
+                  onUpdateTextLayer(activeText.id, {
+                    shadow: {
+                      color: "#4C1D95",
+                      blur: 6,
+                      offsetX: 4,
+                      offsetY: 4,
+                    },
+                  });
+                } else {
+                  onUpdateTextLayer(activeText.id, { shadow: undefined });
+                }
+              }}
+              disabled={!activeText}
+            />
+            <span className="text-sm text-neutral-700">Text Shadow</span>
+          </label>
+
+          {activeText?.shadow && (
+            <div className="mt-3 grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Content
-                </label>
-                {layer.type === 'paragraph' ? (
-                  <textarea
-                    value={layer.content}
-                    onChange={(e) => onUpdateTextLayer(layer.id, { content: e.target.value })}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
-                             bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                             focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    value={layer.content}
-                    onChange={(e) => onUpdateTextLayer(layer.id, { content: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
-                             bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                             focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                )}
-              </div>
-
-              {/* Font Family */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Font Family
-                </label>
-                <select
-                  value={layer.fontFamily}
-                  onChange={(e) => onUpdateTextLayer(layer.id, { fontFamily: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
-                           bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  style={{ fontFamily: layer.fontFamily }}
-                >
-                  <optgroup label="System Fonts">
-                    {FONT_FAMILIES.slice(0, 12).map(font => (
-                      <option key={font} value={font} style={{ fontFamily: font }}>{font}</option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="Google Fonts - Sans Serif">
-                    {FONT_FAMILIES.slice(12, 24).map(font => (
-                      <option key={font} value={font} style={{ fontFamily: font }}>{font}</option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="Google Fonts - Serif">
-                    {FONT_FAMILIES.slice(24, 28).map(font => (
-                      <option key={font} value={font} style={{ fontFamily: font }}>{font}</option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="Google Fonts - Decorative">
-                    {FONT_FAMILIES.slice(28).map(font => (
-                      <option key={font} value={font} style={{ fontFamily: font }}>{font}</option>
-                    ))}
-                  </optgroup>
-                </select>
-              </div>
-
-              {/* Font Size, Weight, Alignment */}
-              <div className="grid grid-cols-3 gap-2">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Size
-                  </label>
-                  <input
-                    type="number"
-                    value={layer.fontSize}
-                    onChange={(e) => onUpdateTextLayer(layer.id, { fontSize: parseInt(e.target.value) })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
-                             bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                             focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Weight
-                  </label>
-                  <select
-                    value={layer.fontWeight}
-                    onChange={(e) => onUpdateTextLayer(layer.id, { fontWeight: e.target.value as TextLayer['fontWeight'] })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
-                             bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                             focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <div className="text-xs text-neutral-500 mb-1">Color</div>
+                <div className="relative inline-block">
+                  <button
+                    type="button"
+                    className="h-8 w-24 inline-flex items-center justify-center gap-2 rounded-md border border-neutral-200 bg-white text-sm"
                   >
-                    {FONT_WEIGHTS.map(weight => (
-                      <option key={weight.value} value={weight.value}>{weight.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Align
-                  </label>
-                  <select
-                    value={layer.textAlign}
-                    onChange={(e) => onUpdateTextLayer(layer.id, { textAlign: e.target.value as TextLayer['textAlign'] })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
-                             bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                             focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="left">Left</option>
-                    <option value="center">Center</option>
-                    <option value="right">Right</option>
-                    <option value="justify">Justify</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Colors */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Text Color
-                  </label>
+                    <Droplet className="h-4 w-4" />
+                    <span>Pick</span>
+                  </button>
                   <input
                     type="color"
-                    value={layer.color}
-                    onChange={(e) => onUpdateTextLayer(layer.id, { color: e.target.value })}
-                    className="w-full h-10 border border-gray-300 dark:border-gray-600 rounded-md"
+                    value={activeText.shadow.color}
+                    onChange={(e) =>
+                      onUpdateTextLayer(activeText.id, {
+                        shadow: {
+                          ...activeText.shadow!,
+                          color: e.target.value,
+                        },
+                      })
+                    }
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    aria-label="Shadow color"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Background
-                  </label>
-                  <div className="flex gap-1">
-                    <input
-                      type="color"
-                      value={layer.backgroundColor === 'transparent' ? '#ffffff' : layer.backgroundColor}
-                      onChange={(e) => onUpdateTextLayer(layer.id, { backgroundColor: e.target.value })}
-                      className="flex-1 h-10 border border-gray-300 dark:border-gray-600 rounded-md"
-                    />
-                    <button
-                      onClick={() => onUpdateTextLayer(layer.id, { backgroundColor: 'transparent' })}
-                      className="px-2 py-1 text-xs bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 
-                               text-gray-700 dark:text-gray-300 rounded"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                </div>
               </div>
-
-              {/* Opacity */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Opacity ({Math.round(layer.opacity * 100)}%)
-                </label>
+                <div className="text-xs text-neutral-500 mb-1">Blur</div>
                 <input
                   type="range"
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  value={layer.opacity}
-                  onChange={(e) => onUpdateTextLayer(layer.id, { opacity: parseFloat(e.target.value) })}
-                  className="w-full"
+                  min={0}
+                  max={20}
+                  value={activeText.shadow.blur}
+                  onChange={(e) =>
+                    onUpdateTextLayer(activeText.id, {
+                      shadow: {
+                        ...activeText.shadow!,
+                        blur: parseInt(e.target.value, 10),
+                      },
+                    })
+                  }
+                  className="w-full accent-[#7C3AED]"
                 />
               </div>
-
-              {/* Text Effects */}
-              <div className="border-t border-gray-300 dark:border-gray-600 pt-3 mt-3">
-                <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Text Effects</h5>
-                
-                {/* Shadow Controls */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={layer.shadow !== undefined}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          onUpdateTextLayer(layer.id, {
-                            shadow: {
-                              color: '#000000',
-                              blur: 3,
-                              offsetX: 2,
-                              offsetY: 2,
-                            }
-                          });
-                        } else {
-                          onUpdateTextLayer(layer.id, { shadow: undefined });
-                        }
-                      }}
-                      className="rounded"
-                    />
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Text Shadow
-                    </label>
-                  </div>
-                  
-                  {layer.shadow && (
-                    <div className="grid grid-cols-2 gap-2 ml-6">
-                      <div>
-                        <label className="block text-xs text-gray-600 dark:text-gray-400">Color</label>
-                        <input
-                          type="color"
-                          value={layer.shadow.color}
-                          onChange={(e) => onUpdateTextLayer(layer.id, {
-                            shadow: { ...layer.shadow!, color: e.target.value }
-                          })}
-                          className="w-full h-8 border border-gray-300 dark:border-gray-600 rounded"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-600 dark:text-gray-400">Blur ({layer.shadow.blur})</label>
-                        <input
-                          type="range"
-                          min="0"
-                          max="10"
-                          value={layer.shadow.blur}
-                          onChange={(e) => onUpdateTextLayer(layer.id, {
-                            shadow: { ...layer.shadow!, blur: parseInt(e.target.value) }
-                          })}
-                          className="w-full"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-600 dark:text-gray-400">Offset X ({layer.shadow.offsetX})</label>
-                        <input
-                          type="range"
-                          min="-10"
-                          max="10"
-                          value={layer.shadow.offsetX}
-                          onChange={(e) => onUpdateTextLayer(layer.id, {
-                            shadow: { ...layer.shadow!, offsetX: parseInt(e.target.value) }
-                          })}
-                          className="w-full"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-600 dark:text-gray-400">Offset Y ({layer.shadow.offsetY})</label>
-                        <input
-                          type="range"
-                          min="-10"
-                          max="10"
-                          value={layer.shadow.offsetY}
-                          onChange={(e) => onUpdateTextLayer(layer.id, {
-                            shadow: { ...layer.shadow!, offsetY: parseInt(e.target.value) }
-                          })}
-                          className="w-full"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Gradient Controls */}
-                <div className="space-y-2 mt-3">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={layer.gradient?.enabled || false}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          onUpdateTextLayer(layer.id, {
-                            gradient: {
-                              enabled: true,
-                              startColor: layer.color,
-                              endColor: '#ff0000',
-                              direction: 'vertical',
-                            }
-                          });
-                        } else {
-                          onUpdateTextLayer(layer.id, { 
-                            gradient: { ...layer.gradient!, enabled: false }
-                          });
-                        }
-                      }}
-                      className="rounded"
-                    />
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Gradient Text
-                    </label>
-                  </div>
-                  
-                  {layer.gradient?.enabled && (
-                    <div className="grid grid-cols-2 gap-2 ml-6">
-                      <div>
-                        <label className="block text-xs text-gray-600 dark:text-gray-400">Start Color</label>
-                        <input
-                          type="color"
-                          value={layer.gradient.startColor}
-                          onChange={(e) => onUpdateTextLayer(layer.id, {
-                            gradient: { ...layer.gradient!, startColor: e.target.value }
-                          })}
-                          className="w-full h-8 border border-gray-300 dark:border-gray-600 rounded"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs text-gray-600 dark:text-gray-400">End Color</label>
-                        <input
-                          type="color"
-                          value={layer.gradient.endColor}
-                          onChange={(e) => onUpdateTextLayer(layer.id, {
-                            gradient: { ...layer.gradient!, endColor: e.target.value }
-                          })}
-                          className="w-full h-8 border border-gray-300 dark:border-gray-600 rounded"
-                        />
-                      </div>
-                      <div className="col-span-2">
-                        <label className="block text-xs text-gray-600 dark:text-gray-400">Direction</label>
-                        <select
-                          value={layer.gradient.direction}
-                          onChange={(e) => onUpdateTextLayer(layer.id, {
-                            gradient: { ...layer.gradient!, direction: e.target.value as 'vertical' | 'horizontal' }
-                          })}
-                          className="w-full px-2 py-1 border border-gray-300 dark:border-gray-600 rounded 
-                                   bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm"
-                        >
-                          <option value="vertical">Vertical</option>
-                          <option value="horizontal">Horizontal</option>
-                        </select>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Media Layers */}
-      {mediaLayers.length > 0 && (
-        <div className="mt-6 space-y-4">
-          <h4 className="font-medium text-gray-900 dark:text-white">Media Elements</h4>
-          {mediaLayers.map((layer) => (
-            <div key={layer.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-3">
-                <h5 className="font-medium text-gray-900 dark:text-white capitalize">
-                  {layer.type}
-                </h5>
-                <div className="flex gap-2">
-                  {onSendToBack && (
-                    <button
-                      onClick={() => onSendToBack(layer.id)}
-                      className="text-blue-600 hover:text-blue-700 text-xs px-2 py-1 border border-blue-300 rounded"
-                      title="Send behind image (Ctrl+[)"
-                    >
-                      Behind
-                    </button>
-                  )}
-                  {onBringToFront && (
-                    <button
-                      onClick={() => onBringToFront(layer.id)}
-                      className="text-green-600 hover:text-green-700 text-xs px-2 py-1 border border-green-300 rounded"
-                      title="Bring to front (Ctrl+])"
-                    >
-                      Front
-                    </button>
-                  )}
-                  <button
-                    onClick={() => onRemoveLayer(layer.id)}
-                    className="text-red-600 hover:text-red-700 text-xs px-2 py-1 border border-red-300 rounded"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-              
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Opacity ({Math.round(layer.opacity * 100)}%)
-                </label>
+                <div className="text-xs text-neutral-500 mb-1">Offset (X)</div>
                 <input
                   type="range"
-                  min="0"
-                  max="1"
-                  step="0.1"
-                  value={layer.opacity}
-                  onChange={(e) => onUpdateMediaLayer(layer.id, { opacity: parseFloat(e.target.value) })}
-                  className="w-full"
+                  min={-20}
+                  max={20}
+                  value={activeText.shadow.offsetX}
+                  onChange={(e) =>
+                    onUpdateTextLayer(activeText.id, {
+                      shadow: {
+                        ...activeText.shadow!,
+                        offsetX: parseInt(e.target.value, 10),
+                      },
+                    })
+                  }
+                  className="w-full accent-[#7C3AED]"
+                />
+              </div>
+              <div>
+                <div className="text-xs text-neutral-500 mb-1">Offset (Y)</div>
+                <input
+                  type="range"
+                  min={-20}
+                  max={20}
+                  value={activeText.shadow.offsetY}
+                  onChange={(e) =>
+                    onUpdateTextLayer(activeText.id, {
+                      shadow: {
+                        ...activeText.shadow!,
+                        offsetY: parseInt(e.target.value, 10),
+                      },
+                    })
+                  }
+                  className="w-full accent-[#7C3AED]"
                 />
               </div>
             </div>
-          ))}
+          )}
         </div>
+
+        {/* Gradient */}
+        <div className="mt-3 rounded-lg border border-neutral-200 p-3">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              className="accent-[#7C3AED]"
+              checked={!!activeText?.gradient?.enabled}
+              onChange={(e) => {
+                if (!activeText) return;
+                if (e.target.checked) {
+                  onUpdateTextLayer(activeText.id, {
+                    gradient: {
+                      enabled: true,
+                      startColor: activeText.color || "#111827",
+                      endColor: "#10B981",
+                      direction: "horizontal",
+                    },
+                  });
+                } else {
+                  onUpdateTextLayer(activeText.id, {
+                    gradient: {
+                      enabled: false,
+                      startColor: activeText.color || "#111827",
+                      endColor: "#10B981",
+                      direction: "horizontal" as const,
+                    },
+                  });
+                }
+              }}
+              disabled={!activeText}
+            />
+            <span className="text-sm text-neutral-700">Gradient Text</span>
+          </label>
+
+          {activeText?.gradient?.enabled && (
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <div>
+                <div className="text-xs text-neutral-500 mb-1">Color 1</div>
+                <div className="relative inline-block">
+                  <button
+                    type="button"
+                    className="h-8 w-24 inline-flex items-center justify-center gap-2 rounded-md border border-neutral-200 bg-white text-sm"
+                  >
+                    <Droplet className="h-4 w-4" />
+                    <span>Pick</span>
+                  </button>
+                  <input
+                    type="color"
+                    value={activeText.gradient.startColor}
+                    onChange={(e) =>
+                      onUpdateTextLayer(activeText.id, {
+                        gradient: {
+                          ...activeText.gradient!,
+                          startColor: e.target.value,
+                        },
+                      })
+                    }
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    aria-label="Gradient start color"
+                  />
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-neutral-500 mb-1">Color 2</div>
+                <div className="relative inline-block">
+                  <button
+                    type="button"
+                    className="h-8 w-24 inline-flex items-center justify-center gap-2 rounded-md border border-neutral-200 bg-white text-sm"
+                  >
+                    <Droplet className="h-4 w-4" />
+                    <span>Pick</span>
+                  </button>
+                  <input
+                    type="color"
+                    value={activeText.gradient.endColor}
+                    onChange={(e) =>
+                      onUpdateTextLayer(activeText.id, {
+                        gradient: {
+                          ...activeText.gradient!,
+                          endColor: e.target.value,
+                        },
+                      })
+                    }
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    aria-label="Gradient end color"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Opacity */}
+          <div className="mt-3">
+            <div className="text-xs text-neutral-500 mb-1">
+              Opacity ({Math.round((activeText?.opacity ?? 1) * 100)}%)
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={activeText?.opacity ?? 1}
+              onChange={(e) =>
+                activeText &&
+                onUpdateTextLayer(activeText.id, {
+                  opacity: parseFloat(e.target.value),
+                })
+              }
+              className="w-full accent-[#7C3AED]"
+              disabled={!activeText}
+            />
+          </div>
+        </div>
+      </Section>
+
+      {/* Optional: simple media opacity to keep parity if a media layer is selected */}
+      {activeMedia && (
+        <Section title="Image Opacity">
+          <div className="text-xs text-neutral-500 mb-1">
+            Opacity ({Math.round((activeMedia.opacity ?? 1) * 100)}%)
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.05}
+            value={activeMedia.opacity}
+            onChange={(e) =>
+              onUpdateMediaLayer(activeMedia.id, {
+                opacity: parseFloat(e.target.value),
+              })
+            }
+            className="w-full accent-[#7C3AED]"
+          />
+        </Section>
       )}
 
-      {/* Smart Layout Tips */}
-      <div className="mt-6 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <h5 className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">
-          Layer Controls ✨
-        </h5>
-        <ul className="text-xs text-blue-800 dark:text-blue-400 space-y-1">
-          <li>• <strong>Behind</strong>: Move text behind background image</li>
-          <li>• <strong>Front</strong>: Bring text to front layer</li>
-          <li>• <strong>Shortcuts</strong>: Ctrl+[ (behind) / Ctrl+] (front)</li>
-          <li>• Drag, resize, and rotate all elements</li>
-          <li>• Google Fonts with live preview</li>
-        </ul>
-      </div>
+      {/* Crop controls (kept, but compact to avoid visual clutter) */}
+      {onToggleCrop && (
+        <Section title="Crop">
+          <CropControls
+            aspectRatio={aspectRatio}
+            onAspectRatioChange={onCropAspectRatioChange || (() => {})}
+            onApplyCrop={onApplyCrop || (() => {})}
+            onCancelCrop={onCancelCrop || (() => {})}
+            isActive={isCropActive}
+            cropData={cropData}
+          />
+        </Section>
+      )}
     </div>
   );
 }

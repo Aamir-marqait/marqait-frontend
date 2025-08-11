@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Canvas, Rect, FabricImage } from "fabric";
+import { Canvas, Rect, FabricImage, FabricObject } from "fabric";
 
 export type AspectRatio = 'freeform' | 'original' | '1:1' | '16:9' | '9:16' | '5:4' | '4:5' | '4:3' | '3:4' | '3:2' | '2:3';
 
@@ -50,7 +50,7 @@ export function CropTool({ canvas, isActive, aspectRatio, onCropChange }: CropTo
     if (!canvas) return null;
     
     const bgImg = canvas.getObjects().find(obj => {
-      const objData = (obj as any).data;
+      const objData = (obj as FabricObject & { data?: { isBackground?: boolean; type?: string } }).data;
       return objData?.isBackground || objData?.type === 'background';
     }) as FabricImage;
     
@@ -118,7 +118,7 @@ export function CropTool({ canvas, isActive, aspectRatio, onCropChange }: CropTo
       // Remove any orphaned crop boxes
       const allObjects = canvas?.getObjects() || [];
       allObjects.forEach(obj => {
-        const objData = (obj as any).data;
+        const objData = (obj as FabricObject & { data?: { isBackground?: boolean; type?: string } }).data;
         if (objData?.type === 'cropBox') {
           canvas?.remove(obj);
         }
@@ -175,7 +175,7 @@ export function CropTool({ canvas, isActive, aspectRatio, onCropChange }: CropTo
     });
 
     // Add data to identify as crop box
-    (newCropBox as any).data = { type: 'cropBox', id: 'crop-overlay' };
+    (newCropBox as FabricObject & { data?: { type: string; id: string } }).data = { type: 'cropBox', id: 'crop-overlay' };
     
     canvas.add(newCropBox);
     canvas.bringObjectToFront(newCropBox);
