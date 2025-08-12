@@ -43,176 +43,176 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-
-  const handleGoogleSignIn = () => {
-    console.log("Google sign-in clicked");
-  };
+  //Dont remove commented code 
+  // const handleGoogleSignIn = () => {
+  //   console.log("Google sign-in clicked");
+  // };
 
   return (
     <AuthLayout>
-          <div className="mb-11">
-            <div className="mb-[24px]">
-              <img src={fullLogo} alt="MARQAIT" className="h-6" />
-            </div>
-            <h2 className="text-[26px] font-semibold leading-[120%] tracking-[-0.02em] text-[#1E1E1E] font-inter mb-[8px]">
-              Welcome Back!
-            </h2>
-            <p className="text-base font-normal leading-[144%] tracking-[-0.04em] text-[#2E2E2E] font-inter">
-              Sign in to manage your strategies, campaigns, and analytics.
-            </p>
+      <div className="mb-11">
+        <div className="mb-[24px]">
+          <img src={fullLogo} alt="MARQAIT" className="h-6" />
+        </div>
+        <h2 className="text-[26px] font-semibold leading-[120%] tracking-[-0.02em] text-[#1E1E1E] font-inter mb-[8px]">
+          Welcome Back!
+        </h2>
+        <p className="text-base font-normal leading-[144%] tracking-[-0.04em] text-[#2E2E2E] font-inter">
+          Sign in to manage your strategies, campaigns, and analytics.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="mb-[24px]">
+          <label
+            htmlFor="email"
+            className="block text-[15px] font-medium leading-[130%] tracking-[-0.02em]  text-[#2E2E2E] font-inter mb-2"
+          >
+            Email address *
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680]"
+            placeholder="Enter your registered email"
+            required
+          />
+        </div>
+
+        <div className="mb-[16px]">
+          <label
+            htmlFor="password"
+            className="block text-[15px] font-medium leading-[130%] tracking-[-0.02em] text-[#2E2E2E] font-inter mb-2"
+          >
+            Password *
+          </label>
+          <div className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-colors flex items-center justify-between">
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="flex-1 outline-none text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680] bg-transparent"
+              placeholder="Enter your password"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-gray-400 hover:text-gray-600 transition-colors ml-2 cursor-pointer"
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
           </div>
-
-          <form onSubmit={handleSubmit}>
-            <div className="mb-[24px]">
-              <label
-                htmlFor="email"
-                className="block text-[15px] font-medium leading-[130%] tracking-[-0.02em]  text-[#2E2E2E] font-inter mb-2"
-              >
-                Email address *
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680]"
-                placeholder="Enter your registered email"
-                required
-              />
+          <div className="w-[640px] flex justify-between items-center mt-2">
+            <div className="flex items-center space-x-2">
+              {error && (
+                <>
+                  <AlertCircle className="h-4 w-4 text-[#C20B26] flex-shrink-0" />
+                  <span className="text-[14px] font-normal leading-[130%] tracking-[-0.05em] text-[#C20B26] font-inter">
+                    Invalid email or double check your password
+                  </span>
+                </>
+              )}
             </div>
+            <Link
+              to="/accounts/password/reset/"
+              className="text-[15px] font-medium leading-[130%] tracking-[-0.02em] underline decoration-solid text-[#383838] font-inter hover:text-gray-800 transition-colors cursor-pointer"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
 
-            <div className="mb-[16px]">
-              <label
-                htmlFor="password"
-                className="block text-[15px] font-medium leading-[130%] tracking-[-0.02em] text-[#2E2E2E] font-inter mb-2"
+        <div className="flex items-center space-x-2 mb-10">
+          <input
+            id="terms"
+            type="checkbox"
+            checked={agreeToTerms}
+            onChange={(e) => setAgreeToTerms(e.target.checked)}
+            className=" cursor-pointer h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded bg-[#D5D7DA]"
+          />
+          <label
+            htmlFor="terms"
+            className="text-[14px] font-medium leading-4 tracking-[-0.5px] font-inter text-[#717680]"
+          >
+            I agree to all{" "}
+            <Link
+              to="/terms"
+              className="text-[14px] font-semibold leading-4 tracking-[-0.5px] font-inter text-[#717680] hover:text-purple-700 transition-colors cursor-pointer"
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              to="/privacy"
+              className="text-[14px] font-semibold leading-4 tracking-[-0.5px] font-inter text-[#717680] hover:text-purple-700 transition-colors cursor-pointer"
+            >
+              Privacy policy
+            </Link>
+          </label>
+        </div>
+
+        <div className="w-[640px] flex justify-center">
+          <button
+            type="submit"
+            disabled={isLoading || !agreeToTerms || !email || !password}
+            className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
+            style={{
+              background:
+                isLoading || !agreeToTerms || !email || !password
+                  ? "linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%)"
+                  : "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%)",
+              backdropFilter: "blur(200px)",
+              borderImage:
+                isLoading || !agreeToTerms || !email || !password
+                  ? "linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%) 1"
+                  : "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%) 1",
+            }}
+          >
+            {isLoading ? (
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
               >
-                Password *
-              </label>
-              <div className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-colors flex items-center justify-between">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="flex-1 outline-none text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680] bg-transparent"
-                  placeholder="Enter your password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors ml-2 cursor-pointer"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
-                </button>
-              </div>
-              <div className="w-[640px] flex justify-between items-center mt-2">
-                <div className="flex items-center space-x-2">
-                  {error && (
-                    <>
-                      <AlertCircle className="h-4 w-4 text-[#C20B26] flex-shrink-0" />
-                      <span className="text-[14px] font-normal leading-[130%] tracking-[-0.05em] text-[#C20B26] font-inter">
-                        Invalid email or double check your password
-                      </span>
-                    </>
-                  )}
-                </div>
-                <Link
-                  to="/accounts/password/reset/"
-                  className="text-[15px] font-medium leading-[130%] tracking-[-0.02em] underline decoration-solid text-[#383838] font-inter hover:text-gray-800 transition-colors cursor-pointer"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-            </div>
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            ) : (
+              "Sign in"
+            )}
+          </button>
+        </div>
+      </form>
 
-            <div className="flex items-center space-x-2 mb-10">
-              <input
-                id="terms"
-                type="checkbox"
-                checked={agreeToTerms}
-                onChange={(e) => setAgreeToTerms(e.target.checked)}
-                className=" cursor-pointer h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded bg-[#D5D7DA]"
-              />
-              <label
-                htmlFor="terms"
-                className="text-[14px] font-medium leading-4 tracking-[-0.5px] font-inter text-[#717680]"
-              >
-                I agree to all{" "}
-                <Link
-                  to="/terms"
-                  className="text-[14px] font-semibold leading-4 tracking-[-0.5px] font-inter text-[#717680] hover:text-purple-700 transition-colors cursor-pointer"
-                >
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link
-                  to="/privacy"
-                  className="text-[14px] font-semibold leading-4 tracking-[-0.5px] font-inter text-[#717680] hover:text-purple-700 transition-colors cursor-pointer"
-                >
-                  Privacy policy
-                </Link>
-              </label>
-            </div>
-
-            <div className="w-[640px] flex justify-center">
-              <button
-                type="submit"
-                disabled={isLoading || !agreeToTerms || !email || !password}
-                className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
-                style={{
-                  background:
-                    isLoading || !agreeToTerms || !email || !password
-                      ? "linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%)"
-                      : "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%)",
-                  backdropFilter: "blur(200px)",
-                  borderImage:
-                    isLoading || !agreeToTerms || !email || !password
-                      ? "linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%) 1"
-                      : "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%) 1",
-                }}
-              >
-                {isLoading ? (
-                  <svg
-                    className="animate-spin h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                ) : (
-                  "Sign in"
-                )}
-              </button>
-            </div>
-          </form>
-
-          <div className="w-[640px] mx-auto my-6 flex items-center">
+      {/* <div className="w-[640px] mx-auto my-6 flex items-center">
             <div className="flex-1 border-t border-[#EEEEEE]"></div>
             <span className="px-4 text-[14px] font-normal leading-[130%] tracking-[-0.05em] text-center text-[#444444] font-inter">
               OR
             </span>
             <div className="flex-1 border-t border-[#EEEEEE]"></div>
-          </div>
+          </div> */}
 
-          <div className="w-[640px] mx-auto">
+      {/* <div className="w-[640px] mx-auto">
             <button
               onClick={handleGoogleSignIn}
               className="w-full flex items-center justify-center space-x-3 py-3 px-4 border border-[#D5D7DA] rounded-lg hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 cursor-pointer"
@@ -239,19 +239,19 @@ const Login = () => {
                 Sign in with Google
               </span>
             </button>
-          </div>
+          </div> */}
 
-          <div className="w-[640px] mx-auto mt-6 flex justify-center items-center">
-            <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-gray-600 font-inter">
-              Don't have an account?{" "}
-              <Link
-                to="/accounts/emailsignup"
-                className="text-[14px] font-medium leading-5 tracking-[-0.5px] text-center underline decoration-solid text-purple-600 hover:text-purple-700 font-inter transition-colors cursor-pointer"
-              >
-                Sign up for free
-              </Link>
-            </p>
-          </div>
+      <div className="w-[640px] mx-auto mt-6 flex justify-center items-center">
+        <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-gray-600 font-inter">
+          Don't have an account?{" "}
+          <Link
+            to="/accounts/emailsignup"
+            className="text-[14px] font-medium leading-5 tracking-[-0.5px] text-center underline decoration-solid text-purple-600 hover:text-purple-700 font-inter transition-colors cursor-pointer"
+          >
+            Sign up for free
+          </Link>
+        </p>
+      </div>
     </AuthLayout>
   );
 };

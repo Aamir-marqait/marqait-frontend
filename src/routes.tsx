@@ -4,6 +4,7 @@ import About from "./pages/About";
 import Dashboard from "./pages/dashboard";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
+import OtpVerification from "./pages/auth/OtpVerification";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ResetPassword from "./pages/auth/ResetPassword";
 import PlaceholderPage from "./pages/PlaceholderPage";
@@ -21,6 +22,10 @@ export const createRoutes = (
   {
     path: "/accounts/emailsignup",
     element: isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />,
+  },
+  {
+    path: "/accounts/emailsignup/otp-verification",
+    element: isAuthenticated ? <Navigate to="/dashboard" replace /> : <OtpVerification />,
   },
   {
     path: "/accounts/password/reset/",
