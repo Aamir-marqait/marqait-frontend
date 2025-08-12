@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { QuickLaunchCard } from "@/components/ui/quick-launch-card";
 import {
   ArrowRight,
   Plus,
@@ -12,110 +13,90 @@ import {
   Pin,
   MoreHorizontal,
 } from "lucide-react";
+import campaignLogo from "../../assets/dashboard/campaign.svg";
+import social from "../../assets/dashboard/social.svg";
+import blog from "../../assets/dashboard/blog.svg";
+import brand from "../../assets/dashboard/brandbook.svg";
+import image from "../../assets/dashboard/image.svg";
 
 export default function Dashboard() {
+  const quickLaunchItems = [
+    {
+      title: "Generate Campaign",
+      description: "Create a new marketing campaign.",
+      iconSrc: campaignLogo,
+      backgroundColor: "#FFE2E5",
+      iconBackgroundColor: "#FA5A7D",
+    },
+    {
+      title: "Create Social Post",
+      description: "Generate social media post with one click.",
+      iconSrc: social,
+      backgroundColor: "#FFF4DE",
+      iconBackgroundColor: "#FF947A",
+    },
+    {
+      title: "Blog Writer",
+      description: "Write engaging blog content.",
+      iconSrc: blog,
+      backgroundColor: "#DCFCE7",
+      iconBackgroundColor: "#3CD856",
+    },
+    {
+      title: "Brand Book",
+      description: "Develop brand guidelines.",
+      iconSrc: brand,
+      backgroundColor: "#F3E8FF",
+      iconBackgroundColor: "#BF83FF",
+    },
+    {
+      title: "Edit AI Image",
+      description: "Create and edit images.",
+      iconSrc: image,
+      backgroundColor: "#F2DFF7",
+      iconBackgroundColor: "#9B59B6",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              Hello Anas Sabah 👋
+            <h1 className="font-[Inter] text-[33.92px] font-[700] leading-[100%] tracking-[0%] text-gray-900 mb-2">
+              Hello Anas Sabah{" "}
+              <span className="font-[Inter] text-[33.92px] font-[700] leading-[100%] tracking-[0%]">
+                {" "}
+                👋
+              </span>
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="font-[Inter] font-[400] text-[20.49px] leading-[100%] tracking-[0%] text-[#4B4B4B]">
               Ready to create something amazing today?
             </p>
           </div>
-          <Button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium">
-            <Plus className="w-4 h-4 mr-2" />
+          <Button className="cursor-pointer bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-[#FFFFFF] px-6 py-3 rounded-[8px] font-[Inter] font-[700] text-[14px] leading-[20px] tracking-[0px] text-center shadow-[0px_2px_6px_0px_#7000CC40]">
+            <Plus className="w-4 h-4" />
             New Task
           </Button>
         </div>
 
         {/* Quick Launch */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          <h2 className="font-[Inter] font-[600] text-[20px] leading-[100%] tracking-[0%] text-[#161E54] mb-6">
             Quick Launch
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            {/* Generate Campaign */}
-            <Card className="bg-red-100 border-0 hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-red-200 rounded-xl flex items-center justify-center mb-4">
-                  <div className="w-6 h-6 bg-red-500 rounded-md"></div>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">
-                  Generate Campaign
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Create a new marketing campaign.
-                </p>
-                <ArrowRight className="w-4 h-4 text-gray-400 ml-auto" />
-              </CardContent>
-            </Card>
-
-            {/* Create Social Post */}
-            <Card className="bg-orange-100 border-0 hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-orange-200 rounded-xl flex items-center justify-center mb-4">
-                  <div className="w-6 h-6 bg-orange-500 rounded-md"></div>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">
-                  Create Social Post
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Generate social media post with one click.
-                </p>
-                <ArrowRight className="w-4 h-4 text-gray-400 ml-auto" />
-              </CardContent>
-            </Card>
-
-            {/* Blog Writer */}
-            <Card className="bg-green-100 border-0 hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-green-200 rounded-xl flex items-center justify-center mb-4">
-                  <div className="w-6 h-6 bg-green-500 rounded-md"></div>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">
-                  Blog Writer
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Write engaging blog content.
-                </p>
-                <ArrowRight className="w-4 h-4 text-gray-400 ml-auto" />
-              </CardContent>
-            </Card>
-
-            {/* Brand Book */}
-            <Card className="bg-purple-100 border-0 hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-purple-200 rounded-xl flex items-center justify-center mb-4">
-                  <div className="w-6 h-6 bg-purple-500 rounded-md"></div>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Brand Book</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Develop brand guidelines.
-                </p>
-                <ArrowRight className="w-4 h-4 text-gray-400 ml-auto" />
-              </CardContent>
-            </Card>
-
-            {/* Edit AI Image */}
-            <Card className="bg-purple-100 border-0 hover:shadow-md transition-shadow cursor-pointer">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-purple-200 rounded-xl flex items-center justify-center mb-4">
-                  <div className="w-6 h-6 bg-purple-500 rounded-md"></div>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">
-                  Edit AI Image
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Create and edit images.
-                </p>
-                <ArrowRight className="w-4 h-4 text-gray-400 ml-auto" />
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+            {quickLaunchItems.map((item, index) => (
+              <QuickLaunchCard
+                key={index}
+                title={item.title}
+                description={item.description}
+                iconSrc={item.iconSrc}
+                backgroundColor={item.backgroundColor}
+                iconBackgroundColor={item.iconBackgroundColor}
+              />
+            ))}
           </div>
         </div>
 
