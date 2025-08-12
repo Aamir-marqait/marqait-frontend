@@ -1,17 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
 const Dashboard = () => {
-  const [user] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-  });
-  
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    navigate("/");
-  };
 
   return (
     <div className="bg-gray-50 min-h-full">
