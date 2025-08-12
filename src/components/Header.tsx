@@ -56,7 +56,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
           </div>
 
           {/* Right side icons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             <button className="relative p-2 rounded-full text-gray-600 cursor-pointer hover:bg-gray-100 hover:text-gray-800">
               <Bell className="h-6 w-6 text-[#30005E]" />
               <div className="absolute top-1 right-1 w-4 h-4 bg-[#8F00FF] text-[#FFFFFF] text-[9px] font-semibold font-poppins leading-[100%] text-center rounded-full flex items-center justify-center">
@@ -69,7 +69,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="cursor-pointer flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100"
               >
-                <div className="w-9 h-9 bg-gradient-to-r from-purple-500 to-pink-500 rounded-[100px] flex items-center justify-center text-white text-sm font-semibold">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-[100px] flex items-center justify-center text-white text-sm font-semibold">
                   A
                 </div>
                 <ChevronDown
