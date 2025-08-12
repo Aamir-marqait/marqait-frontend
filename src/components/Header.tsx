@@ -1,5 +1,7 @@
 import { Menu, Bell, Search, Command, LogOut, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -8,6 +10,14 @@ interface HeaderProps {
 export default function Header({ onMenuClick }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const { logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+    setIsDropdownOpen(false);
+    navigate("/");
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -82,10 +92,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
               {isDropdownOpen && (
                 <div className="absolute right-5 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   <button
-                    onClick={() => {
-                      // Add logout logic here
-                      setIsDropdownOpen(false);
-                    }}
+                    onClick={handleLogout}
                     className="flex items-center space-x-3 w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
                   >
                     <LogOut className="h-4 w-4" />
