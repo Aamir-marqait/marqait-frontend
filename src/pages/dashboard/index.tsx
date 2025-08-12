@@ -1,92 +1,403 @@
-import { useAuthStore } from '../../stores/authStore';
-import { LogOut, User, Mail, Calendar } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { QuickLaunchCard } from "@/components/ui/quick-launch-card";
+import {
+  ArrowRight,
+  Plus,
+  Users,
+  TrendingUp,
+  MousePointer,
+  ChevronDown,
+  Pin,
+  MoreHorizontal,
+} from "lucide-react";
+import campaignLogo from "../../assets/dashboard/campaign.svg";
+import social from "../../assets/dashboard/social.svg";
+import blog from "../../assets/dashboard/blog.svg";
+import brand from "../../assets/dashboard/brandbook.svg";
+import image from "../../assets/dashboard/image.svg";
 
-function Dashboard() {
-  const { user, logout } = useAuthStore();
-
-  const handleLogout = () => {
-    logout();
-    window.location.href = '/';
-  };
-
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">Access Denied</h2>
-          <p className="text-slate-600">Please log in to access the dashboard.</p>
-        </div>
-      </div>
-    );
-  }
+export default function Dashboard() {
+  const quickLaunchItems = [
+    {
+      title: "Generate Campaign",
+      description: "Create a new marketing campaign.",
+      iconSrc: campaignLogo,
+      backgroundColor: "#FFE2E5",
+      iconBackgroundColor: "#FA5A7D",
+    },
+    {
+      title: "Create Social Post",
+      description: "Generate social media post with one click.",
+      iconSrc: social,
+      backgroundColor: "#FFF4DE",
+      iconBackgroundColor: "#FF947A",
+    },
+    {
+      title: "Blog Writer",
+      description: "Write engaging blog content.",
+      iconSrc: blog,
+      backgroundColor: "#DCFCE7",
+      iconBackgroundColor: "#3CD856",
+    },
+    {
+      title: "Brand Book",
+      description: "Develop brand guidelines.",
+      iconSrc: brand,
+      backgroundColor: "#F3E8FF",
+      iconBackgroundColor: "#BF83FF",
+    },
+    {
+      title: "Edit AI Image",
+      description: "Create and edit images.",
+      iconSrc: image,
+      backgroundColor: "#F2DFF7",
+      iconBackgroundColor: "#9B59B6",
+    },
+  ];
 
   return (
-    <div className="p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">
-                Welcome back, {user.name}!
-              </h1>
-              <p className="text-slate-600">Here's what's happening with your account today.</p>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              <span>Sign out</span>
-            </button>
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="font-[Inter] text-[33.92px] font-[700] leading-[100%] tracking-[0%] text-gray-900 mb-2">
+              Hello Anas Sabah{" "}
+              <span className="font-[Inter] text-[33.92px] font-[700] leading-[100%] tracking-[0%]">
+                {" "}
+                👋
+              </span>
+            </h1>
+            <p className="font-[Inter] font-[400] text-[20.49px] leading-[100%] tracking-[0%] text-[#4B4B4B]">
+              Ready to create something amazing today?
+            </p>
           </div>
+          <Button className="cursor-pointer bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-[#FFFFFF] px-6 py-3 rounded-[8px] font-[Inter] font-[700] text-[14px] leading-[20px] tracking-[0px] text-center shadow-[0px_2px_6px_0px_#7000CC40]">
+            <Plus className="w-4 h-4" />
+            New Task
+          </Button>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-blue-50 rounded-xl p-6">
-              <div className="flex items-center space-x-3 mb-4">
-                <User className="h-8 w-8 text-blue-600" />
-                <h3 className="text-lg font-semibold text-slate-900">Profile</h3>
-              </div>
-              <p className="text-slate-600">Manage your account settings and preferences</p>
-            </div>
-            
-            <div className="bg-green-50 rounded-xl p-6">
-              <div className="flex items-center space-x-3 mb-4">
-                <Calendar className="h-8 w-8 text-green-600" />
-                <h3 className="text-lg font-semibold text-slate-900">Projects</h3>
-              </div>
-              <p className="text-slate-600">View and manage your active projects</p>
-            </div>
-            
-            <div className="bg-purple-50 rounded-xl p-6">
-              <div className="flex items-center space-x-3 mb-4">
-                <Mail className="h-8 w-8 text-purple-600" />
-                <h3 className="text-lg font-semibold text-slate-900">Messages</h3>
-              </div>
-              <p className="text-slate-600">Check your notifications and messages</p>
-            </div>
+        {/* Quick Launch */}
+        <div>
+          <h2 className="font-[Inter] font-[600] text-[20px] leading-[100%] tracking-[0%] text-[#161E54] mb-6">
+            Quick Launch
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+            {quickLaunchItems.map((item, index) => (
+              <QuickLaunchCard
+                key={index}
+                title={item.title}
+                description={item.description}
+                iconSrc={item.iconSrc}
+                backgroundColor={item.backgroundColor}
+                iconBackgroundColor={item.iconBackgroundColor}
+              />
+            ))}
           </div>
+        </div>
 
-          <div className="bg-slate-50 rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Account Information</h3>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <User className="h-5 w-5 text-slate-400" />
-                <span className="text-slate-700">Name: {user.name}</span>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Current Campaigns Overview */}
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900">
+                  Current Campaigns Overview
+                </h3>
+                <div className="flex items-center text-sm text-gray-500">
+                  Today, 13 Jun 2025
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-slate-400" />
-                <span className="text-slate-700">Email: {user.email}</span>
+
+              <div className="space-y-6">
+                {/* Campaign 1 */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium text-gray-900">
+                        Summer Product Launch
+                      </span>
+                      <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                        Active
+                      </Badge>
+                    </div>
+                    <span className="text-sm text-gray-500">75% Complete</span>
+                  </div>
+                  <Progress value={75} className="h-2" />
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <div className="font-semibold text-gray-900">12.6K</div>
+                        <div className="text-xs text-gray-500">Reach</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <div className="font-semibold text-gray-900">8.2%</div>
+                        <div className="text-xs text-gray-500">Engagement</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MousePointer className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <div className="font-semibold text-gray-900">124</div>
+                        <div className="text-xs text-gray-500">Conversions</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Campaign 2 */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium text-gray-900">
+                        Back-To-School Campaign
+                      </span>
+                      <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">
+                        Draft
+                      </Badge>
+                    </div>
+                    <span className="text-sm text-gray-500">75% Complete</span>
+                  </div>
+                  <Progress value={75} className="h-2" />
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <div className="font-semibold text-gray-900">12.6K</div>
+                        <div className="text-xs text-gray-500">Reach</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <div className="font-semibold text-gray-900">8.2%</div>
+                        <div className="text-xs text-gray-500">Engagement</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MousePointer className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <div className="font-semibold text-gray-900">124</div>
+                        <div className="text-xs text-gray-500">Conversions</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Campaign 3 */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium text-gray-900">
+                        Summer Product Launch
+                      </span>
+                      <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100">
+                        Scheduled
+                      </Badge>
+                    </div>
+                    <span className="text-sm text-gray-500">75% Complete</span>
+                  </div>
+                  <Progress value={75} className="h-2" />
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <div className="font-semibold text-gray-900">12.6K</div>
+                        <div className="text-xs text-gray-500">Reach</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <div className="font-semibold text-gray-900">8.2%</div>
+                        <div className="text-xs text-gray-500">Engagement</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MousePointer className="w-4 h-4 text-gray-400" />
+                      <div>
+                        <div className="font-semibold text-gray-900">124</div>
+                        <div className="text-xs text-gray-500">Conversions</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Campaign 4 */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium text-gray-900">
+                        Summer Product Launch
+                      </span>
+                      <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                        Active
+                      </Badge>
+                    </div>
+                    <span className="text-sm text-gray-500">75% Complete</span>
+                  </div>
+                  <Progress value={75} className="h-2" />
+                </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <Calendar className="h-5 w-5 text-slate-400" />
-                <span className="text-slate-700">Last login: {new Date().toLocaleDateString()}</span>
+
+              <div className="mt-6 text-center">
+                <Button
+                  variant="ghost"
+                  className="text-purple-600 hover:text-purple-700"
+                >
+                  View all <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Agent Activity */}
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900">
+                  Recent Agent Activity
+                </h3>
+                <div className="flex items-center text-sm text-gray-500">
+                  Today, 13 Jun 2025
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {/* Activity 1 */}
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-4 h-4 bg-purple-500 rounded-sm"></div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-gray-900">
+                        Campaign Agent
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <Pin className="w-4 h-4 text-gray-400" />
+                        <MoreHorizontal className="w-4 h-4 text-gray-400" />
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Optimized add targeting for summer launch.
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">Just Now</p>
+                  </div>
+                </div>
+
+                {/* Activity 2 */}
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-4 h-4 bg-purple-500 rounded-sm"></div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-gray-900">
+                        Analytics Agent
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <Pin className="w-4 h-4 text-gray-400" />
+                        <MoreHorizontal className="w-4 h-4 text-gray-400" />
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Weekly performance report generated.
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">5 Minutes ago</p>
+                  </div>
+                </div>
+
+                {/* Activity 3 */}
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-4 h-4 bg-purple-500 rounded-sm"></div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-gray-900">
+                        Content Creator Agent
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <Pin className="w-4 h-4 text-gray-400" />
+                        <MoreHorizontal className="w-4 h-4 text-gray-400" />
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Optimized add targeting for summer launch.
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">5 Minutes ago</p>
+                  </div>
+                </div>
+
+                {/* Activity 4 */}
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-4 h-4 bg-purple-500 rounded-sm"></div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-gray-900">
+                        Campaign Agent
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <Pin className="w-4 h-4 text-gray-400" />
+                        <MoreHorizontal className="w-4 h-4 text-gray-400" />
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Optimized add targeting for summer launch.
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">5 Minutes ago</p>
+                  </div>
+                </div>
+
+                {/* Activity 5 */}
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-4 h-4 bg-purple-500 rounded-sm"></div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-gray-900">
+                        Campaign Agent
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <Pin className="w-4 h-4 text-gray-400" />
+                        <MoreHorizontal className="w-4 h-4 text-gray-400" />
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Optimized add targeting for summer launch.
+                    </p>
+                    <p className="text-xs text-gray-500 mt-2">5 Minutes ago</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 text-center">
+                <Button
+                  variant="ghost"
+                  className="text-purple-600 hover:text-purple-700"
+                >
+                  Sell all activities <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
   );
 }
-
-export default Dashboard;

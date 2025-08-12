@@ -12,7 +12,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  // const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const { login } = useAuthStore();
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-  //Dont remove commented code 
+  //Dont remove commented code
   // const handleGoogleSignIn = () => {
   //   console.log("Google sign-in clicked");
   // };
@@ -130,7 +130,7 @@ const Login = () => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 mb-10">
+        {/* <div className="flex items-center space-x-2 mb-10">
           <input
             id="terms"
             type="checkbox"
@@ -157,21 +157,21 @@ const Login = () => {
               Privacy policy
             </Link>
           </label>
-        </div>
+        </div> */}
 
         <div className="w-[640px] flex justify-center">
           <button
             type="submit"
-            disabled={isLoading || !agreeToTerms || !email || !password}
+            disabled={isLoading || !email || !password}
             className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
             style={{
               background:
-                isLoading || !agreeToTerms || !email || !password
+                isLoading || !email || !password
                   ? "linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%)"
                   : "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%)",
               backdropFilter: "blur(200px)",
               borderImage:
-                isLoading || !agreeToTerms || !email || !password
+                isLoading || !email || !password
                   ? "linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%) 1"
                   : "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%) 1",
             }}
