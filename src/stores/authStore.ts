@@ -1,22 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-interface User {
-  email: string;
-  name: string;
-}
+import { authService } from '../api';
+import type { User } from '../api/types';
 
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  initialize: () => void;
 }
-
-const DUMMY_CREDENTIALS = {
-  email: 'anas@marqait.com',
-  password: 'Anassabah@123'
-};
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -24,19 +17,35 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       login: async (email: string, password: string) => {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            if (email === DUMMY_CREDENTIALS.email && password === DUMMY_CREDENTIALS.password) {
-              const user = { email, name: 'Anas Sabah' };
-              set({ user, isAuthenticated: true });
-              resolve(true);
-            } else {
-              resolve(false);
-            }
-          }, 1000);
-        });
+        try {
+          const response = await authService.signin({
+            email_address: email,
+            password: password
+          });
+          
+          set({ 
+            user: response.user, 
+            isAuthenticated: true 
+          });
+          
+          return true;
+        } catch (error) {
+          console.error('Login failed:', error);
+          return false;
+        }
       },
-      logout: () => set({ user: null, isAuthenticated: false }),
+      logout: () => {
+        authService.logout();
+        set({ user: null, isAuthenticated: false });
+      },
+      initialize: () => {
+        const user = authService.getCurrentUser();
+        const isAuthenticated = authService.isAuthenticated();
+        
+        if (user && isAuthenticated) {
+          set({ user, isAuthenticated: true });
+        }
+      }
     }),
     {
       name: 'auth-storage',
