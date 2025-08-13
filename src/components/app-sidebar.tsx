@@ -197,7 +197,7 @@ export default function Sidebar({
             style={{ borderTop: "1px solid #BEBEBE99" }}
           >
             <div className="flex space-x-4">
-              <img src={coinIcon} alt="Coin" className="w-11 h-11" />
+              <img src={coinIcon} alt="Coin" className="w-9 h-9" />
               <div className="flex-1">
                 <div className="flex items-end gap-3 mb-3">
                   <div className="flex-1">
