@@ -17,6 +17,7 @@ interface PricingCardProps {
   isSelected?: boolean;
   isSelectable?: boolean;
   onSelect?: () => void;
+  onGetStarted?: () => void;
 }
 
 export default function PricingCard({
@@ -33,6 +34,7 @@ export default function PricingCard({
   isSelected = false,
   isSelectable = true,
   onSelect,
+  onGetStarted,
 }: PricingCardProps) {
   return (
     <Card
@@ -130,6 +132,7 @@ export default function PricingCard({
                 ? "none"
                 : "0px 1px 2px 0px #0A0D120D",
           }}
+          onClick={buttonVariant !== "secondary" ? onGetStarted : undefined}
         >
           {buttonText}
         </Button>

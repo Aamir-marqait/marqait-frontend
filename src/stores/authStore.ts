@@ -9,6 +9,7 @@ interface AuthState {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   initialize: () => void;
+  updateUserPlan: (plan: 'free' | 'professional' | 'enterprise') => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -50,6 +51,11 @@ export const useAuthStore = create<AuthState>()(
         if (user && isAuthenticated) {
           set({ user, isAuthenticated: true });
         }
+      },
+      updateUserPlan: (plan: 'free' | 'professional' | 'enterprise') => {
+        set((state) => ({
+          user: state.user ? { ...state.user, plan } : null
+        }));
       }
     }),
     {

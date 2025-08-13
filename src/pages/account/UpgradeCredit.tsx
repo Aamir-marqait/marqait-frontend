@@ -1,6 +1,7 @@
 import UpgradeHeader from "../../components/UpgradeHeader";
 import PricingCard from "../../components/credits/PricingCard";
 import FAQSection from "../../components/credits/FAQSection";
+import { useAuthStore } from "../../stores/authStore";
 
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,6 +9,12 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function SubscriptionPage() {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const { updateUserPlan, user } = useAuthStore();
+
+  const handlePlanSelection = (plan: 'free' | 'professional' | 'enterprise') => {
+    updateUserPlan(plan);
+    // Don't redirect, just update the plan
+  };
 
   const faqItems = [
     { question: "Can i purchase additional credits?" },
@@ -126,10 +133,12 @@ export default function SubscriptionPage() {
               "Lorem ipsum dolor prop",
               "Lorem ipsum dolor"
             ]}
-            buttonText="Current Plan"
-            buttonVariant="secondary"
-            isSelected={false}
-            isSelectable={false}
+            buttonText={!user?.plan || user?.plan === 'free' ? "Current Plan" : "Get Started"}
+            buttonVariant={!user?.plan || user?.plan === 'free' ? "secondary" : "default"}
+            isSelected={selectedPlan === 'free'}
+            isSelectable={true}
+            onSelect={() => setSelectedPlan('free')}
+            onGetStarted={() => handlePlanSelection('free')}
           />
 
           <PricingCard
@@ -146,10 +155,12 @@ export default function SubscriptionPage() {
               "Lorem ipsum dolor prop",
               "Lorem ipsum dolor"
             ]}
-            buttonText="Get Started"
+            buttonText={user?.plan === 'professional' ? 'Current Plan' : 'Get Started'}
+            buttonVariant={user?.plan === 'professional' ? 'secondary' : 'default'}
             isSelected={selectedPlan === 'professional'}
             isSelectable={true}
             onSelect={() => setSelectedPlan('professional')}
+            onGetStarted={() => handlePlanSelection('professional')}
           />
 
           <PricingCard
@@ -166,10 +177,12 @@ export default function SubscriptionPage() {
               "Lorem ipsum dolor prop",
               "Lorem ipsum dolor"
             ]}
-            buttonText="Get Started"
+            buttonText={user?.plan === 'enterprise' ? 'Current Plan' : 'Get Started'}
+            buttonVariant={user?.plan === 'enterprise' ? 'secondary' : 'default'}
             isSelected={selectedPlan === 'enterprise'}
             isSelectable={true}
             onSelect={() => setSelectedPlan('enterprise')}
+            onGetStarted={() => handlePlanSelection('enterprise')}
           />
         </div>
 

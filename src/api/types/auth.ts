@@ -30,6 +30,7 @@ export interface User {
   industry?: string;
   is_verified: boolean;
   created_at: string;
+  plan?: 'free' | 'professional' | 'enterprise';
 }
 
 export interface AuthTokens {
