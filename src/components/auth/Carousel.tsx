@@ -13,7 +13,7 @@ const Carousel = () => {
 
   return (
     <div
-      className="hidden lg:flex lg:w-2/5 relative overflow-hidden"
+      className="flex w-full h-64 sm:h-80 lg:h-auto lg:w-2/5 relative overflow-hidden"
       style={{
         background:
           "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.8) 100%)",
@@ -42,7 +42,7 @@ const Carousel = () => {
         </div>
       </div>
 
-      <div className="relative z-20 flex flex-col justify-end p-12 text-white">
+      <div className="relative z-20 flex flex-col justify-end p-6 sm:p-8 lg:p-12 text-white">
         <div className="mb-8">
           <div className="overflow-hidden">
             <div
@@ -51,7 +51,7 @@ const Carousel = () => {
             >
               {carouselSlides.map((slide, index) => (
                 <div key={index} className="min-w-full">
-                  <h1 className="text-[40px] font-medium leading-[120%] tracking-[-0.05em] mb-4 font-inter whitespace-pre-line">
+                  <h1 className="text-2xl sm:text-3xl lg:text-[40px] font-medium leading-[120%] tracking-[-0.05em] mb-4 font-inter whitespace-pre-line">
                     {slide.title}
                   </h1>
                   <p className="text-base font-normal leading-[154%] tracking-[-0.04em] font-inter text-[#FAFAFA]">

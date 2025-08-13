@@ -167,7 +167,7 @@ const OtpVerification = () => {
         <label className="block text-[15px] font-medium leading-[130%] tracking-[-0.02em] text-[#2E2E2E] font-inter mb-4">
           Verification Code
         </label>
-        <div className={`flex space-x-3 mb-4 ${isShaking ? 'animate-shake' : ''}`}>
+        <div className={`flex justify-center space-x-2 sm:space-x-3 mb-4 ${isShaking ? 'animate-shake' : ''}`}>
           {otp.map((digit, index) => (
             <input
               key={index}
@@ -178,7 +178,7 @@ const OtpVerification = () => {
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={index === 0 ? handlePaste : undefined}
-              className={`w-12 h-12 text-center text-[20px] font-semibold border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
+              className={`w-10 h-10 sm:w-12 sm:h-12 text-center text-[16px] sm:text-[20px] font-semibold border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
                 isShaking || error ? 'border-red-500 bg-red-50' : 'border-[#D5D7DA]'
               }`}
               maxLength={1}
@@ -198,7 +198,7 @@ const OtpVerification = () => {
         <button
           onClick={() => handleSubmit()}
           disabled={isLoading || otp.some(digit => digit === "")}
-          className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
+          className="w-full max-w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
           style={{
             background: isLoading || otp.some(digit => digit === "")
               ? "linear-gradient(270deg, rgba(112, 0, 204, 0.32) 0%, rgba(128, 0, 230, 0.32) 50%, rgba(142, 7, 248, 0.32) 100%)"

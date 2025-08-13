@@ -130,7 +130,7 @@ const Signup = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="mb-4 flex space-x-4 w-[640px]">
+        <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 w-full">
           <div className="flex-1">
             <label
               htmlFor="firstName"
@@ -179,13 +179,13 @@ const Signup = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680]"
+            className="w-full h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680]"
             placeholder="Enter your email address"
             required
           />
         </div>
 
-        <div className="mb-4 flex space-x-4 w-[640px]">
+        <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 w-full">
           <div className="flex-1">
             <label
               htmlFor="password"
@@ -251,7 +251,7 @@ const Signup = () => {
         </div>
 
         {passwordError && (
-          <div className="w-[640px] flex justify-end items-center space-x-2 mb-2">
+          <div className="w-full flex justify-end items-center space-x-2 mb-2">
             <AlertCircle className="h-4 w-4 text-[#C20B26] flex-shrink-0" />
             <span className="text-[14px] font-normal leading-[130%] tracking-[-0.05em] text-[#C20B26] font-inter">
               {passwordError}
@@ -259,7 +259,7 @@ const Signup = () => {
           </div>
         )}
 
-        <div className="mb-4 flex space-x-4 w-[640px]">
+        <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 w-full">
           <div className="flex-1">
             <label
               htmlFor="companyName"
@@ -296,7 +296,7 @@ const Signup = () => {
           </div>
         </div>
 
-        <div className="w-[640px] flex justify-between items-center mt-2 mb-3">
+        <div className="w-full flex justify-between items-center mt-2 mb-3">
           <div className="flex items-center space-x-2">
             {error && (
               <>
@@ -338,7 +338,7 @@ const Signup = () => {
           </label>
         </div>
 
-        <div className="w-[640px] flex justify-center">
+        <div className="w-full flex justify-center">
           <button
             type="submit"
             disabled={
@@ -352,7 +352,7 @@ const Signup = () => {
               !companyName ||
               !domain
             }
-            className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full max-w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
             style={{
               background:
                 isLoading ||
@@ -446,7 +446,7 @@ const Signup = () => {
             </button>
           </div> */}
 
-      <div className="w-[640px] mx-auto mt-3 flex justify-center items-center">
+      <div className="w-full mx-auto mt-3 flex justify-center items-center">
         <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-gray-600 font-inter">
           Already have an account?{" "}
           <Link
