@@ -20,6 +20,7 @@ interface PricingCardProps {
 }
 
 export default function PricingCard({
+  planType,
   title,
   price,
   period,
@@ -54,14 +55,53 @@ export default function PricingCard({
     >
       <CardContent className="">
         <div className="mb-6">
-          <h3
-            className={`text-xl font-semibold mb-6 leading-none tracking-normal align-middle ${
-              isSelected ? "text-[#8F00FF]" : "text-[#1A1A1AB2]"
-            }`}
-          >
-            {title}
-          </h3>
-          <div className="flex items-baseline">
+          <div className="flex justify-between items-start mb-6">
+            <h3
+              className={`text font-semibold leading-none tracking-normal align-middle ${
+                isSelected ? "text-[#8F00FF]" : "text-[#1A1A1AB2]"
+              }`}
+            >
+              {title}
+            </h3>
+            {(planType === "professional" || planType === "enterprise") && (
+              <div
+                className="flex items-center justify-center text-right"
+                style={{
+                  width: '72px',
+                  height: '22px',
+                  borderRadius: '200px',
+                  backgroundColor: '#DCFFE3',
+                  color: '#299438',
+                  fontSize: '12px',
+                  fontFamily: 'Inter',
+                  fontWeight: '542',
+                  lineHeight: '100%',
+                  padding: '4px 8px',
+                  gap: '4px',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                Save {planType === "professional" ? "22" : "12"}%
+              </div>
+            )}
+          </div>
+          <div className="flex items-baseline gap-2">
+            {(planType === "professional" || planType === "enterprise") && (
+              <span
+                style={{
+                  fontFamily: 'Inter',
+                  fontWeight: '600',
+                  fontSize: '20px',
+                  lineHeight: '28px',
+                  letterSpacing: '0px',
+                  textDecoration: 'line-through',
+                  color: '#E53E3E',
+                  verticalAlign: 'middle'
+                }}
+              >
+                ${planType === "professional" ? "120" : "300"}
+              </span>
+            )}
             <span className="text-4xl font-bold leading-none tracking-normal text-[#1A1A1A]">
               {price}
             </span>
@@ -69,7 +109,7 @@ export default function PricingCard({
               {period}
             </span>
           </div>
-          <p className="text-lg font-normal leading-none tracking-normal text-[#1A1A1AB2] mt-4">
+          <p className="leading-none tracking-normal text-[#1A1A1AB2] mt-4">
             {description}
           </p>
         </div>
