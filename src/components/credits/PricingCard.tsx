@@ -14,9 +14,6 @@ interface PricingCardProps {
   features: string[];
   buttonText: string;
   buttonVariant?: "default" | "secondary";
-  isSelected?: boolean;
-  isSelectable?: boolean;
-  onSelect?: () => void;
   onGetStarted?: () => void;
 }
 
@@ -31,36 +28,30 @@ export default function PricingCard({
   features,
   buttonText,
   buttonVariant = "default",
-  isSelected = false,
-  isSelectable = true,
-  onSelect,
   onGetStarted,
 }: PricingCardProps) {
   return (
     <Card
-      className={`border rounded-2xl overflow-hidden ${
-        isSelectable ? "cursor-pointer" : ""
-      } ${
-        isSelected
-          ? "border-t-2 border-t-[#8F00FF]"
-          : "border-gray-200 hover:shadow-md"
+      className={`border rounded-2xl overflow-hidden border-gray-200 hover:shadow-md ${
+        buttonVariant === "secondary"
+          ? "border-2 border-[#8F00FF]"
+          : ""
       }`}
       style={{
-        background: isSelected
+        background: buttonVariant === "secondary"
           ? "linear-gradient(135deg, #FFFFFF 0%, #F3E8FF 100%)"
           : "#FFFFFF",
-        boxShadow: isSelected
+        boxShadow: buttonVariant === "secondary"
           ? "0.5px 0.5px 1px 0px rgba(0, 0, 0, 0.1)"
           : "none",
       }}
-      onClick={isSelectable ? onSelect : undefined}
     >
       <CardContent className="">
         <div className="mb-6">
           <div className="flex justify-between items-start mb-6">
             <h3
               className={`text font-semibold leading-none tracking-normal align-middle ${
-                isSelected ? "text-[#8F00FF]" : "text-[#1A1A1AB2]"
+                buttonVariant === "secondary" ? "text-[#8F00FF]" : "text-[#1A1A1AB2]"
               }`}
             >
               {title}
@@ -119,8 +110,8 @@ export default function PricingCard({
         <Button
           className={`w-full h-12 min-h-[44px] rounded-xl mb-6 gap-3 px-4 text-lg font-semibold leading-none tracking-normal text-center align-middle text-white ${
             buttonVariant === "secondary"
-              ? "opacity-50 border border-gray-300 bg-[#1D1D20]"
-              : ""
+              ? "opacity-50 border border-gray-300 bg-[#1D1D20] cursor-default"
+              : "cursor-pointer"
           }`}
           style={{
             background:

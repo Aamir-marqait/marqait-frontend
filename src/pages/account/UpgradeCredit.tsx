@@ -8,7 +8,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function SubscriptionPage() {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const { updateUserPlan, user } = useAuthStore();
 
   const handlePlanSelection = (plan: 'free' | 'professional' | 'enterprise') => {
@@ -135,9 +134,6 @@ export default function SubscriptionPage() {
             ]}
             buttonText={!user?.plan || user?.plan === 'free' ? "Current Plan" : "Get Started"}
             buttonVariant={!user?.plan || user?.plan === 'free' ? "secondary" : "default"}
-            isSelected={selectedPlan === 'free'}
-            isSelectable={true}
-            onSelect={() => setSelectedPlan('free')}
             onGetStarted={() => handlePlanSelection('free')}
           />
 
@@ -157,9 +153,6 @@ export default function SubscriptionPage() {
             ]}
             buttonText={user?.plan === 'professional' ? 'Current Plan' : 'Get Started'}
             buttonVariant={user?.plan === 'professional' ? 'secondary' : 'default'}
-            isSelected={selectedPlan === 'professional'}
-            isSelectable={true}
-            onSelect={() => setSelectedPlan('professional')}
             onGetStarted={() => handlePlanSelection('professional')}
           />
 
@@ -179,9 +172,6 @@ export default function SubscriptionPage() {
             ]}
             buttonText={user?.plan === 'enterprise' ? 'Current Plan' : 'Get Started'}
             buttonVariant={user?.plan === 'enterprise' ? 'secondary' : 'default'}
-            isSelected={selectedPlan === 'enterprise'}
-            isSelectable={true}
-            onSelect={() => setSelectedPlan('enterprise')}
             onGetStarted={() => handlePlanSelection('enterprise')}
           />
         </div>
