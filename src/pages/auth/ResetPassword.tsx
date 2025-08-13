@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
-// import lockIcon from "../../assets/lock.svg";
+import lockIcon from "../../assets/lock.svg";
 import AuthLayout from "../../components/auth/AuthLayout";
 import axiosInstance from "../../lib/axios";
 
@@ -21,6 +21,7 @@ const ResetPassword = () => {
   const [error, setError] = useState("");
   const [otpError, setOtpError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
 
   useEffect(() => {
@@ -116,13 +117,8 @@ const ResetPassword = () => {
         otp_code: otp.join(""),
         new_password: newPassword,
       });
-      // Success - redirect to login
-      navigate("/", {
-        state: {
-          message:
-            "Password reset successful. Please sign in with your new password.",
-        },
-      });
+      // Success - show success state
+      setIsSuccess(true);
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       const errorMessage =
@@ -183,6 +179,45 @@ const ResetPassword = () => {
     confirmPassword &&
     validatePassword(newPassword) &&
     newPassword === confirmPassword;
+
+  const handleGoToLogin = () => {
+    navigate("/");
+  };
+
+  // Success State
+  if (isSuccess) {
+    return (
+      <AuthLayout>
+        <div className="text-center w-[47rem]">
+          <div className="flex justify-center mb-6">
+            <img src={lockIcon} alt="Success" className="h-[132px] w-[132px]" />
+          </div>
+
+          <h2 className="text-[26px] font-semibold leading-[120%] tracking-[-0.02em] text-[#1E1E1E] font-inter mb-4">
+            Password Reset Successfully!
+          </h2>
+
+          <p className="text-base font-normal leading-[144%] tracking-[-0.04em] text-[#2E2E2E] font-inter mb-8">
+            You can now log in with your new password.
+          </p>
+
+          <div className="flex justify-center">
+            <button
+              onClick={handleGoToLogin}
+              className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer"
+              style={{
+                background:
+                  "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%)",
+                backdropFilter: "blur(200px)",
+              }}
+            >
+              Go to Login
+            </button>
+          </div>
+        </div>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout>
