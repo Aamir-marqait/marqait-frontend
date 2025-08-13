@@ -26,11 +26,18 @@ const Carousel = () => {
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
           {carouselSlides.map((slide, index) => (
-            <div
-              key={index}
-              className="min-w-full h-full bg-cover bg-center"
-              style={{ backgroundImage: `url(${slide.image})` }}
-            ></div>
+            <div key={index} className="min-w-full h-full relative">
+              <img
+                src={slide.image}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = slide.imageFallback;
+                }}
+                alt={`Carousel slide ${index + 1}`}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
           ))}
         </div>
       </div>
