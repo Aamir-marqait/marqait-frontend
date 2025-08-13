@@ -1,23 +1,27 @@
-import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosError,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+} from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   timeout: 10000,
 });
 
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = localStorage.getItem('auth_token');
-    
+    const token = localStorage.getItem("auth_token");
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config;
   },
   (error: AxiosError) => {
@@ -32,41 +36,47 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const status = error.response?.status;
     const originalRequest = error.config;
-    
-    if (status === 401 && originalRequest && !originalRequest.url?.includes('/auth/')) {
+
+    if (
+      status === 401 &&
+      originalRequest &&
+      !originalRequest.url?.includes("/auth/")
+    ) {
       try {
-        const { authService } = await import('../api/services/auth');
+        const { authService } = await import("../api/services/auth");
         await authService.refreshToken();
-        
-        const token = localStorage.getItem('auth_token');
+
+        const token = localStorage.getItem("auth_token");
         if (token && originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${token}`;
           return axiosInstance(originalRequest);
         }
       } catch (refreshError) {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('user_data');
-        window.location.href = '/login';
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("refresh_token");
+        localStorage.removeItem("user_data");
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
-    
-    if (status === 401 && originalRequest?.url?.includes('/auth/')) {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('refresh_token');
-      localStorage.removeItem('user_data');
-      window.location.href = '/login';
+
+    if (status === 401 && originalRequest?.url?.includes("/auth/signin")) {
+      // Don't redirect on login failures - let the login form handle the error
+    } else if (status === 401 && originalRequest?.url?.includes("/auth/")) {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user_data");
+      window.location.href = "/";
     }
-    
+
     if (status === 403) {
-      console.error('Access forbidden');
+      console.error("Access forbidden");
     }
-    
+
     if (status && status >= 500) {
-      console.error('Server error occurred');
+      console.error("Server error occurred");
     }
-    
+
     return Promise.reject(error);
   }
 );
