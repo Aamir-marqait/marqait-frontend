@@ -1,79 +1,89 @@
 import type React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
 import AuthLayout from "../../components/auth/AuthLayout";
+import axiosInstance from "../../lib/axios";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
     try {
-      // Simulate API call for password reset
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setIsSubmitted(true);
-    } catch {
-      // Handle error silently for now
+      await axiosInstance.post("/api/v1/auth/forgot-password", {
+        email_address: email,
+      });
+      
+      // Navigate to reset password page with email
+      navigate("/accounts/password/reset/confirm/", { 
+        state: { email } 
+      });
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || "An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (isSubmitted) {
-    return (
-      <AuthLayout>
-            <div className="mb-11">
-              <div className="mb-8">
-                <div className="mb-[24px]">
-                  <img src={fullLogo} alt="MARQAIT" className="h-6" />
-                </div>
+  // COMMENTED OUT - Old verification email flow
+  // if (isSubmitted) {
+  //   return (
+  //     <AuthLayout>
+  //           <div className="mb-11">
+  //             <div className="mb-8">
+  //               <div className="mb-[24px]">
+  //                 <img src={fullLogo} alt="MARQAIT" className="h-6" />
+  //               </div>
 
-                <h2 className="text-[26px] font-semibold leading-[120%] tracking-[-2%] text-[#1E1E1E] font-inter mb-2">
-                  Verify Your Email Address
-                </h2>
-              </div>
-            </div>
+  //               <h2 className="text-[26px] font-semibold leading-[120%] tracking-[-2%] text-[#1E1E1E] font-inter mb-2">
+  //                 Verify Your Email Address
+  //               </h2>
+  //             </div>
+  //           </div>
 
-            <div className="w-[640px] text-left mb-8">
-              <p className="text-[20px] font-normal leading-[156%] tracking-[-4%] text-[#2E2E2E] font-inter">
-                We've sent a verification link to{" "}
-                <span className="font-semibold whitespace-nowrap">{email}</span>
-              </p>
-              <p className="text-[20px] font-normal leading-[156%] tracking-[-4%] text-[#2E2E2E] font-inter">
-                Please check your inbox and click the link to proceed.
-              </p>
-            </div>
+  //           <div className="w-[640px] text-left mb-8">
+  //             <p className="text-[20px] font-normal leading-[156%] tracking-[-4%] text-[#2E2E2E] font-inter">
+  //               We've sent a verification link to{" "}
+  //               <span className="font-semibold whitespace-nowrap">{email}</span>
+  //             </p>
+  //             <p className="text-[20px] font-normal leading-[156%] tracking-[-4%] text-[#2E2E2E] font-inter">
+  //               Please check your inbox and click the link to proceed.
+  //             </p>
+  //           </div>
 
-            <div className="w-[640px] flex justify-center">
-              <button
-                onClick={() => {}}
-                className="w-[512px] cursor-pointer h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-5%] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                style={{
-                  background:
-                    "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%)",
-                  backdropFilter: "blur(200px)",
+  //           <div className="w-[640px] flex justify-center">
+  //             <button
+  //               onClick={() => {}}
+  //               className="w-[512px] cursor-pointer h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-5%] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+  //               style={{
+  //                 background:
+  //                   "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%)",
+  //                 backdropFilter: "blur(200px)",
 
-                  borderImage:
-                    "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%) 1",
-                }}
-              >
-                Resend Verification Email
-              </button>
-            </div>
+  //                 borderImage:
+  //                   "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%) 1",
+  //               }}
+  //             >
+  //               Resend Verification Email
+  //             </button>
+  //           </div>
 
-            <div className="w-[640px] flex justify-center mt-4">
-              <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-[#6E7191] font-inter">
-                Didn't receive the email? Check your spam folder.
-              </p>
-            </div>
-      </AuthLayout>
-    );
-  }
+  //           <div className="w-[640px] flex justify-center mt-4">
+  //             <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-[#6E7191] font-inter">
+  //               Didn't receive the email? Check your spam folder.
+  //             </p>
+  //           </div>
+  //     </AuthLayout>
+  //   );
+  // }
 
   return (
     <AuthLayout>
@@ -86,9 +96,15 @@ const ForgotPassword = () => {
               Forgot your password?
             </h2>
             <p className="text-[16px] font-normal leading-[144%] tracking-[-4%] text-[#2E2E2E] font-inter">
-              Enter your email address and we'll send you a reset link.
+              Enter your email address and we'll send you a verification code.
             </p>
           </div>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div className="mb-[24px]">
@@ -144,7 +160,7 @@ const ForgotPassword = () => {
                     ></path>
                   </svg>
                 ) : (
-                  "Reset password"
+                  "Send Verification Code"
                 )}
               </button>
             </div>

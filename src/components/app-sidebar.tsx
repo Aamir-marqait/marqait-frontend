@@ -196,32 +196,39 @@ export default function Sidebar({
             className="border-t p-4 bg-white"
             style={{ borderTop: "1px solid #BEBEBE99" }}
           >
-            <div className="flex items-center gap-3 mb-3">
-              <img src={coinIcon} alt="Coin" className="w-10 h-10" />
+            <div className="flex space-x-4">
+              <img src={coinIcon} alt="Coin" className="w-11 h-11" />
               <div className="flex-1">
-                <div className="font-Inter font-semibold text-[24px] leading-[100%] text-[#172935]">
-                  17<span className="font-Inter font-normal text-[16px] leading-[100%]">/1000</span>
+                <div className="flex items-end gap-3 mb-3">
+                  <div className="flex-1">
+                    <div className="font-Inter font-semibold text-[24px] leading-[100%] text-[#172935]">
+                      17
+                      <span className="font-Inter font-normal text-[16px] leading-[100%]">
+                        /1000
+                      </span>
+                    </div>
+                  </div>
+                  <div className="font-Inter font-normal text-[12px] leading-[100%] text-[#172935]">
+                    24%
+                  </div>
                 </div>
+                <div className="mb-4">
+                  <Progress value={24} className="h-2 bg-[#E6D4FF]" />
+                </div>
+                <Link to="/account/upgrade/credit">
+                  <button
+                    className="cursor-pointer h-8 px-3 py-1 rounded-lg border border-[#7F56D9] font-Inter font-semibold text-[14px] leading-[24px] text-white transition-all duration-200 hover:shadow-lg flex items-center justify-center"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)",
+                      boxShadow: "0px 1px 2px 0px rgba(10, 13, 18, 0.05)",
+                    }}
+                  >
+                    Upgrade
+                  </button>
+                </Link>
               </div>
-              <div className="font-Inter font-normal text-[12px] leading-[100%] text-[#172935]">24%</div>
             </div>
-
-            <div className="mb-4">
-              <Progress
-                value={24}
-                className="h-2 bg-[#E6D4FF]"
-              />
-            </div>
-
-            <button 
-              className="w-full h-8 px-3 py-1 rounded-lg border border-[#7F56D9] font-Inter font-semibold text-[14px] leading-[24px] text-white transition-all duration-200 hover:shadow-lg"
-              style={{
-                background: "linear-gradient(180deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)",
-                boxShadow: "0px 1px 2px 0px rgba(10, 13, 18, 0.05)"
-              }}
-            >
-              Upgrade
-            </button>
           </div>
         )}
       </div>

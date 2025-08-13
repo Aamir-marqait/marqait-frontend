@@ -10,6 +10,7 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import ImageEditor from "./pages/image-editor";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UpgradeCredit from "./pages/account/UpgradeCredit";
 
 export const createRoutes = (
   isAuthenticated: boolean,
@@ -187,6 +188,14 @@ export const createRoutes = (
             description="Customize your MARQAIT experience"
           />
         </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/account/upgrade/credit",
+    element: (
+      <ProtectedRoute>
+        <UpgradeCredit />
       </ProtectedRoute>
     ),
   },
