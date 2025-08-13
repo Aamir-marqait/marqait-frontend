@@ -13,10 +13,15 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const navigate = useNavigate();
   const { logout } = useAuthStore();
 
-  const handleLogout = () => {
-    logout();
-    setIsDropdownOpen(false);
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsDropdownOpen(false);
+      navigate("/");
+    } catch (error) {
+      console.error('Logout failed:', error);
+      setIsDropdownOpen(false);
+    }
   };
 
   useEffect(() => {

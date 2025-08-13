@@ -2,6 +2,7 @@ import type React from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
+import { authService, validateField, formatValidationErrors } from "../../api";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
 import AuthLayout from "../../components/auth/AuthLayout";
 
@@ -23,15 +24,23 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const validateForm = () => {
-    if (!firstName.trim()) return "First name is required";
-    if (!lastName.trim()) return "Last name is required";
-    if (!email.trim()) return "Email address is required";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      return "Please enter a valid email";
-    if (password.length < 8) return "Password must be at least 8 characters";
+    const firstNameError = validateField(firstName, 'firstName');
+    if (firstNameError) return firstNameError;
+    
+    const lastNameError = validateField(lastName, 'lastName');
+    if (lastNameError) return lastNameError;
+    
+    const emailError = validateField(email, 'email');
+    if (emailError) return emailError;
+    
+    const passwordError = validateField(password, 'password');
+    if (passwordError) return passwordError;
+    
     if (password !== confirmPassword) return "Passwords do not match";
-    if (!companyName.trim()) return "Company name is required";
-    if (!domain.trim()) return "Domain/Industry is required";
+    
+    if (companyName && companyName.length > 100) return "Company name must be less than 100 characters";
+    if (domain && domain.length > 50) return "Domain/Industry must be less than 50 characters";
+    
     return null;
   };
 
@@ -48,15 +57,27 @@ const Signup = () => {
     }
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await authService.signup({
+        first_name: firstName,
+        last_name: lastName,
+        email_address: email,
+        password: password,
+        company_name: companyName || undefined,
+        industry: domain || undefined,
+      });
 
       navigate("/accounts/emailsignup/otp-verification", {
         state: {
           email: email,
+          message: response.message,
         },
       });
-    } catch {
-      setError("An error occurred during registration");
+    } catch (error: any) {
+      if (error.errors) {
+        setError(formatValidationErrors(error.errors));
+      } else {
+        setError(error.message || "An error occurred during registration");
+      }
     } finally {
       setIsLoading(false);
     }

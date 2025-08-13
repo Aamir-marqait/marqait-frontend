@@ -1,0 +1,19 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="20" cy="20" r="20" fill="url(#coinGradient)"/>
+  <circle cx="20" cy="20" r="15" fill="url(#innerGradient)"/>
+  <circle cx="20" cy="20" r="10" fill="url(#centerGradient)"/>
+  <defs>
+    <radialGradient id="coinGradient" cx="0.3" cy="0.3" r="0.7">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#B8860B"/>
+    </radialGradient>
+    <radialGradient id="innerGradient" cx="0.3" cy="0.3" r="0.7">
+      <stop offset="0%" stop-color="#FFA500"/>
+      <stop offset="100%" stop-color="#FF8C00"/>
+    </radialGradient>
+    <radialGradient id="centerGradient" cx="0.3" cy="0.3" r="0.7">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#DAA520"/>
+    </radialGradient>
+  </defs>
+</svg>

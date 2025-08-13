@@ -2,20 +2,24 @@ import type React from "react";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { authService } from "../../api";
+import { useAuthStore } from "../../stores/authStore";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
 import AuthLayout from "../../components/auth/AuthLayout";
 
 const OtpVerification = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [, setError] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [isShaking, setIsShaking] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const { initialize } = useAuthStore();
 
   const email = location.state?.email || "";
+  const message = location.state?.message || "";
 
   useEffect(() => {
     if (!email) {
@@ -82,18 +86,24 @@ const OtpVerification = () => {
     setIsShaking(false);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await authService.verifyOtp({
+        email_address: email,
+        otp_code: otpValue,
+      });
 
-      if (otpValue === "123456") {
-        navigate("/dashboard");
-      } else {
-        setIsShaking(true);
-        setOtp(["", "", "", "", "", ""]);
-        inputRefs.current[0]?.focus();
-        setTimeout(() => setIsShaking(false), 600);
-      }
-    } catch {
+      // Initialize auth store with the user data
+      initialize();
+      
+      navigate("/dashboard", {
+        state: {
+          message: `Welcome ${response.user.first_name}! Your account has been verified successfully.`,
+        },
+      });
+    } catch (error: any) {
+      setError(error.message || "Invalid verification code. Please try again.");
       setIsShaking(true);
+      setOtp(["", "", "", "", "", ""]);
+      inputRefs.current[0]?.focus();
       setTimeout(() => setIsShaking(false), 600);
     } finally {
       setIsLoading(false);
@@ -108,10 +118,13 @@ const OtpVerification = () => {
     setIsShaking(false);
     
     try {
+      // For now, we'll assume resend functionality might be available later
+      // You can implement this once the API endpoint is available
       await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log("OTP resent to:", email);
-    } catch {
-      setError("Failed to resend OTP. Please try again.");
+      // TODO: Call actual resend OTP API when available
+    } catch (error: any) {
+      setError(error.message || "Failed to resend OTP. Please try again.");
       setResendCooldown(0);
     }
   };
@@ -143,6 +156,11 @@ const OtpVerification = () => {
           Enter the 6-digit code we sent to{" "}
           <span className="font-medium text-[#1E1E1E]">{email}</span>
         </p>
+        {message && (
+          <p className="text-sm text-green-600 mt-2 font-medium">
+            {message}
+          </p>
+        )}
       </div>
 
       <div className="mb-6">
@@ -161,7 +179,7 @@ const OtpVerification = () => {
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={index === 0 ? handlePaste : undefined}
               className={`w-12 h-12 text-center text-[20px] font-semibold border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                isShaking ? 'border-red-500 bg-red-50' : 'border-[#D5D7DA]'
+                isShaking || error ? 'border-red-500 bg-red-50' : 'border-[#D5D7DA]'
               }`}
               maxLength={1}
               disabled={isLoading}
@@ -169,6 +187,11 @@ const OtpVerification = () => {
           ))}
         </div>
 
+        {error && (
+          <div className="flex items-center space-x-2 mb-4 text-red-600">
+            <span className="text-sm font-medium">{error}</span>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-center mb-6">
