@@ -215,16 +215,18 @@ export default function Sidebar({
                 <div className="mb-4">
                   <Progress value={24} className="h-2 bg-[#E6D4FF]" />
                 </div>
-                <button
-                  className="cursor-pointer h-8 px-3 py-1 rounded-lg border border-[#7F56D9] font-Inter font-semibold text-[14px] leading-[24px] text-white transition-all duration-200 hover:shadow-lg"
-                  style={{
-                    background:
-                      "linear-gradient(180deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)",
-                    boxShadow: "0px 1px 2px 0px rgba(10, 13, 18, 0.05)",
-                  }}
-                >
-                  Upgrade
-                </button>
+                <Link to="/account/upgrade/credit">
+                  <button
+                    className="cursor-pointer h-8 px-3 py-1 rounded-lg border border-[#7F56D9] font-Inter font-semibold text-[14px] leading-[24px] text-white transition-all duration-200 hover:shadow-lg flex items-center justify-center"
+                    style={{
+                      background:
+                        "linear-gradient(180deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)",
+                      boxShadow: "0px 1px 2px 0px rgba(10, 13, 18, 0.05)",
+                    }}
+                  >
+                    Upgrade
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
