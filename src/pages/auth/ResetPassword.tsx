@@ -1,9 +1,9 @@
 import type React from "react";
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, AlertCircle } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import fullLogo from "../../assets/app-logo/full-logo.svg";
-import lockIcon from "../../assets/lock.svg";
+// import lockIcon from "../../assets/lock.svg";
 import AuthLayout from "../../components/auth/AuthLayout";
 import axiosInstance from "../../lib/axios";
 
@@ -19,8 +19,8 @@ const ResetPassword = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
+  const [otpError, setOtpError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
 
   useEffect(() => {
@@ -49,6 +49,7 @@ const ResetPassword = () => {
     newOtp[index] = value.slice(-1);
     setOtp(newOtp);
     setError("");
+    setOtpError(false);
     setIsShaking(false);
 
     if (value && index < 5) {
@@ -66,15 +67,19 @@ const ResetPassword = () => {
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-    
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+
     if (pastedData.length === 6) {
       const newOtp = pastedData.split("");
       setOtp(newOtp);
       setError("");
+      setOtpError(false);
       setIsShaking(false);
       inputRefs.current[5]?.focus();
-      
+
       // Just fill the inputs, don't auto-submit
     }
   };
@@ -84,9 +89,12 @@ const ResetPassword = () => {
     setError("");
 
     if (otp.join("").length !== 6) {
-      setError("Please enter all 6 digits of the verification code");
+      setOtpError(true);
       setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 600);
+      setTimeout(() => {
+        setIsShaking(false);
+        setOtpError(false);
+      }, 600);
       return;
     }
 
@@ -111,12 +119,37 @@ const ResetPassword = () => {
       // Success - redirect to login
       navigate("/", {
         state: {
-          message: "Password reset successful. Please sign in with your new password."
-        }
+          message:
+            "Password reset successful. Please sign in with your new password.",
+        },
       });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "An error occurred while resetting password");
+      const errorMessage =
+        error.response?.data?.message ||
+        "An error occurred while resetting password";
+
+      // Check if error is OTP-related
+      if (
+        errorMessage.toLowerCase().includes("otp") ||
+        errorMessage.toLowerCase().includes("verification code") ||
+        errorMessage.toLowerCase().includes("invalid") ||
+        errorMessage.toLowerCase().includes("expired") ||
+        errorMessage.toLowerCase().includes("code")
+      ) {
+        // For OTP errors, just show vibration
+        setOtpError(true);
+        setIsShaking(true);
+        setOtp(["", "", "", "", "", ""]);
+        inputRefs.current[0]?.focus();
+        setTimeout(() => {
+          setIsShaking(false);
+          setOtpError(false);
+        }, 600);
+      } else {
+        // For other errors, show text
+        setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -125,6 +158,8 @@ const ResetPassword = () => {
   const handleResendOtp = async () => {
     setResendLoading(true);
     setError("");
+    setOtpError(false);
+    setIsShaking(false);
 
     try {
       await axiosInstance.post("/api/v1/auth/resend-otp", {
@@ -133,14 +168,17 @@ const ResetPassword = () => {
       // Show success message or handle success
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Failed to resend OTP. Please try again.");
+      setError(
+        error.response?.data?.message ||
+          "Failed to resend OTP. Please try again."
+      );
     } finally {
       setResendLoading(false);
     }
   };
 
-  const isFormValid = 
-    otp.every(digit => digit !== "") &&
+  const isFormValid =
+    otp.every((digit) => digit !== "") &&
     newPassword &&
     confirmPassword &&
     validatePassword(newPassword) &&
@@ -158,7 +196,8 @@ const ResetPassword = () => {
         </h2>
         <p className="text-[16px] font-normal leading-[144%] tracking-[-4%] text-[#2E2E2E] font-inter">
           We've sent a verification code to{" "}
-          <span className="font-semibold">{email}</span>. Enter the code and your new password below.
+          <span className="font-semibold">{email}</span>. Enter the code and
+          your new password below.
         </p>
       </div>
 
@@ -191,11 +230,17 @@ const ResetPassword = () => {
           <label className="block text-[15px] font-medium leading-[130%] tracking-[-2%] text-[#2E2E2E] font-inter mb-4">
             Verification Code *
           </label>
-          <div className={`flex space-x-3 mb-4 justify-center ${isShaking ? 'animate-shake' : ''}`}>
+          <div
+            className={`flex space-x-3 mb-4 ${
+              isShaking ? "animate-shake" : ""
+            }`}
+          >
             {otp.map((digit, index) => (
               <input
                 key={index}
-                ref={(el) => { inputRefs.current[index] = el; }}
+                ref={(el) => {
+                  inputRefs.current[index] = el;
+                }}
                 type="text"
                 inputMode="numeric"
                 value={digit}
@@ -203,14 +248,16 @@ const ResetPassword = () => {
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={index === 0 ? handlePaste : undefined}
                 className={`w-12 h-12 text-center text-[20px] font-semibold border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
-                  isShaking || error ? 'border-red-500 bg-red-50' : 'border-[#D5D7DA]'
+                  isShaking || otpError
+                    ? "border-red-500 bg-red-50"
+                    : "border-[#D5D7DA]"
                 }`}
                 maxLength={1}
                 disabled={isLoading}
               />
             ))}
           </div>
-          <div className="flex justify-center">
+          <div className="flex">
             <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-[#6E7191] font-inter">
               Didn't receive the code?{" "}
               <button
@@ -292,8 +339,8 @@ const ResetPassword = () => {
         {/* Password Requirements */}
         <div className="w-[640px] mb-6">
           <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-[#717680] font-inter">
-            Password must be at least 8 characters, include uppercase,
-            number, and special character.
+            Password must be at least 8 characters, include uppercase, number,
+            and special character.
           </p>
         </div>
 
