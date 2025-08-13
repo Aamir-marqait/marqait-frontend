@@ -7,7 +7,7 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
   initialize: () => void;
 }
 
@@ -34,9 +34,14 @@ export const useAuthStore = create<AuthState>()(
           return false;
         }
       },
-      logout: () => {
-        authService.logout();
-        set({ user: null, isAuthenticated: false });
+      logout: async () => {
+        try {
+          await authService.signout();
+        } catch (error) {
+          console.error('Signout failed:', error);
+        } finally {
+          set({ user: null, isAuthenticated: false });
+        }
       },
       initialize: () => {
         const user = authService.getCurrentUser();

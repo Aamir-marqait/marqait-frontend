@@ -88,6 +88,21 @@ class AuthService {
     localStorage.setItem('user_data', JSON.stringify(user));
   }
 
+  async signout(): Promise<void> {
+    try {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (refreshToken) {
+        await axiosInstance.post(`${this.baseUrl}/signout`, {
+          refresh_token: refreshToken
+        });
+      }
+    } catch (error: any) {
+      console.error('Signout error:', error);
+    } finally {
+      this.logout();
+    }
+  }
+
   async logout(): Promise<void> {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('refresh_token');

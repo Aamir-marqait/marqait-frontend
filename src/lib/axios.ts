@@ -1,6 +1,6 @@
 import axios, { AxiosError, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.marqait.com/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
