@@ -2,6 +2,7 @@ import UpgradeHeader from "../../components/UpgradeHeader";
 import PricingCard from "../../components/credits/PricingCard";
 import FAQSection from "../../components/credits/FAQSection";
 import { useAuthStore } from "../../stores/authStore";
+import { useSubscription } from "../../hooks/useSubscription";
 
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,6 +10,9 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function SubscriptionPage() {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
   const { updateUserPlan, user } = useAuthStore();
+  
+  // Fetch subscription status for future use - doesn't affect current UI
+  const { subscriptionStatus } = useSubscription();
 
   const handlePlanSelection = (plan: 'free' | 'professional' | 'enterprise') => {
     updateUserPlan(plan);

@@ -96,3 +96,32 @@ export interface CreditsBalance {
   total_available: number;
   subscription_expires_at: string;
 }
+
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  display_name: string;
+  description: string;
+  credits: number;
+  price: number;
+  duration_days: number;
+  is_active: boolean;
+}
+
+export interface CurrentSubscription {
+  id: string;
+  user_id: string;
+  plan: SubscriptionPlan;
+  status: 'ACTIVE' | 'INACTIVE' | 'CANCELLED' | 'EXPIRED';
+  start_date: string;
+  end_date: string;
+  auto_renew: boolean;
+  created_at: string;
+}
+
+export interface SubscriptionStatus {
+  has_active_subscription: boolean;
+  current_subscription: CurrentSubscription | null;
+  can_buy_custom_credits: boolean;
+  subscription_tier: 'FREE' | 'PRO' | 'ENTERPRISE';
+}

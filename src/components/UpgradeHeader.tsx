@@ -1,7 +1,9 @@
 import { ChevronDown, LogOut } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import { useCreditsBalance } from "../hooks/useCreditsBalance";
+import { useSubscription } from "../hooks/useSubscription";
 import fullLogo from "../assets/app-logo/full-logo.png";
 import coinIcon from "../assets/nav-icon/icon.png";
 
@@ -9,22 +11,30 @@ export default function UpgradeHeader() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { logout, user, userStats } = useAuthStore();
+  const { logout, user } = useAuthStore();
+  const { creditsBalance } = useCreditsBalance();
+  const { subscriptionStatus } = useSubscription();
   
   const userInitial = user?.first_name?.charAt(0)?.toUpperCase() || 'A';
   
-  // Calculate credit limit based on subscription
-  const getCreditLimit = (subscription: string) => {
-    switch (subscription) {
-      case 'free': return 1000;
+  // Calculate credit limit based on current subscription
+  const creditLimit = useMemo(() => {
+    if (subscriptionStatus?.current_subscription) {
+      return subscriptionStatus.current_subscription.plan.credits;
+    }
+    
+    // Fallback based on subscription tier
+    const tier = subscriptionStatus?.subscription_tier?.toLowerCase() || 'free';
+    switch (tier) {
+      case 'pro': 
       case 'professional': return 10000;
       case 'enterprise': return 100000;
       default: return 1000;
     }
-  };
+  }, [subscriptionStatus]);
   
-  const creditsSpent = userStats?.total_credits_spent || 55;
-  const creditLimit = getCreditLimit(userStats?.current_subscription || 'free');
+  // Show total available credits (subscription + custom credits)
+  const totalAvailableCredits = creditsBalance?.total_available || 0;
 
   const handleLogout = async () => {
     try {
@@ -70,13 +80,13 @@ export default function UpgradeHeader() {
           <div className="flex items-center space-x-4">
             {/* Credit badge */}
             <div
-              className="flex items-center justify-center space-x-2 bg-[#F4EAFF] rounded-[100px]"
-              style={{ width: "117px", height: "44px" }}
+              className="flex items-center justify-center space-x-2 bg-[#F4EAFF] rounded-[100px] px-4"
+              style={{ height: "44px" }}
             >
               <img src={coinIcon} alt="Coin" className="w-6 h-6" />
               <div className="flex items-center gap-[1px]">
                 <span className="font-Inter font-medium text-[14px] leading-[100%] text-gray-700">
-                  {creditsSpent}
+                  {totalAvailableCredits.toLocaleString()}
                 </span>
                 <span className="font-Inter font-medium text-[12px] leading-[100%] text-gray-700">
                   /
