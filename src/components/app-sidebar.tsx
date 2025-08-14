@@ -1,5 +1,7 @@
 import { useLocation, Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import { useState, useEffect } from "react";
+import { userService } from "../api/services";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import dashboardIcon from "../assets/nav-icon/dashboard.svg";
 import adCampaign from "../assets/nav-icon/AdCampaigns.svg";
@@ -100,6 +102,27 @@ export default function Sidebar({
 }: SidebarProps) {
   const location = useLocation();
   const { user, userStats } = useAuthStore();
+  const [creditsBalance, setCreditsBalance] = useState<number | null>(null);
+  const [isLoadingCredits, setIsLoadingCredits] = useState(false);
+  
+  // Fetch credits balance
+  useEffect(() => {
+    const fetchCreditsBalance = async () => {
+      setIsLoadingCredits(true);
+      try {
+        const balance = await userService.getCreditsBalance();
+        setCreditsBalance(balance.total_available);
+      } catch (error) {
+        console.error('Failed to fetch credits balance:', error);
+        // Set to 0 if API fails
+        setCreditsBalance(0);
+      } finally {
+        setIsLoadingCredits(false);
+      }
+    };
+
+    fetchCreditsBalance();
+  }, []);
   
   // Calculate credit limit based on subscription
   const getCreditLimit = (subscription: string) => {
@@ -111,9 +134,9 @@ export default function Sidebar({
     }
   };
   
-  const creditsSpent = userStats?.total_credits_spent || 17;
   const creditLimit = getCreditLimit(userStats?.current_subscription || 'free');
-  const progressPercentage = Math.round((creditsSpent / creditLimit) * 100);
+  const displayCredits = creditsBalance !== null ? creditsBalance : 0;
+  const progressPercentage = Math.round((displayCredits / creditLimit) * 100);
   
   // Filter navigation items based on user plan
   const getFilteredNavigationItems = () => {
@@ -250,7 +273,7 @@ export default function Sidebar({
                 <div className="flex items-end gap-3 mb-3">
                   <div className="flex-1">
                     <div className="font-Inter font-semibold text-[24px] leading-[100%] text-[#172935]">
-                      {creditsSpent}
+                      {isLoadingCredits ? '...' : displayCredits}
                       <span className="font-Inter font-normal text-[16px] leading-[100%]">
                         /{creditLimit.toLocaleString()}
                       </span>

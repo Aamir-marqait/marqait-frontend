@@ -89,3 +89,10 @@ export interface ApiError {
   status: number;
   errors?: Record<string, string[]>;
 }
+
+export interface CreditsBalance {
+  subscription_credits: number;
+  custom_credits: number;
+  total_available: number;
+  subscription_expires_at: string;
+}
