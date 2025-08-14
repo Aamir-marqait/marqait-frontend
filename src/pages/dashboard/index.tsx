@@ -3,8 +3,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { QuickLaunchCard } from "@/components/ui/quick-launch-card";
+import { CreateTaskModal } from "@/components/ui/create-task-modal";
 import { useAuthStore } from "@/stores/authStore";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   ArrowRight,
   Plus,
@@ -25,6 +27,7 @@ import image from "../../assets/dashboard/image.svg";
 export default function Dashboard() {
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
   const firstName = user?.first_name || "User";
   const userPlan = user?.plan || "free";
 
@@ -108,7 +111,10 @@ export default function Dashboard() {
               Ready to create something amazing today?
             </p>
           </div>
-          <Button className="cursor-pointer bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-[#FFFFFF] px-6 py-3 rounded-[8px] font-[Inter] font-[700] text-[14px] leading-[20px] tracking-[0px] text-center shadow-[0px_2px_6px_0px_#7000CC40]">
+          <Button 
+            onClick={() => setIsCreateTaskModalOpen(true)}
+            className="cursor-pointer bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-[#FFFFFF] px-6 py-3 rounded-[8px] font-[Inter] font-[700] text-[14px] leading-[20px] tracking-[0px] text-center shadow-[0px_2px_6px_0px_#7000CC40]"
+          >
             <Plus className="w-4 h-4" />
             New Task
           </Button>
@@ -450,6 +456,11 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
+
+      <CreateTaskModal
+        open={isCreateTaskModalOpen}
+        onOpenChange={setIsCreateTaskModalOpen}
+      />
     </div>
   );
 }
