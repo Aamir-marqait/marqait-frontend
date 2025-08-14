@@ -36,7 +36,7 @@ export default function Dashboard() {
   const baseQuickLaunchItems = [
     {
       id: "social-post",
-      title: "Social Media Post Generator",
+      title: "Social Post",
       description: "Generate social media post with one click.",
       iconSrc: social,
       backgroundColor: "#FFF4DE",
