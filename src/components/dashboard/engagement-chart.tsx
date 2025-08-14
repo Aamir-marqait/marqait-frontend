@@ -26,7 +26,7 @@ export function EngagementChart() {
   const maxValue = Math.max(...data.map((d) => d.value));
 
   return (
-    <Card className="w-[754px] h-[459px] rounded-lg bg-[#FFFFFF] opacity-100 border-none shadow-none">
+    <Card className="w-[770px] h-[459px] rounded-lg bg-[#FFFFFF] opacity-100 border-none shadow-none">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="font-[Inter] font-[600] text-[20px] leading-[100%] tracking-[0%] text-[#161E54]">
           Engagement Over Time
