@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
-import About from "./pages/About";
+
 import Dashboard from "./pages/dashboard";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
@@ -24,11 +24,19 @@ export const createRoutes = (
   },
   {
     path: "/accounts/emailsignup",
-    element: isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />,
+    element: isAuthenticated ? (
+      <Navigate to="/dashboard" replace />
+    ) : (
+      <Signup />
+    ),
   },
   {
     path: "/accounts/emailsignup/otp-verification",
-    element: isAuthenticated ? <Navigate to="/dashboard" replace /> : <OtpVerification />,
+    element: isAuthenticated ? (
+      <Navigate to="/dashboard" replace />
+    ) : (
+      <OtpVerification />
+    ),
   },
   {
     path: "/accounts/password/reset/",
@@ -56,16 +64,7 @@ export const createRoutes = (
       </ProtectedRoute>
     ),
   },
-  {
-    path: "/about",
-    element: (
-      <ProtectedRoute requiredPlan="professional">
-        <AppLayout>
-          <About />
-        </AppLayout>
-      </ProtectedRoute>
-    ),
-  },
+
   {
     path: "/image-editor",
     element: (

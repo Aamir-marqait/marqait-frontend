@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { QuickLaunchCard } from "@/components/ui/quick-launch-card";
+import { useAuthStore } from "@/stores/authStore";
 import {
   ArrowRight,
   Plus,
@@ -20,6 +21,9 @@ import brand from "../../assets/dashboard/brandbook.svg";
 import image from "../../assets/dashboard/image.svg";
 
 export default function Dashboard() {
+  const { user } = useAuthStore();
+  const firstName = user?.first_name || 'User';
+  
   const quickLaunchItems = [
     {
       title: "Generate Campaign",
@@ -65,7 +69,7 @@ export default function Dashboard() {
         <div className="flex items-start justify-between">
           <div>
             <h1 className="font-[Inter] text-[33.92px] font-[700] leading-[100%] tracking-[0%] text-gray-900 mb-2">
-              Hello Anas Sabah{" "}
+              Hello {firstName}{" "}
               <span className="font-[Inter] text-[33.92px] font-[700] leading-[100%] tracking-[0%]">
                 {" "}
                 👋

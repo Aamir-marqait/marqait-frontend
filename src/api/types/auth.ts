@@ -28,8 +28,10 @@ export interface User {
   email_address: string;
   company_name?: string;
   industry?: string;
+  profile_image_url?: string;
   is_verified: boolean;
   created_at: string;
+  updated_at: string;
   plan?: 'free' | 'professional' | 'enterprise';
 }
 
@@ -69,6 +71,17 @@ export interface ApiResponse<T> {
   message: string;
   data?: T;
   error?: string;
+}
+
+export interface UserStats {
+  account_age_days: number;
+  total_executions: number;
+  successful_executions: number;
+  success_rate: number;
+  total_credits_spent: number;
+  current_subscription: 'free' | 'professional' | 'enterprise';
+  member_since: string;
+  last_activity: string;
 }
 
 export interface ApiError {

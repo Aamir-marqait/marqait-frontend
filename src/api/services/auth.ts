@@ -7,8 +7,11 @@ import type {
   VerifyOtpResponse,
   SigninRequest,
   SigninResponse,
-  RefreshTokenResponse
+  RefreshTokenResponse,
+  User,
+  UserStats
 } from '../types';
+import { userService } from './user';
 import { handleApiError } from '../utils';
 
 class AuthService {
@@ -43,7 +46,7 @@ class AuthService {
     }
   }
 
-  async signin(data: SigninRequest): Promise<SigninResponse> {
+  async signin(data: SigninRequest): Promise<SigninResponse & { userStats?: UserStats }> {
     try {
       const response = await axiosInstance.post<SigninResponse>(
         `${this.baseUrl}/signin`,
@@ -52,6 +55,26 @@ class AuthService {
       
       if (response.data.tokens) {
         this.saveAuthData(response.data.tokens, response.data.user);
+        
+        // Fetch updated user profile and stats after login
+        try {
+          const [userProfile, userStats] = await Promise.all([
+            userService.getCurrentUser(),
+            userService.getUserStats()
+          ]);
+          
+          // Update stored user data with fresh profile
+          this.saveAuthData(response.data.tokens, userProfile);
+          
+          return {
+            ...response.data,
+            user: userProfile,
+            userStats
+          };
+        } catch (profileError) {
+          console.warn('Failed to fetch user profile/stats:', profileError);
+          return response.data;
+        }
       }
       
       return response.data;
@@ -120,6 +143,37 @@ class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.getAccessToken();
+  }
+
+  async fetchUserProfile(): Promise<User | null> {
+    try {
+      if (!this.isAuthenticated()) return null;
+      const userProfile = await userService.getCurrentUser();
+      
+      // Update stored user data
+      const tokens = {
+        access_token: this.getAccessToken() || '',
+        refresh_token: localStorage.getItem('refresh_token') || '',
+        token_type: 'bearer',
+        expires_in: 1800
+      };
+      this.saveAuthData(tokens, userProfile);
+      
+      return userProfile;
+    } catch (error) {
+      console.error('Failed to fetch user profile:', error);
+      return null;
+    }
+  }
+
+  async fetchUserStats(): Promise<UserStats | null> {
+    try {
+      if (!this.isAuthenticated()) return null;
+      return await userService.getUserStats();
+    } catch (error) {
+      console.error('Failed to fetch user stats:', error);
+      return null;
+    }
   }
 }
 

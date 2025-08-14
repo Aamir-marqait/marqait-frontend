@@ -99,7 +99,21 @@ export default function Sidebar({
   onToggleCollapse,
 }: SidebarProps) {
   const location = useLocation();
-  const { user } = useAuthStore();
+  const { user, userStats } = useAuthStore();
+  
+  // Calculate credit limit based on subscription
+  const getCreditLimit = (subscription: string) => {
+    switch (subscription) {
+      case 'free': return 1000;
+      case 'professional': return 10000;
+      case 'enterprise': return 100000;
+      default: return 1000;
+    }
+  };
+  
+  const creditsSpent = userStats?.total_credits_spent || 17;
+  const creditLimit = getCreditLimit(userStats?.current_subscription || 'free');
+  const progressPercentage = Math.round((creditsSpent / creditLimit) * 100);
   
   // Filter navigation items based on user plan
   const getFilteredNavigationItems = () => {
@@ -236,18 +250,18 @@ export default function Sidebar({
                 <div className="flex items-end gap-3 mb-3">
                   <div className="flex-1">
                     <div className="font-Inter font-semibold text-[24px] leading-[100%] text-[#172935]">
-                      17
+                      {creditsSpent}
                       <span className="font-Inter font-normal text-[16px] leading-[100%]">
-                        /1000
+                        /{creditLimit.toLocaleString()}
                       </span>
                     </div>
                   </div>
                   <div className="font-Inter font-normal text-[12px] leading-[100%] text-[#172935]">
-                    24%
+                    {progressPercentage}%
                   </div>
                 </div>
                 <div className="mb-4">
-                  <Progress value={24} className="h-2 bg-[#E6D4FF]" />
+                  <Progress value={progressPercentage} className="h-2 bg-[#E6D4FF]" />
                 </div>
                 <Link to="/account/upgrade/credit">
                   <button
