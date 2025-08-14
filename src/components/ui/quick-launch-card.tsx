@@ -8,6 +8,7 @@ interface QuickLaunchCardProps {
   backgroundColor: string;
   iconBackgroundColor: string;
   onClick?: () => void;
+  className?: string;
 }
 
 export function QuickLaunchCard({
@@ -17,10 +18,11 @@ export function QuickLaunchCard({
   backgroundColor,
   iconBackgroundColor,
   onClick,
+  className = "",
 }: QuickLaunchCardProps) {
   return (
     <Card 
-      className={`w-full lg:w-[204px] h-[156px] border-0 hover:shadow-md transition-shadow cursor-pointer rounded-[10px] opacity-100 relative`}
+      className={`w-full lg:w-[204px] h-[156px] border-0 hover:shadow-md transition-shadow cursor-pointer rounded-[10px] opacity-100 relative ${className}`}
       style={{ backgroundColor }}
       onClick={onClick}
     >
