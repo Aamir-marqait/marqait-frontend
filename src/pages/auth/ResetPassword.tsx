@@ -188,7 +188,7 @@ const ResetPassword = () => {
   if (isSuccess) {
     return (
       <AuthLayout>
-        <div className="text-center w-[47rem]">
+        <div className="text-center w-full max-w-3xl">
           <div className="flex justify-center mb-6">
             <img src={lockIcon} alt="Success" className="h-[132px] w-[132px]" />
           </div>
@@ -204,7 +204,7 @@ const ResetPassword = () => {
           <div className="flex justify-center">
             <button
               onClick={handleGoToLogin}
-              className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer"
+              className="w-full max-w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer"
               style={{
                 background:
                   "linear-gradient(270deg, #7000CC 0%, #8000E6 50%, #8E07F8 100%)",
@@ -256,7 +256,7 @@ const ResetPassword = () => {
             type="email"
             value={email}
             readOnly
-            className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl bg-gray-50 text-[15px] font-normal leading-[130%] tracking-[-4%] text-gray-600 font-inter cursor-not-allowed"
+            className="w-full h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl bg-gray-50 text-[15px] font-normal leading-[130%] tracking-[-4%] text-gray-600 font-inter cursor-not-allowed"
           />
         </div>
 
@@ -266,7 +266,7 @@ const ResetPassword = () => {
             Verification Code *
           </label>
           <div
-            className={`flex space-x-3 mb-4 ${
+            className={`flex justify-center space-x-2 sm:space-x-3 mb-4 ${
               isShaking ? "animate-shake" : ""
             }`}
           >
@@ -282,7 +282,7 @@ const ResetPassword = () => {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={index === 0 ? handlePaste : undefined}
-                className={`w-12 h-12 text-center text-[20px] font-semibold border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
+                className={`w-10 h-10 sm:w-12 sm:h-12 text-center text-[16px] sm:text-[20px] font-semibold border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 ${
                   isShaking || otpError
                     ? "border-red-500 bg-red-50"
                     : "border-[#D5D7DA]"
@@ -315,7 +315,7 @@ const ResetPassword = () => {
           >
             New Password *
           </label>
-          <div className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-colors flex items-center justify-between">
+          <div className="w-full h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-colors flex items-center justify-between">
             <input
               id="newPassword"
               type={showNewPassword ? "text" : "password"}
@@ -347,7 +347,7 @@ const ResetPassword = () => {
           >
             Confirm new password *
           </label>
-          <div className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-colors flex items-center justify-between">
+          <div className="w-full h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-colors flex items-center justify-between">
             <input
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
@@ -372,7 +372,7 @@ const ResetPassword = () => {
         </div>
 
         {/* Password Requirements */}
-        <div className="w-[640px] mb-6">
+        <div className="w-full mb-6">
           <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-[#717680] font-inter">
             Password must be at least 8 characters, include uppercase, number,
             and special character.
@@ -380,11 +380,11 @@ const ResetPassword = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="w-[640px] flex justify-center">
+        <div className="w-full flex justify-center">
           <button
             type="submit"
             disabled={isLoading || !isFormValid}
-            className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full max-w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
             style={{
               background:
                 isLoading || !isFormValid

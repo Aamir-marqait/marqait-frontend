@@ -57,7 +57,7 @@ export const createRoutes = (
   {
     path: "/about",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="professional">
         <AppLayout>
           <About />
         </AppLayout>
@@ -67,7 +67,7 @@ export const createRoutes = (
   {
     path: "/image-editor",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="professional">
         <AppLayout>
           <ImageEditor />
         </AppLayout>
@@ -77,7 +77,7 @@ export const createRoutes = (
   {
     path: "/strategy",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="professional">
         <AppLayout>
           <PlaceholderPage
             title="Strategy Generator"
@@ -90,7 +90,7 @@ export const createRoutes = (
   {
     path: "/brand-book",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="free">
         <AppLayout>
           <PlaceholderPage
             title="Brand Book Creator"
@@ -103,7 +103,7 @@ export const createRoutes = (
   {
     path: "/campaign",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="professional">
         <AppLayout>
           <PlaceholderPage
             title="Campaign Generator"
@@ -116,7 +116,7 @@ export const createRoutes = (
   {
     path: "/content",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="professional">
         <AppLayout>
           <PlaceholderPage
             title="Content Generator"
@@ -129,7 +129,7 @@ export const createRoutes = (
   {
     path: "/social-post",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="free">
         <AppLayout>
           <PlaceholderPage
             title="Social Post Creator"
@@ -142,7 +142,7 @@ export const createRoutes = (
   {
     path: "/ad-campaigns",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="professional">
         <AppLayout>
           <PlaceholderPage
             title="Ad Campaigns"
@@ -155,7 +155,7 @@ export const createRoutes = (
   {
     path: "/content-calendar",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="professional">
         <AppLayout>
           <PlaceholderPage
             title="Content Calendar"
@@ -168,7 +168,7 @@ export const createRoutes = (
   {
     path: "/analytics",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="professional">
         <AppLayout>
           <PlaceholderPage
             title="Analytics"
@@ -181,7 +181,7 @@ export const createRoutes = (
   {
     path: "/settings",
     element: (
-      <ProtectedRoute>
+      <ProtectedRoute requiredPlan="professional">
         <AppLayout>
           <PlaceholderPage
             title="Settings"

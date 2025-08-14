@@ -119,17 +119,17 @@ const ForgotPassword = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors text-[15px] font-normal leading-[130%] tracking-[-4%] text-black font-inter placeholder-[#717680]"
+                className="w-full h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors text-[15px] font-normal leading-[130%] tracking-[-4%] text-black font-inter placeholder-[#717680]"
                 placeholder="Enter your registered email"
                 required
               />
             </div>
 
-            <div className="w-[640px] flex justify-center mb-6">
+            <div className="w-full flex justify-center mb-6">
               <button
                 type="submit"
                 disabled={isLoading || !email}
-                className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full max-w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
                 style={{
                   background:
                     isLoading || !email
@@ -167,7 +167,7 @@ const ForgotPassword = () => {
           </form>
 
           {/* Sign Up Link */}
-          <div className="w-[640px] mx-auto flex justify-center">
+          <div className="w-full mx-auto flex justify-center">
             <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center align-middle text-gray-600 font-inter">
               Remembered your password?
               <Link

@@ -75,7 +75,7 @@ const Login = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680]"
+            className="w-full h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors text-[15px] font-normal leading-6 tracking-[-0.04em] text-black font-inter placeholder-[#717680]"
             placeholder="Enter your registered email"
             required
           />
@@ -88,7 +88,7 @@ const Login = () => {
           >
             Password *
           </label>
-          <div className="w-[640px] h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-colors flex items-center justify-between">
+          <div className="w-full h-12 px-3 py-[11px] border border-[#D5D7DA] rounded-xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-colors flex items-center justify-between">
             <input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -110,7 +110,7 @@ const Login = () => {
               )}
             </button>
           </div>
-          <div className="w-[640px] flex justify-between items-center mt-2">
+          <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mt-2">
             <div className="flex items-center space-x-2">
               {error && (
                 <>
@@ -159,11 +159,11 @@ const Login = () => {
           </label>
         </div> */}
 
-        <div className="w-[640px] flex justify-center">
+        <div className="w-full flex justify-center">
           <button
             type="submit"
             disabled={isLoading || !email || !password}
-            className="w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full max-w-[512px] h-12 px-6 py-3 rounded-lg font-medium text-base leading-[150%] tracking-[-0.05em] text-white font-inter transition-colors focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 cursor-pointer disabled:cursor-not-allowed flex items-center justify-center"
             style={{
               background:
                 isLoading || !email || !password
@@ -241,7 +241,7 @@ const Login = () => {
             </button>
           </div> */}
 
-      <div className="w-[640px] mx-auto mt-6 flex justify-center items-center">
+      <div className="w-full mx-auto mt-6 flex justify-center items-center">
         <p className="text-[14px] font-normal leading-5 tracking-[-0.5px] text-center text-gray-600 font-inter">
           Don't have an account?{" "}
           <Link

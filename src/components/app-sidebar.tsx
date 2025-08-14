@@ -1,4 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import dashboardIcon from "../assets/nav-icon/dashboard.svg";
 import adCampaign from "../assets/nav-icon/AdCampaigns.svg";
@@ -88,6 +89,26 @@ export default function Sidebar({
   onToggleCollapse,
 }: SidebarProps) {
   const location = useLocation();
+  const { user } = useAuthStore();
+  
+  // Filter navigation items based on user plan
+  const getFilteredNavigationItems = () => {
+    const userPlan = user?.plan || 'free'; // Default to free if no plan
+    
+    if (userPlan === 'free') {
+      // Free users see only Dashboard, Brand book, and Social post creator
+      return navigationItems.filter(item => 
+        item.url === '/dashboard' || 
+        item.url === '/brand-book' || 
+        item.url === '/social-post'
+      );
+    }
+    
+    // Professional and Enterprise users see all items
+    return navigationItems;
+  };
+  
+  const filteredNavigationItems = getFilteredNavigationItems();
 
   return (
     <>
@@ -109,7 +130,7 @@ export default function Sidebar({
         }}
       >
         <div
-          className={`flex items-center justify-between border-b border-gray-200 p-6 ${
+          className={`flex items-center justify-between border-b border-gray-200 p-4 ${
             isCollapsed ? "px-3" : "px-6"
           }`}
         >
@@ -151,7 +172,7 @@ export default function Sidebar({
             isCollapsed ? "p-2" : "p-4"
           } ${!isCollapsed ? "pb-0" : ""}`}
         >
-          {navigationItems.map((item) => {
+          {filteredNavigationItems.map((item) => {
             const isActive = location.pathname === item.url;
 
             return (
