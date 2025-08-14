@@ -15,7 +15,6 @@ import {
   Edit3,
   Share2,
   Image,
-  Crown,
 } from "lucide-react";
 
 interface TaskOption {
@@ -34,7 +33,6 @@ interface CreateTaskModalProps {
 export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const [selectedTask, setSelectedTask] = useState<string>("generate-strategy");
   const userPlan = user?.plan || "free";
 
   const taskOptions: TaskOption[] = [
@@ -67,27 +65,46 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
       allowedInFree: true,
     },
     {
-      id: "image",
-      title: "Image",
+      id: "logo-generator",
+      title: "Logo Generator",
       subtitle: "Sub text",
       icon: <Image className="w-6 h-6" />,
-      allowedInFree: false,
+      allowedInFree: true,
     },
   ];
 
-  const handleUpgradeClick = () => {
-    navigate("/account/upgrade/credit");
-    onOpenChange(false);
-  };
+  // Filter tasks based on user plan
+  const filteredTasks = taskOptions.filter(task => {
+    if (userPlan === "free") {
+      return task.allowedInFree;
+    }
+    return true; // Show all tasks for professional and enterprise
+  });
+
+  const [selectedTask, setSelectedTask] = useState<string>(filteredTasks[0]?.id || "");
 
   const handleConfirm = () => {
-    // Handle task creation logic here
-    console.log("Creating task:", selectedTask);
+    // Navigate to the respective page based on selected task
+    switch (selectedTask) {
+      case "generate-strategy":
+        navigate("/strategy");
+        break;
+      case "create-campaign":
+        navigate("/campaign");
+        break;
+      case "blog":
+        navigate("/blog");
+        break;
+      case "social-post":
+        navigate("/social-media-post-generator");
+        break;
+      case "logo-generator":
+        navigate("/logo-generator");
+        break;
+      default:
+        break;
+    }
     onOpenChange(false);
-  };
-
-  const isTaskRestricted = (task: TaskOption) => {
-    return userPlan === "free" && !task.allowedInFree;
   };
 
   return (
@@ -100,23 +117,17 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
         </DialogHeader>
 
         <div className="space-y-2">
-          {taskOptions.map((task) => {
-            const isRestricted = isTaskRestricted(task);
+          {filteredTasks.map((task) => {
             const isSelected = selectedTask === task.id;
 
             return (
               <div key={task.id} className="relative">
                 <button
-                  onClick={() => !isRestricted && setSelectedTask(task.id)}
-                  disabled={isRestricted}
-                  className={`w-full flex items-center gap-4 p-4 rounded-lg border-2 text-left transition-all ${
-                    isSelected && !isRestricted
+                  onClick={() => setSelectedTask(task.id)}
+                  className={`w-full flex items-center gap-4 p-4 rounded-lg border-2 text-left transition-all cursor-pointer ${
+                    isSelected
                       ? "border-purple-500 bg-purple-50"
                       : "border-gray-200 hover:border-gray-300"
-                  } ${
-                    isRestricted
-                      ? "opacity-50 cursor-not-allowed blur-[1px]"
-                      : "cursor-pointer"
                   }`}
                 >
                   <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600">
@@ -126,24 +137,12 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
                     <h3 className="font-semibold text-gray-900">{task.title}</h3>
                     <p className="text-sm text-gray-500">{task.subtitle}</p>
                   </div>
-                  {isSelected && !isRestricted && (
+                  {isSelected && (
                     <div className="w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
                       <div className="w-2 h-2 bg-white rounded-full" />
                     </div>
                   )}
                 </button>
-
-                {isRestricted && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Button
-                      onClick={handleUpgradeClick}
-                      className="bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-white px-4 py-2 rounded-lg font-[Inter] font-[600] text-[12px] shadow-[0px_2px_6px_0px_#7000CC40] z-10 cursor-pointer flex items-center gap-2"
-                    >
-                      <Crown className="w-4 h-4" />
-                      Upgrade to Professional
-                    </Button>
-                  </div>
-                )}
               </div>
             );
           })}
@@ -159,7 +158,7 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
           </Button>
           <Button
             onClick={handleConfirm}
-            disabled={!selectedTask || isTaskRestricted(taskOptions.find(t => t.id === selectedTask)!)}
+            disabled={!selectedTask}
             className="bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-white px-6 shadow-[0px_2px_6px_0px_#7000CC40]"
           >
             Confirm
