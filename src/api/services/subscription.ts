@@ -1,6 +1,7 @@
 import axiosInstance from '@/lib/axios';
 import type { SubscriptionStatus } from '../types';
-import { handleApiError } from '../utils';
+import { handleApiError } from '../utils/errors';
+import { AxiosError } from 'axios';
 
 class SubscriptionService {
   private readonly baseUrl = '/api/v1/subscriptions';
@@ -12,7 +13,7 @@ class SubscriptionService {
       );
       return response.data;
     } catch (error) {
-      throw handleApiError(error);
+      throw handleApiError(error as AxiosError);
     }
   }
 }
