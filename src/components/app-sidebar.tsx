@@ -34,6 +34,11 @@ const navigationItems = [
     icon: brandBook,
   },
   {
+    title: "Logo Generator",
+    url: "/logo-generator",
+    icon: brandBook,
+  },
+  {
     title: "Campaign generator",
     url: "/campaign",
     icon: campaignGenrator,
@@ -46,6 +51,11 @@ const navigationItems = [
   {
     title: "Social post creator",
     url: "/social-post",
+    icon: socialPost,
+  },
+  {
+    title: "Post Generator",
+    url: "/social-media-post-generator",
     icon: socialPost,
   },
   {
@@ -96,16 +106,19 @@ export default function Sidebar({
     const userPlan = user?.plan || 'free'; // Default to free if no plan
     
     if (userPlan === 'free') {
-      // Free users see only Dashboard, Brand book, and Social post creator
+      // Free users see only Dashboard, Logo Generator, and Social Media Post Generator
       return navigationItems.filter(item => 
         item.url === '/dashboard' || 
-        item.url === '/brand-book' || 
-        item.url === '/social-post'
+        item.url === '/logo-generator' || 
+        item.url === '/social-media-post-generator'
       );
     }
     
-    // Professional and Enterprise users see all items
-    return navigationItems;
+    // Professional and Enterprise users see all items EXCEPT Logo Generator and Social Media Post Generator
+    return navigationItems.filter(item => 
+      item.url !== '/logo-generator' && 
+      item.url !== '/social-media-post-generator'
+    );
   };
   
   const filteredNavigationItems = getFilteredNavigationItems();

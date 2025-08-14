@@ -11,6 +11,8 @@ import PlaceholderPage from "./pages/PlaceholderPage";
 import ImageEditor from "./pages/image-editor";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UpgradeCredit from "./pages/account/UpgradeCredit";
+import LogoGenerator from "./pages/LogoGenerator";
+import SocialMediaPostGenerator from "./pages/SocialMediaPostGenerator";
 
 export const createRoutes = (
   isAuthenticated: boolean,
@@ -101,6 +103,16 @@ export const createRoutes = (
     ),
   },
   {
+    path: "/logo-generator",
+    element: (
+      <ProtectedRoute requiredPlan="free">
+        <AppLayout>
+          <LogoGenerator />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/campaign",
     element: (
       <ProtectedRoute requiredPlan="professional">
@@ -135,6 +147,16 @@ export const createRoutes = (
             title="Social Post Creator"
             description="Design stunning social media posts"
           />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/social-media-post-generator",
+    element: (
+      <ProtectedRoute requiredPlan="free">
+        <AppLayout>
+          <SocialMediaPostGenerator />
         </AppLayout>
       </ProtectedRoute>
     ),
