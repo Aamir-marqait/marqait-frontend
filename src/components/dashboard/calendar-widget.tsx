@@ -29,19 +29,19 @@ export function CalendarWidget() {
   return (
     <Card className="bg-white border-none shadow-none h-[459px]">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold text-gray-900">
+        <CardTitle className="font-[Inter] font-[600] text-[20px] leading-[100%] tracking-[0%] text-[#161E54]">
           Calendar
         </CardTitle>
         <div className="flex items-center justify-between mt-4">
-          <div>
-            <div className="text-sm text-gray-500">Aug 10, Mon</div>
-            <div className="text-xs text-gray-400 mt-1">Today</div>
+          <div className="flex items-center gap-2">
+            <div className="font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] text-[#7D7D7D]">Aug 10, Mon</div>
+            <div className="w-[44px] h-[18px] rounded-[4px] bg-[#F3F4F6] px-[7px] py-[3px] font-[Inter] font-[600] text-[10px] leading-[100%] tracking-[0%] text-[#4B5563] flex items-center justify-center">Today</div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="w-[20px] h-[20px] p-0 border border-[#DCDCDD]">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="w-[20px] h-[20px] p-0 border border-[#DCDCDD]">
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>

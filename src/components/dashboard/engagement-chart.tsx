@@ -28,24 +28,24 @@ export function EngagementChart() {
   return (
     <Card className="w-[754px] h-[459px] rounded-lg bg-[#FFFFFF] opacity-100 border-none shadow-none">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-xl font-semibold text-gray-900">
+        <CardTitle className="font-[Inter] font-[600] text-[20px] leading-[100%] tracking-[0%] text-[#161E54]">
           Engagement Over Time
         </CardTitle>
         <Select defaultValue="last-year">
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-[109px] h-[38px] rounded-lg gap-3 border border-[#F2F2F2] p-[10px] bg-white shadow-[0px_2px_4px_0px_#0000000A] font-[Inter] font-[600] text-[14px] leading-[18px] tracking-[-0.5px] text-center text-[#7A7A7A] cursor-pointer">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white border-none shadow-none mr-10">
+            <SelectItem value="this-year">This Year</SelectItem>
             <SelectItem value="last-year">Last Year</SelectItem>
-            <SelectItem value="last-month">Last Month</SelectItem>
-            <SelectItem value="last-week">Last Week</SelectItem>
+            <SelectItem value="previous-2-years">Previous 2 Years</SelectItem>
           </SelectContent>
         </Select>
       </CardHeader>
       <CardContent>
         <div className="relative w-[706px] h-[300px] mt-5">
           {/* Y-axis labels */}
-          <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-sm text-gray-500 pr-4">
+          <div className="absolute left-0 top-0 h-full flex flex-col justify-between font-[Inter] font-[400] text-[14px] leading-[21.1px] tracking-[0%] text-right text-[#7D7D7D] pr-4">
             <span>10k+</span>
             <span>1k+</span>
             <span>800</span>
@@ -133,7 +133,7 @@ export function EngagementChart() {
           </div>
 
           {/* X-axis labels */}
-          <div className="ml-12 flex justify-between text-sm text-gray-500 mt-4">
+          <div className="ml-12 flex justify-between font-[Inter] font-[400] text-[14px] leading-[21.1px] tracking-[0%] text-[#7D7D7D] mt-4">
             {data.map((item) => (
               <span key={item.month}>{item.month}</span>
             ))}
