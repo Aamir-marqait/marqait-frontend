@@ -3,19 +3,11 @@ import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogFooter,
 } from "./dialog";
 import { Button } from "./button";
 import { useAuthStore } from "../../stores/authStore";
-import {
-  TrendingUp,
-  Megaphone,
-  Edit3,
-  Share2,
-  Image,
-} from "lucide-react";
+import { TrendingUp, Megaphone, Edit3, Share2, Image, X } from "lucide-react";
 
 interface TaskOption {
   id: string;
@@ -40,48 +32,50 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
       id: "generate-strategy",
       title: "Generate Strategy",
       subtitle: "Sub text",
-      icon: <TrendingUp className="w-6 h-6" />,
+      icon: <TrendingUp style={{ width: '13.33px', height: '9.92px' }} />,
       allowedInFree: false,
     },
     {
       id: "create-campaign",
       title: "Create Campaign",
       subtitle: "Sub text",
-      icon: <Megaphone className="w-6 h-6" />,
+      icon: <Megaphone style={{ width: '13.33px', height: '9.92px' }} />,
       allowedInFree: false,
     },
     {
       id: "blog",
       title: "Blog",
       subtitle: "Sub text",
-      icon: <Edit3 className="w-6 h-6" />,
+      icon: <Edit3 style={{ width: '13.33px', height: '9.92px' }} />,
       allowedInFree: false,
     },
     {
       id: "social-post",
       title: "Social Post",
       subtitle: "Sub text",
-      icon: <Share2 className="w-6 h-6" />,
+      icon: <Share2 style={{ width: '15.33px', height: '11.92px' }} />,
       allowedInFree: true,
     },
     {
       id: "logo-generator",
       title: "Logo Generator",
       subtitle: "Sub text",
-      icon: <Image className="w-6 h-6" />,
+      icon: <Image style={{ width: '15.33px', height: '11.92px' }} />,
       allowedInFree: true,
     },
   ];
 
   // Filter tasks based on user plan
-  const filteredTasks = taskOptions.filter(task => {
+  const filteredTasks = taskOptions.filter((task) => {
     if (userPlan === "free") {
       return task.allowedInFree;
     }
     return true; // Show all tasks for professional and enterprise
   });
 
-  const [selectedTask, setSelectedTask] = useState<string>(filteredTasks[0]?.id || "");
+  const [selectedTask, setSelectedTask] = useState<string>(
+    filteredTasks[0]?.id || ""
+  );
 
   const handleConfirm = () => {
     // Navigate to the respective page based on selected task
@@ -109,14 +103,21 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-white border-0 shadow-xl rounded-xl">
-        <DialogHeader className="pb-4">
-          <DialogTitle className="text-2xl font-bold text-gray-900 text-left">
+      <DialogContent className="sm:max-w-[420px] bg-white border-0 shadow-xl rounded-lg p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-[Inter] font-[600] text-[20px] leading-[28px] tracking-[0%] text-[#181D27]">
             Create Task
-          </DialogTitle>
-        </DialogHeader>
+          </h2>
+          <button
+            onClick={() => onOpenChange(false)}
+            className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </button>
+        </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3 mb-6">
           {filteredTasks.map((task) => {
             const isSelected = selectedTask === task.id;
 
@@ -124,18 +125,35 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
               <div key={task.id} className="relative">
                 <button
                   onClick={() => setSelectedTask(task.id)}
-                  className={`w-full flex items-center gap-4 p-4 rounded-lg border-2 text-left transition-all cursor-pointer ${
+                  className={`w-full flex items-center gap-1 p-4 rounded-[12px] text-left transition-all cursor-pointer ${
                     isSelected
-                      ? "border-purple-500 bg-purple-50"
-                      : "border-gray-200 hover:border-gray-300"
+                      ? "border-2 border-[#8F00FF] bg-[#F9F5FF]"
+                      : "border border-[#E9EAEB] bg-[#FFFFFF] hover:border-gray-300"
                   }`}
+                  style={{ height: '72px' }}
                 >
-                  <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600">
+                  <div 
+                    className="flex-shrink-0 flex items-center justify-center text-gray-600"
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '28px',
+                      border: '4px solid #F9F5FF',
+                      background: '#F4EBFF',
+                      mixBlendMode: 'multiply'
+                    }}
+                  >
                     {task.icon}
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{task.title}</h3>
-                    <p className="text-sm text-gray-500">{task.subtitle}</p>
+                    <h3 className={`font-[Inter] font-[500] text-[16px] leading-[20px] tracking-[0%] ${
+                      isSelected ? "text-[#53389E]" : "text-gray-900"
+                    }`}>
+                      {task.title}
+                    </h3>
+                    <p className={`font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] ${
+                      isSelected ? "text-[#53389E]" : "text-gray-500"
+                    }`}>{task.subtitle}</p>
                   </div>
                   {isSelected && (
                     <div className="w-4 h-4 bg-purple-500 rounded-full flex items-center justify-center">
@@ -148,18 +166,35 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
           })}
         </div>
 
-        <DialogFooter className="pt-6">
+        <DialogFooter className="pt-0 flex w-full gap-3">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="px-6"
+            className="flex-1 cursor-pointer font-[Inter] font-[600] text-[16px] leading-[24px] tracking-[0%] text-[#414651] bg-[#FFFFFF] border border-[#D5D7DA] rounded-[12px]"
+            style={{
+              height: '44px',
+              paddingTop: '10px',
+              paddingRight: '18px',
+              paddingBottom: '10px',
+              paddingLeft: '18px',
+              boxShadow: '0px 1px 2px 0px #0A0D120D'
+            }}
           >
             Cancel
           </Button>
           <Button
             onClick={handleConfirm}
             disabled={!selectedTask}
-            className="bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-white px-6 shadow-[0px_2px_6px_0px_#7000CC40]"
+            className="flex-1 cursor-pointer font-[Inter] font-[600] text-[16px] leading-[24px] tracking-[0%] text-[#FFFFFF] border border-[#8F00FF] rounded-[12px]"
+            style={{
+              height: '44px',
+              paddingTop: '10px',
+              paddingRight: '18px',
+              paddingBottom: '10px',
+              paddingLeft: '18px',
+              background: 'linear-gradient(90deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)',
+              boxShadow: '0px 1px 2px 0px #0A0D120D'
+            }}
           >
             Confirm
           </Button>
