@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createRoutes } from "./routes";
 
 import Header from "./components/Header";
@@ -9,7 +9,12 @@ import { useAuthStore } from "./stores/authStore";
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, initialize } = useAuthStore();
+
+  useEffect(() => {
+    // Initialize auth store when app starts
+    initialize().catch(console.error);
+  }, [initialize]);
 
   const AppLayout = ({ children }: { children: React.ReactNode }) => (
     <div className="flex min-h-screen">

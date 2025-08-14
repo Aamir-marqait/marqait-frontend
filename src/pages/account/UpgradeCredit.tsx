@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function SubscriptionPage() {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
   const { updateUserPlan, user } = useAuthStore();
+  
 
   const handlePlanSelection = (plan: 'free' | 'professional' | 'enterprise') => {
     updateUserPlan(plan);

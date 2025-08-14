@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import type { RouteObject } from "react-router-dom";
-import About from "./pages/About";
+
 import Dashboard from "./pages/dashboard";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
@@ -11,6 +11,8 @@ import PlaceholderPage from "./pages/PlaceholderPage";
 import ImageEditor from "./pages/image-editor";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UpgradeCredit from "./pages/account/UpgradeCredit";
+import LogoGenerator from "./pages/LogoGenerator";
+import SocialMediaPostGenerator from "./pages/SocialMediaPostGenerator";
 
 export const createRoutes = (
   isAuthenticated: boolean,
@@ -22,11 +24,19 @@ export const createRoutes = (
   },
   {
     path: "/accounts/emailsignup",
-    element: isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />,
+    element: isAuthenticated ? (
+      <Navigate to="/dashboard" replace />
+    ) : (
+      <Signup />
+    ),
   },
   {
     path: "/accounts/emailsignup/otp-verification",
-    element: isAuthenticated ? <Navigate to="/dashboard" replace /> : <OtpVerification />,
+    element: isAuthenticated ? (
+      <Navigate to="/dashboard" replace />
+    ) : (
+      <OtpVerification />
+    ),
   },
   {
     path: "/accounts/password/reset/",
@@ -54,16 +64,7 @@ export const createRoutes = (
       </ProtectedRoute>
     ),
   },
-  {
-    path: "/about",
-    element: (
-      <ProtectedRoute requiredPlan="professional">
-        <AppLayout>
-          <About />
-        </AppLayout>
-      </ProtectedRoute>
-    ),
-  },
+
   {
     path: "/image-editor",
     element: (
@@ -96,6 +97,16 @@ export const createRoutes = (
             title="Brand Book Creator"
             description="Design and generate professional brand guidelines"
           />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/logo-generator",
+    element: (
+      <ProtectedRoute requiredPlan="free">
+        <AppLayout>
+          <LogoGenerator />
         </AppLayout>
       </ProtectedRoute>
     ),
@@ -135,6 +146,16 @@ export const createRoutes = (
             title="Social Post Creator"
             description="Design stunning social media posts"
           />
+        </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/social-media-post-generator",
+    element: (
+      <ProtectedRoute requiredPlan="free">
+        <AppLayout>
+          <SocialMediaPostGenerator />
         </AppLayout>
       </ProtectedRoute>
     ),

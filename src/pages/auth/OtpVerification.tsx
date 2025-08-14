@@ -92,7 +92,7 @@ const OtpVerification = () => {
       });
 
       // Initialize auth store with the user data
-      initialize();
+      await initialize();
       
       navigate("/dashboard", {
         state: {

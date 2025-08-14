@@ -1,5 +1,7 @@
 import { useLocation, Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import { useState, useEffect } from "react";
+import { userService } from "../api/services";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import dashboardIcon from "../assets/nav-icon/dashboard.svg";
 import adCampaign from "../assets/nav-icon/AdCampaigns.svg";
@@ -34,6 +36,11 @@ const navigationItems = [
     icon: brandBook,
   },
   {
+    title: "Logo Generator",
+    url: "/logo-generator",
+    icon: brandBook,
+  },
+  {
     title: "Campaign generator",
     url: "/campaign",
     icon: campaignGenrator,
@@ -46,6 +53,11 @@ const navigationItems = [
   {
     title: "Social post creator",
     url: "/social-post",
+    icon: socialPost,
+  },
+  {
+    title: "Post Generator",
+    url: "/social-media-post-generator",
     icon: socialPost,
   },
   {
@@ -89,25 +101,69 @@ export default function Sidebar({
   onToggleCollapse,
 }: SidebarProps) {
   const location = useLocation();
-  const { user } = useAuthStore();
-  
+  const { user, userStats } = useAuthStore();
+  const [creditsBalance, setCreditsBalance] = useState<number | null>(null);
+  const [isLoadingCredits, setIsLoadingCredits] = useState(false);
+
+  // Fetch credits balance
+  useEffect(() => {
+    const fetchCreditsBalance = async () => {
+      setIsLoadingCredits(true);
+      try {
+        const balance = await userService.getCreditsBalance();
+        setCreditsBalance(balance.total_available);
+      } catch (error) {
+        console.error("Failed to fetch credits balance:", error);
+        // Set to 0 if API fails
+        setCreditsBalance(0);
+      } finally {
+        setIsLoadingCredits(false);
+      }
+    };
+
+    fetchCreditsBalance();
+  }, []);
+
+  // Calculate credit limit based on subscription
+  const getCreditLimit = (subscription: string) => {
+    switch (subscription) {
+      case "free":
+        return 1000;
+      case "professional":
+        return 10000;
+      case "enterprise":
+        return 100000;
+      default:
+        return 1000;
+    }
+  };
+
+  const creditLimit = getCreditLimit(userStats?.current_subscription || "free");
+  const displayCredits = creditsBalance !== null ? creditsBalance : 0;
+  const progressPercentage = Math.round((displayCredits / creditLimit) * 100);
+
   // Filter navigation items based on user plan
   const getFilteredNavigationItems = () => {
-    const userPlan = user?.plan || 'free'; // Default to free if no plan
-    
-    if (userPlan === 'free') {
-      // Free users see only Dashboard, Brand book, and Social post creator
-      return navigationItems.filter(item => 
-        item.url === '/dashboard' || 
-        item.url === '/brand-book' || 
-        item.url === '/social-post'
+    const userPlan = user?.plan || "free"; // Default to free if no plan
+
+    if (userPlan === "free") {
+      // Free users see only Dashboard, Logo Generator, and Social Media Post Generator
+      return navigationItems.filter(
+        (item) =>
+          item.url === "/dashboard" ||
+          item.url === "/logo-generator" ||
+          item.url === "/social-media-post-generator"
       );
     }
-    
-    // Professional and Enterprise users see all items
-    return navigationItems;
+
+    // Professional and Enterprise users see all items EXCEPT Logo Generator and Social Media Post Generator
+    return navigationItems.filter(
+      (item) =>
+        item.url !== "/logo-generator" &&
+        item.url !== "/social-media-post-generator"
+    );
   };
-  
+
   const filteredNavigationItems = getFilteredNavigationItems();
 
   return (
@@ -218,36 +274,62 @@ export default function Sidebar({
             style={{ borderTop: "1px solid #BEBEBE99" }}
           >
             <div className="flex space-x-4">
-              <img src={coinIcon} alt="Coin" className="w-9 h-9" />
+              {isLoadingCredits ? (
+                <div className="w-9 h-9 bg-gray-200 rounded-full animate-pulse"></div>
+              ) : (
+                <img src={coinIcon} alt="Coin" className="w-9 h-9" />
+              )}
               <div className="flex-1">
                 <div className="flex items-end gap-3 mb-3">
                   <div className="flex-1">
-                    <div className="font-Inter font-semibold text-[24px] leading-[100%] text-[#172935]">
-                      17
-                      <span className="font-Inter font-normal text-[16px] leading-[100%]">
-                        /1000
-                      </span>
-                    </div>
+                    {isLoadingCredits ? (
+                      <div className="flex items-center gap-1">
+                        <div className="h-6 w-16 bg-gray-200 rounded animate-pulse"></div>
+                        <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+                      </div>
+                    ) : (
+                      <div className="font-Inter font-semibold text-[20px] leading-[100%] text-[#172935]">
+                        {displayCredits}
+                        <span className="font-Inter font-normal text-[13px] leading-[100%]">
+                          /{creditLimit.toLocaleString()}
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="font-Inter font-normal text-[12px] leading-[100%] text-[#172935]">
-                    24%
+                    {isLoadingCredits ? (
+                      <div className="h-3 w-8 bg-gray-200 rounded animate-pulse"></div>
+                    ) : (
+                      `${progressPercentage}%`
+                    )}
                   </div>
                 </div>
                 <div className="mb-4">
-                  <Progress value={24} className="h-2 bg-[#E6D4FF]" />
+                  {isLoadingCredits ? (
+                    <div className="h-2 w-full bg-gray-200 rounded animate-pulse"></div>
+                  ) : (
+                    <Progress
+                      value={progressPercentage}
+                      className="h-2 bg-[#E6D4FF]"
+                    />
+                  )}
                 </div>
-                <Link to="/account/upgrade/credit">
-                  <button
-                    className="cursor-pointer h-8 px-3 py-1 rounded-lg border border-[#7F56D9] font-Inter font-semibold text-[14px] leading-[24px] text-white transition-all duration-200 hover:shadow-lg flex items-center justify-center"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)",
-                      boxShadow: "0px 1px 2px 0px rgba(10, 13, 18, 0.05)",
-                    }}
-                  >
-                    Upgrade
-                  </button>
-                </Link>
+                {isLoadingCredits ? (
+                  <div className="h-8 w-20 bg-gray-200 rounded-lg animate-pulse"></div>
+                ) : (
+                  <Link to="/account/upgrade/credit">
+                    <button
+                      className="cursor-pointer h-8 px-3 py-1 rounded-lg border border-[#7F56D9] font-Inter font-semibold text-[14px] leading-[24px] text-white transition-all duration-200 hover:shadow-lg flex items-center justify-center"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)",
+                        boxShadow: "0px 1px 2px 0px rgba(10, 13, 18, 0.05)",
+                      }}
+                    >
+                      Upgrade
+                    </button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

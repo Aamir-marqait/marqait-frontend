@@ -11,7 +11,9 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
+  
+  const userInitial = user?.first_name?.charAt(0)?.toUpperCase() || 'A';
 
   const handleLogout = async () => {
     try {
@@ -84,9 +86,17 @@ export default function Header({ onMenuClick }: HeaderProps) {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="cursor-pointer flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100"
               >
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-[100px] flex items-center justify-center text-white text-sm font-semibold">
-                  A
-                </div>
+                {user?.profile_image_url ? (
+                  <img 
+                    src={user.profile_image_url} 
+                    alt={`${user.first_name} ${user.last_name}`}
+                    className="w-8 h-8 rounded-[100px] object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-[100px] flex items-center justify-center text-white text-sm font-semibold">
+                    {userInitial}
+                  </div>
+                )}
                 <ChevronDown
                   className={`h-4 w-4 text-[#151D48] transition-transform ${
                     isDropdownOpen ? "rotate-180" : ""
