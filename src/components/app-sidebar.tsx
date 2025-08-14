@@ -104,7 +104,7 @@ export default function Sidebar({
   const { user, userStats } = useAuthStore();
   const [creditsBalance, setCreditsBalance] = useState<number | null>(null);
   const [isLoadingCredits, setIsLoadingCredits] = useState(false);
-  
+
   // Fetch credits balance
   useEffect(() => {
     const fetchCreditsBalance = async () => {
@@ -113,7 +113,7 @@ export default function Sidebar({
         const balance = await userService.getCreditsBalance();
         setCreditsBalance(balance.total_available);
       } catch (error) {
-        console.error('Failed to fetch credits balance:', error);
+        console.error("Failed to fetch credits balance:", error);
         // Set to 0 if API fails
         setCreditsBalance(0);
       } finally {
@@ -123,41 +123,47 @@ export default function Sidebar({
 
     fetchCreditsBalance();
   }, []);
-  
+
   // Calculate credit limit based on subscription
   const getCreditLimit = (subscription: string) => {
     switch (subscription) {
-      case 'free': return 1000;
-      case 'professional': return 10000;
-      case 'enterprise': return 100000;
-      default: return 1000;
+      case "free":
+        return 1000;
+      case "professional":
+        return 10000;
+      case "enterprise":
+        return 100000;
+      default:
+        return 1000;
     }
   };
-  
-  const creditLimit = getCreditLimit(userStats?.current_subscription || 'free');
+
+  const creditLimit = getCreditLimit(userStats?.current_subscription || "free");
   const displayCredits = creditsBalance !== null ? creditsBalance : 0;
   const progressPercentage = Math.round((displayCredits / creditLimit) * 100);
-  
+
   // Filter navigation items based on user plan
   const getFilteredNavigationItems = () => {
-    const userPlan = user?.plan || 'free'; // Default to free if no plan
-    
-    if (userPlan === 'free') {
+    const userPlan = user?.plan || "free"; // Default to free if no plan
+
+    if (userPlan === "free") {
       // Free users see only Dashboard, Logo Generator, and Social Media Post Generator
-      return navigationItems.filter(item => 
-        item.url === '/dashboard' || 
-        item.url === '/logo-generator' || 
-        item.url === '/social-media-post-generator'
+      return navigationItems.filter(
+        (item) =>
+          item.url === "/dashboard" ||
+          item.url === "/logo-generator" ||
+          item.url === "/social-media-post-generator"
       );
     }
-    
+
     // Professional and Enterprise users see all items EXCEPT Logo Generator and Social Media Post Generator
-    return navigationItems.filter(item => 
-      item.url !== '/logo-generator' && 
-      item.url !== '/social-media-post-generator'
+    return navigationItems.filter(
+      (item) =>
+        item.url !== "/logo-generator" &&
+        item.url !== "/social-media-post-generator"
     );
   };
-  
+
   const filteredNavigationItems = getFilteredNavigationItems();
 
   return (
@@ -282,9 +288,9 @@ export default function Sidebar({
                         <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
                       </div>
                     ) : (
-                      <div className="font-Inter font-semibold text-[24px] leading-[100%] text-[#172935]">
+                      <div className="font-Inter font-semibold text-[20px] leading-[100%] text-[#172935]">
                         {displayCredits}
-                        <span className="font-Inter font-normal text-[16px] leading-[100%]">
+                        <span className="font-Inter font-normal text-[13px] leading-[100%]">
                           /{creditLimit.toLocaleString()}
                         </span>
                       </div>
@@ -302,7 +308,10 @@ export default function Sidebar({
                   {isLoadingCredits ? (
                     <div className="h-2 w-full bg-gray-200 rounded animate-pulse"></div>
                   ) : (
-                    <Progress value={progressPercentage} className="h-2 bg-[#E6D4FF]" />
+                    <Progress
+                      value={progressPercentage}
+                      className="h-2 bg-[#E6D4FF]"
+                    />
                   )}
                 </div>
                 {isLoadingCredits ? (
