@@ -6,7 +6,9 @@ import { Badge } from "../components/ui/badge";
 interface LogoFormData {
   companyName: string;
   companyDesc: string;
-  content: string;
+  preferredColors: string;
+  tone: string;
+  industryKeywords: string;
   style: string;
 }
 
@@ -19,7 +21,9 @@ const LogoGenerator = () => {
   const [formData, setFormData] = useState<LogoFormData>({
     companyName: "",
     companyDesc: "",
-    content: "",
+    preferredColors: "",
+    tone: "",
+    industryKeywords: "",
     style: "",
   });
 
@@ -66,20 +70,26 @@ const LogoGenerator = () => {
             "traditional, badge-like design with integrated text and symbols",
         };
 
+        const additionalContext = [];
+        if (formData.preferredColors) {
+          additionalContext.push(`incorporating your preferred colors (${formData.preferredColors})`);
+        }
+        if (formData.tone) {
+          additionalContext.push(`maintaining a ${formData.tone} aesthetic`);
+        }
+        if (formData.industryKeywords) {
+          additionalContext.push(`emphasizing key industry elements like ${formData.industryKeywords}`);
+        }
+
+        const contextText = additionalContext.length > 0 
+          ? ` The design carefully considers your brand preferences by ${additionalContext.join(", ")}.`
+          : "";
+
         return `This logo perfectly captures the essence of ${
           formData.companyName
         } through its ${
           styleDescriptions[formData.style] || "distinctive design approach"
-        }. The design reflects your company's focus on ${formData.companyDesc.toLowerCase()}, creating a memorable brand identity that resonates with your target audience. ${
-          formData.content
-            ? `The additional elements you specified (${formData.content.substring(
-                0,
-                50
-              )}${
-                formData.content.length > 50 ? "..." : ""
-              }) have been thoughtfully incorporated to enhance the overall brand message.`
-            : "The balanced composition ensures excellent versatility across all marketing materials."
-        } This logo will help establish trust and recognition in your market while maintaining a professional and modern appearance.`;
+        }. The design reflects your company's focus on ${formData.companyDesc.toLowerCase()}, creating a memorable brand identity that resonates with your target audience.${contextText} This logo will help establish trust and recognition in your market while maintaining a professional and modern appearance.`;
       };
 
       const generateDummyLogo = () => {
@@ -231,23 +241,70 @@ const LogoGenerator = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label
-                    htmlFor="content"
-                    className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2"
-                  >
-                    Additional Content
-                  </label>
-                  <textarea
-                    id="content"
-                    placeholder="Any specific requirements, taglines, or additional information..."
-                    value={formData.content}
-                    onChange={(e) =>
-                      handleInputChange("content", e.target.value)
-                    }
-                    rows={3}
-                    className="w-full rounded-lg border border-[#D5D7DA] px-3 py-2 font-['Inter'] font-normal text-sm leading-5 tracking-normal text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20 shadow-[0px_1px_2px_0px_#0A0D120D] resize-none"
-                  />
+                {/* Additional Brand Context Section */}
+                <div className="space-y-4">
+                  <h3 className="font-inter font-semibold text-base text-[#8F00FF] mb-3">
+                    Additional Brand Context (Optional)
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        htmlFor="preferredColors"
+                        className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2"
+                      >
+                        Preferred Colors
+                      </label>
+                      <input
+                        id="preferredColors"
+                        type="text"
+                        placeholder="e.g., green, beige, blue"
+                        value={formData.preferredColors}
+                        onChange={(e) =>
+                          handleInputChange("preferredColors", e.target.value)
+                        }
+                        className="h-10 w-full rounded-lg border border-[#D5D7DA] px-3 font-['Inter'] font-normal text-sm leading-5 tracking-normal text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20 shadow-[0px_1px_2px_0px_#0A0D120D]"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="tone"
+                        className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2"
+                      >
+                        Brand Tone
+                      </label>
+                      <input
+                        id="tone"
+                        type="text"
+                        placeholder="e.g., earthy, modern, playful"
+                        value={formData.tone}
+                        onChange={(e) =>
+                          handleInputChange("tone", e.target.value)
+                        }
+                        className="h-10 w-full rounded-lg border border-[#D5D7DA] px-3 font-['Inter'] font-normal text-sm leading-5 tracking-normal text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20 shadow-[0px_1px_2px_0px_#0A0D120D]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="industryKeywords"
+                      className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2"
+                    >
+                      Industry Keywords
+                    </label>
+                    <input
+                      id="industryKeywords"
+                      type="text"
+                      placeholder="e.g., sustainability, nature, minimalism"
+                      value={formData.industryKeywords}
+                      onChange={(e) =>
+                        handleInputChange("industryKeywords", e.target.value)
+                      }
+                      className="h-10 w-full rounded-lg border border-[#D5D7DA] px-3 font-['Inter'] font-normal text-sm leading-5 tracking-normal text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20 shadow-[0px_1px_2px_0px_#0A0D120D]"
+                    />
+                  </div>
                 </div>
 
                 <div>
