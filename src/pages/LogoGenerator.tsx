@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Download, Sparkles, RefreshCw, ChevronLeft } from "lucide-react";
 import { LogoStyleModal } from "../components/ui/logo-style-modal";
+import { Badge } from "../components/ui/badge";
 
 interface LogoFormData {
   companyName: string;
@@ -253,23 +254,23 @@ const LogoGenerator = () => {
                   <label className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2">
                     Logo Style
                   </label>
-                  <div className="space-y-2">
-                    {formData.style && (
-                      <div className="p-3 bg-[#F5EDFF] border border-[#8F00FF] rounded-lg">
-                        <p className="font-inter font-medium text-sm text-[#53389E]">
-                          Selected: {formData.style.replace(/_/g, " ")}
-                        </p>
-                      </div>
-                    )}
+                  <div className="space-y-3">
                     <button
                       type="button"
                       onClick={() => setIsStyleModalOpen(true)}
-                      className="w-full h-10 inline-flex items-center justify-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
                     >
                       {formData.style
                         ? "Update Logo Style"
                         : "Choose Logo Style"}
                     </button>
+                    {formData.style && (
+                      <div className="flex items-center">
+                        <Badge className="bg-gradient-to-r from-[#7000CC] to-[#8F00FF] text-white border-0 px-3 py-1 text-sm font-medium">
+                          {formData.style.replace(/_/g, ' ')}
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                 </div>
 
