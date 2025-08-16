@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, useRef } from "react";
 import { Download, Sparkles, RefreshCw, ChevronLeft, ChevronDown } from "lucide-react";
 import { LogoStyleModal } from "../components/ui/logo-style-modal";
 import { Badge } from "../components/ui/badge";
+import { useCreditStore } from "../stores/creditStore";
 
 interface LogoFormData {
   companyName: string;
@@ -18,6 +20,8 @@ interface GeneratedLogo {
 }
 
 const LogoGenerator = () => {
+  const { fetchCreditsBalance } = useCreditStore();
+
   const [formData, setFormData] = useState<LogoFormData>({
     companyName: "",
     companyDesc: "",
@@ -35,6 +39,11 @@ const LogoGenerator = () => {
   const [isStyleModalOpen, setIsStyleModalOpen] = useState(false);
   const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
   const downloadDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Fetch credits on component mount
+  useEffect(() => {
+    fetchCreditsBalance();
+  }, [fetchCreditsBalance]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -72,7 +81,14 @@ const LogoGenerator = () => {
     setIsGenerating(true);
     setError(null);
 
-    setTimeout(() => {
+    try {
+      // TODO: Replace with actual API call to generate logo
+      // const result = await agentService.generateLogo(formData);
+      // Backend will handle credit deduction internally
+      
+      // Mock generation for now
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
       const generateExplanation = () => {
         const styleDescriptions: Record<string, string> = {
           WORDMARK:
@@ -163,8 +179,14 @@ const LogoGenerator = () => {
         explanation: generateExplanation(),
       });
 
+      // Refresh credits after generation (backend already deducted)
+      await fetchCreditsBalance();
+
+    } catch (error) {
+      setError("Generation failed. Please try again.");
+    } finally {
       setIsGenerating(false);
-    }, 2000);
+    }
   };
 
   const handleDownload = (format: 'png' | 'svg') => {
@@ -184,7 +206,7 @@ const LogoGenerator = () => {
     } else {
       // For PNG, we'll need to convert SVG to PNG using canvas
       if (generatedLogo.imageUrl.startsWith('data:image/svg+xml;base64,')) {
-        const svgData = atob(generatedLogo.imageUrl.split(',')[1]);
+        atob(generatedLogo.imageUrl.split(',')[1]);
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
@@ -387,23 +409,26 @@ const LogoGenerator = () => {
                   </div>
                 </div>
 
-                <button
-                  onClick={handleGenerate}
-                  disabled={!isFormValid || isGenerating}
-                  className="w-full inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#8F00FF] px-4 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-white transition active:translate-y-px disabled:opacity-65 disabled:cursor-not-allowed disabled:shadow-none bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] shadow-[0px_1px_2px_0px_#0A0D120D] hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] cursor-pointer"
-                >
-                  {isGenerating ? (
-                    <>
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4" />
-                      Generate Logo
-                    </>
-                  )}
-                </button>
+                <div className="space-y-3">
+                 
+                  <button
+                    onClick={handleGenerate}
+                    disabled={!isFormValid || isGenerating}
+                    className="w-full inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#8F00FF] px-4 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-white transition active:translate-y-px disabled:opacity-65 disabled:cursor-not-allowed disabled:shadow-none bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] shadow-[0px_1px_2px_0px_#0A0D120D] hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] cursor-pointer"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4" />
+                        Generate Logo
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
 
               {/* Error Message */}
