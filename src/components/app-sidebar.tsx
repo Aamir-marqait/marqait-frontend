@@ -1,8 +1,8 @@
 import { useLocation, Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
-import { useState, useEffect } from "react";
-import { userService } from "../api/services";
+import { useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCreditStore } from "../stores/creditStore";
 import dashboardIcon from "../assets/nav-icon/dashboard.svg";
 import adCampaign from "../assets/nav-icon/AdCampaigns.svg";
 import analytics from "../assets/nav-icon/analytics.svg";
@@ -102,27 +102,12 @@ export default function Sidebar({
 }: SidebarProps) {
   const location = useLocation();
   const { user, userStats } = useAuthStore();
-  const [creditsBalance, setCreditsBalance] = useState<number | null>(null);
-  const [isLoadingCredits, setIsLoadingCredits] = useState(false);
+  const { creditsBalance, isLoading: isLoadingCredits, fetchCreditsBalance } = useCreditStore();
 
-  // Fetch credits balance
+  // Fetch credits balance on mount
   useEffect(() => {
-    const fetchCreditsBalance = async () => {
-      setIsLoadingCredits(true);
-      try {
-        const balance = await userService.getCreditsBalance();
-        setCreditsBalance(balance.total_available);
-      } catch (error) {
-        console.error("Failed to fetch credits balance:", error);
-        // Set to 0 if API fails
-        setCreditsBalance(0);
-      } finally {
-        setIsLoadingCredits(false);
-      }
-    };
-
     fetchCreditsBalance();
-  }, []);
+  }, [fetchCreditsBalance]);
 
   // Calculate credit limit based on subscription
   const getCreditLimit = (subscription: string) => {
@@ -139,7 +124,7 @@ export default function Sidebar({
   };
 
   const creditLimit = getCreditLimit(userStats?.current_subscription || "free");
-  const displayCredits = creditsBalance !== null ? creditsBalance : 0;
+  const displayCredits = creditsBalance?.total_available || 0;
   const progressPercentage = Math.round((displayCredits / creditLimit) * 100);
 
   // Filter navigation items based on user plan
