@@ -1,19 +1,12 @@
 import { useState } from "react";
-import {
-  Download,
-  Sparkles,
-  RefreshCw,
-  Palette,
-  Zap,
-  HandMetal,
-  ChevronLeft,
-} from "lucide-react";
+import { Download, Sparkles, RefreshCw, ChevronLeft } from "lucide-react";
+import { LogoStyleModal } from "../components/ui/logo-style-modal";
 
 interface LogoFormData {
   companyName: string;
   companyDesc: string;
   content: string;
-  style: "artwork" | "icon" | "metallic";
+  style: string;
 }
 
 interface GeneratedLogo {
@@ -26,7 +19,7 @@ const LogoGenerator = () => {
     companyName: "",
     companyDesc: "",
     content: "",
-    style: "artwork",
+    style: "",
   });
 
   const [generatedLogo, setGeneratedLogo] = useState<GeneratedLogo | null>(
@@ -34,9 +27,15 @@ const LogoGenerator = () => {
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isStyleModalOpen, setIsStyleModalOpen] = useState(false);
 
   const handleInputChange = (field: keyof LogoFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+    setError(null);
+  };
+
+  const handleStyleSelect = (style: string) => {
+    setFormData((prev) => ({ ...prev, style }));
     setError(null);
   };
 
@@ -45,23 +44,31 @@ const LogoGenerator = () => {
       setError("Company name and description are required");
       return;
     }
+    if (!formData.style.trim()) {
+      setError("Please select a logo style");
+      return;
+    }
 
     setIsGenerating(true);
     setError(null);
 
     setTimeout(() => {
       const generateExplanation = () => {
-        const styleDescriptions = {
-          artwork: "artistic and creative approach with rich visual elements",
-          icon: "clean, minimal design that works perfectly at any size",
-          metallic:
-            "premium, sophisticated look with metallic textures and depth",
+        const styleDescriptions: Record<string, string> = {
+          WORDMARK:
+            "typography-focused design that emphasizes your company name",
+          LETTERMARK: "clean, memorable design using your company's initials",
+          PICTORIAL_MARK: "iconic symbol that represents your brand identity",
+          ABSTRACT: "unique geometric design that captures your brand essence",
+          COMBINATION_MARK: "balanced combination of text and visual elements",
+          EMBLEM:
+            "traditional, badge-like design with integrated text and symbols",
         };
 
         return `This logo perfectly captures the essence of ${
           formData.companyName
         } through its ${
-          styleDescriptions[formData.style]
+          styleDescriptions[formData.style] || "distinctive design approach"
         }. The design reflects your company's focus on ${formData.companyDesc.toLowerCase()}, creating a memorable brand identity that resonates with your target audience. ${
           formData.content
             ? `The additional elements you specified (${formData.content.substring(
@@ -81,13 +88,19 @@ const LogoGenerator = () => {
           .join("")
           .substring(0, 3);
 
-        const styleColors = {
-          artwork: { bg: "#8F00FF", accent: "#E0D3FA" },
-          icon: { bg: "#7000CC", accent: "#F5EDFF" },
-          metallic: { bg: "#8000E5", accent: "#E7DAFF" },
+        const styleColors: Record<string, { bg: string; accent: string }> = {
+          WORDMARK: { bg: "#8F00FF", accent: "#E0D3FA" },
+          LETTERMARK: { bg: "#7000CC", accent: "#F5EDFF" },
+          PICTORIAL_MARK: { bg: "#8000E5", accent: "#E7DAFF" },
+          ABSTRACT: { bg: "#9000FF", accent: "#E5D7FF" },
+          COMBINATION_MARK: { bg: "#7500DD", accent: "#E8DDFF" },
+          EMBLEM: { bg: "#6500BB", accent: "#EBE3FF" },
         };
 
-        const colors = styleColors[formData.style];
+        const colors = styleColors[formData.style] || {
+          bg: "#8F00FF",
+          accent: "#E0D3FA",
+        };
 
         // Create a simple SVG logo as data URL
         const svgLogo = `
@@ -149,7 +162,9 @@ const LogoGenerator = () => {
   };
 
   const isFormValid =
-    formData.companyName.trim() && formData.companyDesc.trim();
+    formData.companyName.trim() &&
+    formData.companyDesc.trim() &&
+    formData.style.trim();
 
   return (
     <div className="p-8 bg-[#FAFAFB]">
@@ -238,60 +253,23 @@ const LogoGenerator = () => {
                   <label className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2">
                     Logo Style
                   </label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {[
-                      {
-                        value: "artwork",
-                        label: "Artwork",
-                        icon: <Palette className="w-4 h-4" />,
-                      },
-                      {
-                        value: "icon",
-                        label: "Icon",
-                        icon: <Zap className="w-4 h-4" />,
-                      },
-                      {
-                        value: "metallic",
-                        label: "Metallic",
-                        icon: <HandMetal className="w-4 h-4" />,
-                      },
-                    ].map((option) => (
-                      <label
-                        key={option.value}
-                        className={`relative cursor-pointer rounded-lg border-2 p-3 text-center transition-all ${
-                          formData.style === option.value
-                            ? "border-[#8F00FF] bg-[#F5EDFF] text-[#8F00FF]"
-                            : "border-[#E0E0E0] bg-white text-[#4B4B4B] hover:border-[#D0D3FA]"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="style"
-                          value={option.value}
-                          checked={formData.style === option.value}
-                          onChange={(e) =>
-                            handleInputChange("style", e.target.value)
-                          }
-                          className="sr-only"
-                        />
-                        <div
-                          className="flex-shrink-0 flex items-center justify-center text-gray-600 mx-auto mb-2"
-                          style={{
-                            width: "32px",
-                            height: "32px",
-                            borderRadius: "28px",
-                            border: "4px solid #F9F5FF",
-                            background: "#F4EBFF",
-                            mixBlendMode: "multiply",
-                          }}
-                        >
-                          {option.icon}
-                        </div>
-                        <div className="font-inter font-medium text-xs">
-                          {option.label}
-                        </div>
-                      </label>
-                    ))}
+                  <div className="space-y-2">
+                    {formData.style && (
+                      <div className="p-3 bg-[#F5EDFF] border border-[#8F00FF] rounded-lg">
+                        <p className="font-inter font-medium text-sm text-[#53389E]">
+                          Selected: {formData.style.replace(/_/g, " ")}
+                        </p>
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setIsStyleModalOpen(true)}
+                      className="w-full h-10 inline-flex items-center justify-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
+                    >
+                      {formData.style
+                        ? "Update Logo Style"
+                        : "Choose Logo Style"}
+                    </button>
                   </div>
                 </div>
 
@@ -381,6 +359,13 @@ const LogoGenerator = () => {
           </>
         )}
       </div>
+
+      <LogoStyleModal
+        open={isStyleModalOpen}
+        onOpenChange={setIsStyleModalOpen}
+        currentStyle={formData.style}
+        onStyleSelect={handleStyleSelect}
+      />
     </div>
   );
 };
