@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Download, Sparkles, RefreshCw, ChevronLeft } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Download, Sparkles, RefreshCw, ChevronLeft, ChevronDown } from "lucide-react";
 import { LogoStyleModal } from "../components/ui/logo-style-modal";
 import { Badge } from "../components/ui/badge";
 
@@ -33,6 +33,21 @@ const LogoGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isStyleModalOpen, setIsStyleModalOpen] = useState(false);
+  const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
+  const downloadDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (downloadDropdownRef.current && !downloadDropdownRef.current.contains(event.target as Node)) {
+        setIsDownloadDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleInputChange = (field: keyof LogoFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -152,19 +167,60 @@ const LogoGenerator = () => {
     }, 2000);
   };
 
-  const handleDownload = () => {
+  const handleDownload = (format: 'png' | 'svg') => {
     if (!generatedLogo?.imageUrl) return;
 
     const link = document.createElement("a");
-    link.href = generatedLogo.imageUrl;
-    link.download = `${formData.companyName.replace(
-      /\s+/g,
-      "_"
-    )}_logo_${Date.now()}.png`;
+    const fileName = `${formData.companyName.replace(/\s+/g, "_")}_logo_${Date.now()}`;
+    
+    if (format === 'svg') {
+      // Convert the current SVG data URL to downloadable SVG
+      if (generatedLogo.imageUrl.startsWith('data:image/svg+xml;base64,')) {
+        const svgData = atob(generatedLogo.imageUrl.split(',')[1]);
+        const blob = new Blob([svgData], { type: 'image/svg+xml' });
+        link.href = URL.createObjectURL(blob);
+        link.download = `${fileName}.svg`;
+      }
+    } else {
+      // For PNG, we'll need to convert SVG to PNG using canvas
+      if (generatedLogo.imageUrl.startsWith('data:image/svg+xml;base64,')) {
+        const svgData = atob(generatedLogo.imageUrl.split(',')[1]);
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = 800;
+          canvas.height = 800;
+          ctx?.drawImage(img, 0, 0, 800, 800);
+          
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const downloadLink = document.createElement("a");
+              downloadLink.href = url;
+              downloadLink.download = `${fileName}.png`;
+              document.body.appendChild(downloadLink);
+              downloadLink.click();
+              document.body.removeChild(downloadLink);
+              URL.revokeObjectURL(url);
+            }
+          }, 'image/png');
+        };
+        img.src = generatedLogo.imageUrl;
+        return;
+      } else {
+        // If it's already a PNG or other format
+        link.href = generatedLogo.imageUrl;
+        link.download = `${fileName}.png`;
+      }
+    }
+    
     link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    setIsDownloadDropdownOpen(false);
   };
 
   const handleBack = () => {
@@ -377,22 +433,42 @@ const LogoGenerator = () => {
               {/* Left Side - Logo & Buttons */}
               <div className="space-y-4">
                 {/* Logo Display */}
-                <div className="relative bg-[#F8F9FB] rounded-xl p-4 border border-[#E0E0E0]">
+                <div>
                   <img
                     src={generatedLogo.imageUrl}
                     alt={`${formData.companyName} Logo`}
-                    className="w-48 h-48 mx-auto rounded-lg shadow-lg object-contain"
+                    className="w-80 h-80 mx-auto object-contain"
                   />
                 </div>
 
-                <div className="flex gap-3">
-                  <button
-                    onClick={handleDownload}
-                    className="flex-1 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] border border-[#8F00FF] px-4 font-inter font-semibold text-sm leading-5 tracking-normal text-white transition hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download
-                  </button>
+                <div className="flex justify-center gap-3">
+                  <div className="relative" ref={downloadDropdownRef}>
+                    <button
+                      onClick={() => setIsDownloadDropdownOpen(!isDownloadDropdownOpen)}
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] border border-[#8F00FF] px-4 font-inter font-semibold text-sm leading-5 tracking-normal text-white transition hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                    
+                    {isDownloadDropdownOpen && (
+                      <div className="absolute top-full left-0 mt-1 w-full bg-white border border-[#E0E0E0] rounded-lg shadow-lg z-10">
+                        <button
+                          onClick={() => handleDownload('png')}
+                          className="w-full px-4 py-2 text-left font-inter font-medium text-sm text-[#414651] hover:bg-[#F8F9FB] rounded-t-lg transition"
+                        >
+                          Download PNG
+                        </button>
+                        <button
+                          onClick={() => handleDownload('svg')}
+                          className="w-full px-4 py-2 text-left font-inter font-medium text-sm text-[#414651] hover:bg-[#F8F9FB] rounded-b-lg transition"
+                        >
+                          Download SVG
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
                   <button
                     onClick={handleGenerate}
