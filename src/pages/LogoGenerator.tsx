@@ -4,6 +4,8 @@ import { Download, Sparkles, RefreshCw, ChevronLeft, ChevronDown } from "lucide-
 import { LogoStyleModal } from "../components/ui/logo-style-modal";
 import { Badge } from "../components/ui/badge";
 import { useCreditStore } from "../stores/creditStore";
+import { agentsService } from "../api/services";
+import type { LogoGeneratorRequest } from "../api/types";
 
 interface LogoFormData {
   companyName: string;
@@ -82,108 +84,38 @@ const LogoGenerator = () => {
     setError(null);
 
     try {
-      // TODO: Replace with actual API call to generate logo
-      // const result = await agentService.generateLogo(formData);
-      // Backend will handle credit deduction internally
-      
-      // Mock generation for now
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      const generateExplanation = () => {
-        const styleDescriptions: Record<string, string> = {
-          WORDMARK:
-            "typography-focused design that emphasizes your company name",
-          LETTERMARK: "clean, memorable design using your company's initials",
-          PICTORIAL_MARK: "iconic symbol that represents your brand identity",
-          ABSTRACT: "unique geometric design that captures your brand essence",
-          COMBINATION_MARK: "balanced combination of text and visual elements",
-          EMBLEM:
-            "traditional, badge-like design with integrated text and symbols",
-        };
-
-        const additionalContext = [];
-        if (formData.preferredColors) {
-          additionalContext.push(`incorporating your preferred colors (${formData.preferredColors})`);
-        }
-        if (formData.tone) {
-          additionalContext.push(`maintaining a ${formData.tone} aesthetic`);
-        }
-        if (formData.industryKeywords) {
-          additionalContext.push(`emphasizing key industry elements like ${formData.industryKeywords}`);
-        }
-
-        const contextText = additionalContext.length > 0 
-          ? ` The design carefully considers your brand preferences by ${additionalContext.join(", ")}.`
-          : "";
-
-        return `This logo perfectly captures the essence of ${
-          formData.companyName
-        } through its ${
-          styleDescriptions[formData.style] || "distinctive design approach"
-        }. The design reflects your company's focus on ${formData.companyDesc.toLowerCase()}, creating a memorable brand identity that resonates with your target audience.${contextText} This logo will help establish trust and recognition in your market while maintaining a professional and modern appearance.`;
+      // Prepare API request data
+      const apiRequest: LogoGeneratorRequest = {
+        company_name: formData.companyName.trim(),
+        company_description: formData.companyDesc.trim(),
+        logo_type: formData.style.toLowerCase(),
       };
 
-      const generateDummyLogo = () => {
-        const companyInitials = formData.companyName
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase())
-          .join("")
-          .substring(0, 3);
+      // Add optional fields if provided
+      if (formData.preferredColors.trim()) {
+        apiRequest.preferred_colors = formData.preferredColors.split(',').map(color => color.trim());
+      }
+      if (formData.tone.trim()) {
+        apiRequest.tone = formData.tone.trim();
+      }
+      if (formData.industryKeywords.trim()) {
+        apiRequest.industry_keywords = formData.industryKeywords.split(',').map(keyword => keyword.trim());
+      }
 
-        const styleColors: Record<string, { bg: string; accent: string }> = {
-          WORDMARK: { bg: "#8F00FF", accent: "#E0D3FA" },
-          LETTERMARK: { bg: "#7000CC", accent: "#F5EDFF" },
-          PICTORIAL_MARK: { bg: "#8000E5", accent: "#E7DAFF" },
-          ABSTRACT: { bg: "#9000FF", accent: "#E5D7FF" },
-          COMBINATION_MARK: { bg: "#7500DD", accent: "#E8DDFF" },
-          EMBLEM: { bg: "#6500BB", accent: "#EBE3FF" },
-        };
-
-        const colors = styleColors[formData.style] || {
-          bg: "#8F00FF",
-          accent: "#E0D3FA",
-        };
-
-        // Create a simple SVG logo as data URL
-        const svgLogo = `
-          <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:${
-                  colors.bg
-                };stop-opacity:1" />
-                <stop offset="100%" style="stop-color:${
-                  colors.accent
-                };stop-opacity:1" />
-              </linearGradient>
-            </defs>
-            <rect width="400" height="400" fill="url(#gradient)"/>
-            <circle cx="200" cy="150" r="60" fill="white" opacity="0.9"/>
-            <text x="200" y="160" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="${
-              colors.bg
-            }">${companyInitials}</text>
-            <text x="200" y="280" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="600" text-anchor="middle" fill="white">${
-              formData.companyName
-            }</text>
-            <text x="200" y="320" font-family="Inter, Arial, sans-serif" font-size="14" text-anchor="middle" fill="white" opacity="0.8">${formData.style.toUpperCase()} STYLE</text>
-          </svg>
-        `;
-
-        return `data:image/svg+xml;base64,${btoa(svgLogo)}`;
-      };
-
-      const logoUrl = generateDummyLogo();
+      // Call the API - backend handles credit deduction
+      const result = await agentsService.generateLogo(apiRequest);
 
       setGeneratedLogo({
-        imageUrl: logoUrl,
-        explanation: generateExplanation(),
+        imageUrl: result.output_data.logo_image_url,
+        explanation: result.output_data.explanation,
       });
 
-      // Refresh credits after generation (backend already deducted)
+      // Refresh credits after successful generation
       await fetchCreditsBalance();
 
-    } catch (error) {
-      setError("Generation failed. Please try again.");
+    } catch (error: any) {
+      // Backend returns appropriate error messages including credit errors
+      setError(error.message || "Generation failed. Please try again.");
     } finally {
       setIsGenerating(false);
     }
