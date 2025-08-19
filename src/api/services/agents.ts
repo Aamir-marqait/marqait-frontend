@@ -3,6 +3,8 @@ import axiosInstance from '@/lib/axios';
 import type {
   LogoGeneratorRequest,
   LogoGeneratorResponse,
+  SocialMediaGeneratorRequest,
+  SocialMediaGeneratorResponse,
   AgentExecuteRequest
 } from '../types';
 import { handleApiError } from '../utils';
@@ -27,7 +29,36 @@ class AgentsService {
 
       const response = await axiosInstance.post<LogoGeneratorResponse>(
         `${this.baseUrl}/logo_generator/execute`,
-        requestPayload
+        requestPayload,
+        { timeout: 90000 } // 90 seconds for AI generation
+      );
+
+      return response.data;
+    } catch (error: any) {
+      throw handleApiError(error);
+    }
+  }
+
+  async generateSocialMediaPost(data: SocialMediaGeneratorRequest): Promise<SocialMediaGeneratorResponse> {
+    try {
+      const requestPayload: AgentExecuteRequest = {
+        parameters: {
+          platform: data.platform,
+          type: data.type,
+          context: data.context,
+          ...(data.carousel !== undefined && { carousel: data.carousel }),
+          ...(data.brand_name && { brand_name: data.brand_name }),
+          ...(data.target_audience && { target_audience: data.target_audience }),
+          ...(data.additional_context && { additional_context: data.additional_context })
+        },
+        priority: 'NORMAL',
+        max_retries: 3
+      };
+
+      const response = await axiosInstance.post<SocialMediaGeneratorResponse>(
+        `${this.baseUrl}/social_media_generator/execute`,
+        requestPayload,
+        { timeout: 90000 } // 90 seconds for AI generation
       );
 
       return response.data;

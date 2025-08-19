@@ -84,11 +84,21 @@ const LogoGenerator = () => {
     setError(null);
 
     try {
+      // Map form style to API logo_type
+      const styleMapping: Record<string, string> = {
+        'WORDMARK': 'wordmark',
+        'LETTERMARK': 'lettermark', 
+        'PICTORIAL_MARK': 'pictorial',
+        'ABSTRACT': 'abstract',
+        'COMBINATION_MARK': 'combination',
+        'EMBLEM': 'emblem'
+      };
+
       // Prepare API request data
       const apiRequest: LogoGeneratorRequest = {
         company_name: formData.companyName.trim(),
         company_description: formData.companyDesc.trim(),
-        logo_type: formData.style.toLowerCase(),
+        logo_type: styleMapping[formData.style] || formData.style.toLowerCase(),
       };
 
       // Add optional fields if provided

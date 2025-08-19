@@ -14,11 +14,17 @@ import {
 } from "lucide-react";
 import { useCreditStore } from "../stores/creditStore";
 import { Dialog, DialogContent, DialogTrigger } from "../components/ui/dialog";
+import { agentsService } from "../api/services";
+import type { SocialMediaGeneratorRequest } from "../api/types";
 
 interface PostFormData {
   contentDescription: string;
   platform: string;
   contentType: string;
+  carousel: boolean;
+  brandName: string;
+  targetAudience: string;
+  additionalContext: string;
 }
 
 interface GeneratedPost {
@@ -35,6 +41,10 @@ const SocialMediaPostGenerator = () => {
     contentDescription: "",
     platform: "instagram",
     contentType: "post",
+    carousel: false,
+    brandName: "",
+    targetAudience: "",
+    additionalContext: "",
   });
 
   const [generatedPost, setGeneratedPost] = useState<GeneratedPost | null>(
@@ -70,7 +80,7 @@ const SocialMediaPostGenerator = () => {
     };
   }, []);
 
-  const handleInputChange = (field: keyof PostFormData, value: string) => {
+  const handleInputChange = (field: keyof PostFormData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setError(null);
   };
@@ -85,190 +95,51 @@ const SocialMediaPostGenerator = () => {
     setError(null);
 
     try {
-      // TODO: Replace with actual API call to generate social media post
-      // const result = await agentService.generateSocialMediaPost(formData);
-      // Backend will handle credit deduction internally
-
-      // Mock generation for now
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const generateCaption = () => {
-        const baseContent = formData.contentDescription;
-        const platform = formData.platform;
-
-        if (platform === "twitter") {
-          return baseContent.length > 240
-            ? baseContent.substring(0, 237) + "..."
-            : baseContent;
-        }
-
-        const enhancedCaption = `${baseContent} ✨\n\nWhat do you think? Let us know in the comments! 💭\n\n#${formData.platform}post #creativity #brand`;
-        return enhancedCaption;
+      // Map platform names - API uses 'x' instead of 'twitter'
+      const platformMapping: Record<string, string> = {
+        'twitter': 'x',
+        'instagram': 'instagram',
+        'facebook': 'facebook',
+        'linkedin': 'linkedin'
       };
 
-      const generateHashtags = () => {
-        const platformHashtags: Record<string, string[]> = {
-          instagram: [
-            "#instagram",
-            "#insta",
-            "#post",
-            "#viral",
-            "#trending",
-            "#creative",
-            "#brand",
-            "#design",
-            "#social",
-            "#content",
-          ],
-          facebook: [
-            "#facebook",
-            "#social",
-            "#community",
-            "#share",
-            "#engage",
-            "#brand",
-            "#marketing",
-            "#content",
-          ],
-          twitter: [
-            "#twitter",
-            "#tweet",
-            "#trending",
-            "#viral",
-            "#social",
-            "#brand",
-            "#content",
-          ],
-          linkedin: [
-            "#linkedin",
-            "#professional",
-            "#business",
-            "#networking",
-            "#career",
-            "#industry",
-            "#corporate",
-            "#brand",
-          ],
-        };
-
-        const baseHashtags =
-          platformHashtags[formData.platform] || platformHashtags.instagram;
-        const selectedHashtags = baseHashtags.slice(0, 8);
-        return selectedHashtags.join(" ");
+      // Prepare API request data
+      const apiRequest: SocialMediaGeneratorRequest = {
+        platform: platformMapping[formData.platform] || formData.platform,
+        type: formData.contentType,
+        context: formData.contentDescription.trim(),
       };
 
-      const generateBestTime = () => {
-        const bestTimes: Record<string, string> = {
-          instagram: "Tuesday - Thursday, 11 AM - 1 PM",
-          facebook: "Tuesday - Thursday, 9 AM - 10 AM",
-          twitter: "Tuesday - Thursday, 9 AM - 10 AM",
-          linkedin: "Tuesday - Thursday, 8 AM - 10 AM",
-        };
+      // Add optional fields if provided
+      if (formData.contentType === "post" && formData.carousel) {
+        apiRequest.carousel = formData.carousel;
+      }
+      if (formData.brandName.trim()) {
+        apiRequest.brand_name = formData.brandName.trim();
+      }
+      if (formData.targetAudience.trim()) {
+        apiRequest.target_audience = formData.targetAudience.trim();
+      }
+      if (formData.additionalContext.trim()) {
+        apiRequest.additional_context = formData.additionalContext.trim();
+      }
 
-        return (
-          bestTimes[formData.platform] || "Tuesday - Thursday, 11 AM - 1 PM"
-        );
-      };
-
-      const generateDummyPost = () => {
-        const platformColors: Record<string, { bg: string; accent: string }> = {
-          instagram: { bg: "#E1306C", accent: "#F77737" },
-          facebook: { bg: "#1877F2", accent: "#42A5F5" },
-          twitter: { bg: "#1DA1F2", accent: "#14171A" },
-          linkedin: { bg: "#0A66C2", accent: "#004182" },
-        };
-
-        const colors = platformColors[formData.platform] || {
-          bg: "#8F00FF",
-          accent: "#E0D3FA",
-        };
-
-        // Story: 9:16 aspect ratio (1080x1920 standard)
-        // Post: 1:1 aspect ratio (1080x1080 standard)
-        const dimensions =
-          formData.contentType === "story"
-            ? { width: 540, height: 960 }
-            : { width: 600, height: 600 };
-
-        // Generate 1-3 images for carousel
-        const imageCount = Math.floor(Math.random() * 3) + 1;
-        const images = [];
-
-        for (let i = 0; i < imageCount; i++) {
-          const imageNumber = i + 1;
-          const svgPost = `
-            <svg width="${dimensions.width}" height="${
-            dimensions.height
-          }" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="gradient${i}" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:${
-                    colors.bg
-                  };stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:${
-                    colors.accent
-                  };stop-opacity:1" />
-                </linearGradient>
-              </defs>
-              <rect width="${dimensions.width}" height="${
-            dimensions.height
-          }" fill="url(#gradient${i})"/>
-              <rect x="20" y="20" width="${dimensions.width - 40}" height="${
-            dimensions.height - 40
-          }" fill="white" opacity="0.95" rx="15"/>
-              <text x="${
-                dimensions.width / 2
-              }" y="80" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="${
-            colors.bg
-          }">SOCIAL MEDIA POST</text>
-              <text x="${
-                dimensions.width / 2
-              }" y="120" font-family="Inter, Arial, sans-serif" font-size="16" text-anchor="middle" fill="${
-            colors.accent
-          }">${formData.platform.toUpperCase()} ${formData.contentType.toUpperCase()}</text>
-              <text x="${
-                dimensions.width / 2
-              }" y="160" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="${
-            colors.bg
-          }">Image ${imageNumber}</text>
-              <foreignObject x="40" y="180" width="${
-                dimensions.width - 80
-              }" height="${dimensions.height - 230}">
-                <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: Inter, Arial, sans-serif; font-size: 14px; color: #333; text-align: center; padding: 20px; line-height: 1.5;">
-                  ${
-                    formData.contentDescription.length > 80
-                      ? formData.contentDescription.substring(0, 80) + "..."
-                      : formData.contentDescription
-                  }
-                </div>
-              </foreignObject>
-              <text x="${dimensions.width / 2}" y="${
-            dimensions.height - 30
-          }" font-family="Inter, Arial, sans-serif" font-size="12" text-anchor="middle" fill="${
-            colors.bg
-          }" opacity="0.8">Generated with MARQAIT</text>
-            </svg>
-          `;
-
-          images.push(`data:image/svg+xml;base64,${btoa(svgPost)}`);
-        }
-
-        return images;
-      };
-
-      const postUrls = generateDummyPost();
+      // Call the API - backend handles credit deduction
+      const result = await agentsService.generateSocialMediaPost(apiRequest);
 
       setGeneratedPost({
-        imageUrls: postUrls,
-        caption: generateCaption(),
-        hashtags: generateHashtags(),
-        bestTime: generateBestTime(),
+        imageUrls: result.output_data.images.map(img => img.url),
+        caption: result.output_data.caption,
+        hashtags: result.output_data.hashtags.join(' '),
+        bestTime: result.output_data.best_posting_times.join(', '),
       });
 
-      // Refresh credits after generation (backend already deducted)
+      // Refresh credits after successful generation
       await fetchCreditsBalance();
-    } catch (error) {
-      setError("Generation failed. Please try again.");
+
+    } catch (error: any) {
+      // Backend returns appropriate error messages including credit errors
+      setError(error.message || "Generation failed. Please try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -437,7 +308,7 @@ const SocialMediaPostGenerator = () => {
                     >
                       <option value="instagram">Instagram</option>
                       <option value="facebook">Facebook</option>
-                      <option value="twitter">Twitter</option>
+                      <option value="twitter">X (Twitter)</option>
                       <option value="linkedin">LinkedIn</option>
                     </select>
                   </div>
@@ -460,6 +331,99 @@ const SocialMediaPostGenerator = () => {
                       <option value="post">Post</option>
                       <option value="story">Story</option>
                     </select>
+                  </div>
+                </div>
+
+                {/* Carousel Option - Only for Posts */}
+                {formData.contentType === "post" && (
+                  <div>
+                    <label className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2">
+                      Content Type
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={formData.carousel}
+                          onChange={(e) =>
+                            handleInputChange("carousel", e.target.checked)
+                          }
+                          className="w-4 h-4 text-[#8F00FF] border-[#D5D7DA] rounded focus:ring-[#7c3aed]/20 focus:ring-2"
+                        />
+                        <span className="font-inter font-normal text-sm leading-5 tracking-normal text-[#414651]">
+                          Create as carousel (multiple images)
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                )}
+
+                {/* Optional Brand Context Section */}
+                <div className="space-y-4">
+                  <h3 className="font-inter font-semibold text-base text-[#8F00FF] mb-3">
+                    Optional Brand Context
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        htmlFor="brandName"
+                        className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2"
+                      >
+                        Brand Name
+                      </label>
+                      <input
+                        id="brandName"
+                        type="text"
+                        placeholder="e.g., TechFlow, FlowerShop"
+                        value={formData.brandName}
+                        onChange={(e) =>
+                          handleInputChange("brandName", e.target.value)
+                        }
+                        maxLength={50}
+                        className="h-10 w-full rounded-lg border border-[#D5D7DA] px-3 font-['Inter'] font-normal text-sm leading-5 tracking-normal text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20 shadow-[0px_1px_2px_0px_#0A0D120D]"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="targetAudience"
+                        className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2"
+                      >
+                        Target Audience
+                      </label>
+                      <input
+                        id="targetAudience"
+                        type="text"
+                        placeholder="e.g., young professionals, mothers"
+                        value={formData.targetAudience}
+                        onChange={(e) =>
+                          handleInputChange("targetAudience", e.target.value)
+                        }
+                        maxLength={200}
+                        className="h-10 w-full rounded-lg border border-[#D5D7DA] px-3 font-['Inter'] font-normal text-sm leading-5 tracking-normal text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20 shadow-[0px_1px_2px_0px_#0A0D120D]"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="additionalContext"
+                      className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2"
+                    >
+                      Additional Context
+                    </label>
+                    <textarea
+                      id="additionalContext"
+                      placeholder="e.g., seasonal sale, product launch, holiday promotion"
+                      value={formData.additionalContext}
+                      onChange={(e) =>
+                        handleInputChange("additionalContext", e.target.value)
+                      }
+                      rows={2}
+                      maxLength={500}
+                      className="w-full rounded-lg border border-[#D5D7DA] px-3 py-2 font-['Inter'] font-normal text-sm leading-5 tracking-normal text-[#1f2340] placeholder:text-[#98a2b3] outline-none transition focus:border-[#6d28d9] focus:ring-4 focus:ring-[#7c3aed]/20 shadow-[0px_1px_2px_0px_#0A0D120D] resize-none"
+                    />
                   </div>
                 </div>
 
