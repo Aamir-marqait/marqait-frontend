@@ -21,6 +21,7 @@ import setting from "../assets/nav-icon/settings.svg";
 import fullLogo from "../assets/app-logo/full-logo.png";
 import logo from "../assets/app-logo/logo.png";
 import coinIcon from "../assets/nav-icon/icon.png";
+import supportIcon from "../assets/nav-icon/support.png";
 import { Progress } from "./ui/progress";
 
 const navigationItems = [
@@ -294,72 +295,102 @@ export default function Sidebar({
           })}
         </nav>
 
-        {!isCollapsed && (
-          <div
-            className="border-t p-4 bg-white"
-            style={{ borderTop: "1px solid #BEBEBE99" }}
-          >
-            <div className="flex space-x-4">
-              {isLoadingCredits ? (
-                <div className="w-9 h-9 bg-gray-200 rounded-full animate-pulse"></div>
-              ) : (
-                <img src={coinIcon} alt="Coin" className="w-9 h-9" />
+        <div className="bg-white">
+          {/* Help and Support Section */}
+          <div className={`${isCollapsed ? "p-2" : "px-4 py-2"} border-b`} style={{ borderBottom: "1px solid #BEBEBE99" }}>
+            <Link
+              to="/help-support"
+              className={`group flex items-center rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 ${
+                isCollapsed ? "justify-center p-3 w-12" : "gap-3 p-3"
+              }`}
+              title={isCollapsed ? "Help and Support" : undefined}
+            >
+              <img
+                src={supportIcon}
+                alt="Help and Support"
+                className="h-5 w-5 flex-shrink-0 group-hover:brightness-110"
+              />
+              {!isCollapsed && (
+                <span className="font-Inter">Help and Support</span>
               )}
-              <div className="flex-1">
-                <div className="flex items-end gap-3 mb-3">
-                  <div className="flex-1">
+            </Link>
+          </div>
+
+          {/* Credits Section - Show coin icon when collapsed, full section when expanded */}
+          {isCollapsed ? (
+            <div className="p-2">
+              <Link 
+                to="/account/upgrade/credit"
+                className="flex items-center justify-center p-3 w-12 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200 group"
+                title="Upgrade Credits"
+              >
+                <img src={coinIcon} alt="Credits" className="w-5 h-5" />
+              </Link>
+            </div>
+          ) : (
+            <div className="p-4">
+              <div className="flex space-x-4">
+                {isLoadingCredits ? (
+                  <div className="w-9 h-9 bg-gray-200 rounded-full animate-pulse"></div>
+                ) : (
+                  <img src={coinIcon} alt="Coin" className="w-9 h-9" />
+                )}
+                <div className="flex-1">
+                  <div className="flex items-end gap-3 mb-3">
+                    <div className="flex-1">
+                      {isLoadingCredits ? (
+                        <div className="flex items-center gap-1">
+                          <div className="h-6 w-16 bg-gray-200 rounded animate-pulse"></div>
+                          <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+                        </div>
+                      ) : (
+                        <div className="font-Inter font-semibold text-[20px] leading-[100%] text-[#172935]">
+                          {displayCredits}
+                          <span className="font-Inter font-normal text-[13px] leading-[100%]">
+                            /{creditLimit.toLocaleString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="font-Inter font-normal text-[12px] leading-[100%] text-[#172935]">
+                      {isLoadingCredits ? (
+                        <div className="h-3 w-8 bg-gray-200 rounded animate-pulse"></div>
+                      ) : (
+                        `${progressPercentage}%`
+                      )}
+                    </div>
+                  </div>
+                  <div className="mb-4">
                     {isLoadingCredits ? (
-                      <div className="flex items-center gap-1">
-                        <div className="h-6 w-16 bg-gray-200 rounded animate-pulse"></div>
-                        <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
-                      </div>
+                      <div className="h-2 w-full bg-gray-200 rounded animate-pulse"></div>
                     ) : (
-                      <div className="font-Inter font-semibold text-[20px] leading-[100%] text-[#172935]">
-                        {displayCredits}
-                        <span className="font-Inter font-normal text-[13px] leading-[100%]">
-                          /{creditLimit.toLocaleString()}
-                        </span>
-                      </div>
+                      <Progress
+                        value={progressPercentage}
+                        className="h-2 bg-[#E6D4FF]"
+                      />
                     )}
                   </div>
-                  <div className="font-Inter font-normal text-[12px] leading-[100%] text-[#172935]">
-                    {isLoadingCredits ? (
-                      <div className="h-3 w-8 bg-gray-200 rounded animate-pulse"></div>
-                    ) : (
-                      `${progressPercentage}%`
-                    )}
-                  </div>
-                </div>
-                <div className="mb-4">
                   {isLoadingCredits ? (
-                    <div className="h-2 w-full bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-8 w-20 bg-gray-200 rounded-lg animate-pulse"></div>
                   ) : (
-                    <Progress
-                      value={progressPercentage}
-                      className="h-2 bg-[#E6D4FF]"
-                    />
+                    <Link to="/account/upgrade/credit">
+                      <button
+                        className="cursor-pointer h-8 px-3 py-1 rounded-lg border border-[#7F56D9] font-Inter font-semibold text-[14px] leading-[24px] text-white transition-all duration-200 hover:shadow-lg flex items-center justify-center"
+                        style={{
+                          background:
+                            "linear-gradient(180deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)",
+                          boxShadow: "0px 1px 2px 0px rgba(10, 13, 18, 0.05)",
+                        }}
+                      >
+                        Upgrade
+                      </button>
+                    </Link>
                   )}
                 </div>
-                {isLoadingCredits ? (
-                  <div className="h-8 w-20 bg-gray-200 rounded-lg animate-pulse"></div>
-                ) : (
-                  <Link to="/account/upgrade/credit">
-                    <button
-                      className="cursor-pointer h-8 px-3 py-1 rounded-lg border border-[#7F56D9] font-Inter font-semibold text-[14px] leading-[24px] text-white transition-all duration-200 hover:shadow-lg flex items-center justify-center"
-                      style={{
-                        background:
-                          "linear-gradient(180deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)",
-                        boxShadow: "0px 1px 2px 0px rgba(10, 13, 18, 0.05)",
-                      }}
-                    >
-                      Upgrade
-                    </button>
-                  </Link>
-                )}
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </>
   );
