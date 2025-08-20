@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect, useRef } from "react";
 import {
   Download,
@@ -80,7 +79,10 @@ const SocialMediaPostGenerator = () => {
     };
   }, []);
 
-  const handleInputChange = (field: keyof PostFormData, value: string | boolean) => {
+  const handleInputChange = (
+    field: keyof PostFormData,
+    value: string | boolean
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setError(null);
   };
@@ -97,10 +99,10 @@ const SocialMediaPostGenerator = () => {
     try {
       // Map platform names - API uses 'x' instead of 'twitter'
       const platformMapping: Record<string, string> = {
-        'twitter': 'x',
-        'instagram': 'instagram',
-        'facebook': 'facebook',
-        'linkedin': 'linkedin'
+        twitter: "x",
+        instagram: "instagram",
+        facebook: "facebook",
+        linkedin: "linkedin",
       };
 
       // Prepare API request data
@@ -128,10 +130,10 @@ const SocialMediaPostGenerator = () => {
       const result = await agentsService.generateSocialMediaPost(apiRequest);
 
       // Clean and parse the output data
-      const cleanedImageUrls = result.output_data.images.map(img => {
+      const cleanedImageUrls = result.output_data.images.map((img) => {
         // Clean up malformed URLs (remove extra closing parentheses)
         let cleanUrl = img.url;
-        if (cleanUrl.endsWith(')') && !cleanUrl.includes('(')) {
+        if (cleanUrl.endsWith(")") && !cleanUrl.includes("(")) {
           cleanUrl = cleanUrl.slice(0, -1);
         }
         return cleanUrl;
@@ -139,28 +141,34 @@ const SocialMediaPostGenerator = () => {
 
       // Clean up caption - remove escaped quotes and fix malformed link syntax
       let cleanedCaption = result.output_data.caption;
-      if (typeof cleanedCaption === 'string') {
+      if (typeof cleanedCaption === "string") {
         // Remove escaped quotes
         cleanedCaption = cleanedCaption.replace(/\\"/g, '"');
         // Fix malformed link syntax [Link text](url)) -> [Link text](url)
-        cleanedCaption = cleanedCaption.replace(/\[([^\]]+)\]\(([^)]+)\)\)/g, '[$1]($2)');
+        cleanedCaption = cleanedCaption.replace(
+          /\[([^\]]+)\]\(([^)]+)\)\)/g,
+          "[$1]($2)"
+        );
         // Remove any markdown links as they don't display well in social media
-        cleanedCaption = cleanedCaption.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+        cleanedCaption = cleanedCaption.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
       }
 
       setGeneratedPost({
         imageUrls: cleanedImageUrls,
         caption: cleanedCaption,
-        hashtags: result.output_data.hashtags.join(' '),
-        bestTime: result.output_data.best_posting_times.join(', '),
+        hashtags: result.output_data.hashtags.join(" "),
+        bestTime: result.output_data.best_posting_times.join(", "),
       });
+
 
       // Refresh credits after successful generation
       await fetchCreditsBalance();
-
     } catch (error: unknown) {
       // Backend returns appropriate error messages including credit errors
-      const errorMessage = error instanceof Error ? error.message : "Generation failed. Please try again.";
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Generation failed. Please try again.";
       setError(errorMessage);
     } finally {
       setIsGenerating(false);
@@ -168,14 +176,18 @@ const SocialMediaPostGenerator = () => {
   };
 
   const handleDownload = (format: "png" | "svg") => {
-    if (!generatedPost?.imageUrls || generatedPost.imageUrls.length === 0) return;
+    if (!generatedPost?.imageUrls || generatedPost.imageUrls.length === 0)
+      return;
 
     // Download current image or all images if multiple
     const imageToDownload = generatedPost.imageUrls[currentImageIndex];
     const link = document.createElement("a");
-    const fileName = generatedPost.imageUrls.length > 1 
-      ? `social_media_post_${formData.platform}_${currentImageIndex + 1}_${Date.now()}`
-      : `social_media_post_${formData.platform}_${Date.now()}`;
+    const fileName =
+      generatedPost.imageUrls.length > 1
+        ? `social_media_post_${formData.platform}_${
+            currentImageIndex + 1
+          }_${Date.now()}`
+        : `social_media_post_${formData.platform}_${Date.now()}`;
 
     if (format === "svg") {
       // Convert the current SVG data URL to downloadable SVG
@@ -253,7 +265,7 @@ const SocialMediaPostGenerator = () => {
 
   const handlePrevImage = () => {
     if (generatedPost && generatedPost.imageUrls.length > 1) {
-      setCurrentImageIndex((prev) => 
+      setCurrentImageIndex(prev =>
         prev === 0 ? generatedPost.imageUrls.length - 1 : prev - 1
       );
     }
@@ -261,13 +273,17 @@ const SocialMediaPostGenerator = () => {
 
   const handleNextImage = () => {
     if (generatedPost && generatedPost.imageUrls.length > 1) {
-      setCurrentImageIndex((prev) => 
+      setCurrentImageIndex(prev =>
         prev === generatedPost.imageUrls.length - 1 ? 0 : prev + 1
       );
     }
   };
 
   const isFormValid = formData.contentDescription.trim();
+
+  const handleImageIndicatorClick = (index: number) => {
+    setCurrentImageIndex(index);
+  };
 
   return (
     <div className="p-8 bg-[#FAFAFB]">
@@ -356,36 +372,34 @@ const SocialMediaPostGenerator = () => {
                   </div>
                 </div>
 
-                {/* Carousel Option - Only for Posts */}
-                {formData.contentType === "post" && (
-                  <div>
-                    <label className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2">
-                      Content Type
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={formData.carousel}
-                          onChange={(e) =>
-                            handleInputChange("carousel", e.target.checked)
-                          }
-                          className="w-4 h-4 text-[#8F00FF] border-[#D5D7DA] rounded focus:ring-[#7c3aed]/20 focus:ring-2"
-                        />
-                        <span className="font-inter font-normal text-sm leading-5 tracking-normal text-[#414651]">
-                          Create as carousel (multiple images)
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                )}
-
                 {/* Optional Brand Context Section */}
                 <div className="space-y-4">
                   <h3 className="font-inter font-semibold text-base text-[#8F00FF] mb-3">
                     Optional Brand Context
                   </h3>
-                  
+                  {formData.contentType === "post" && (
+                    <div>
+                      <label className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2">
+                        Content Type
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formData.carousel}
+                            onChange={(e) =>
+                              handleInputChange("carousel", e.target.checked)
+                            }
+                            className="w-4 h-4 text-[#8F00FF] border-[#D5D7DA] rounded focus:ring-[#7c3aed]/20 focus:ring-2"
+                          />
+                          <span className="font-inter font-normal text-sm leading-5 tracking-normal text-[#414651]">
+                            Create as carousel (multiple images)
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label
@@ -542,7 +556,7 @@ const SocialMediaPostGenerator = () => {
                             >
                               <X className="h-4 w-4 text-[#4B4B4B]" />
                             </button>
-                            
+
                             {/* Navigation arrows in modal */}
                             {generatedPost.imageUrls.length > 1 && (
                               <>
@@ -560,7 +574,7 @@ const SocialMediaPostGenerator = () => {
                                 </button>
                               </>
                             )}
-                            
+
                             <img
                               src={generatedPost.imageUrls[currentImageIndex]}
                               alt="Generated Social Media Post - Full View"
@@ -570,18 +584,19 @@ const SocialMediaPostGenerator = () => {
                                   : "w-[80vh] h-[80vh]"
                               } object-cover`}
                             />
-                            
+
                             {/* Image counter */}
                             {generatedPost.imageUrls.length > 1 && (
                               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/60 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                {currentImageIndex + 1} / {generatedPost.imageUrls.length}
+                                {currentImageIndex + 1} /{" "}
+                                {generatedPost.imageUrls.length}
                               </div>
                             )}
                           </div>
                         </div>
                       </DialogContent>
                     </Dialog>
-                    
+
                     {/* Navigation arrows for main view */}
                     {generatedPost.imageUrls.length > 1 && (
                       <>
@@ -599,14 +614,14 @@ const SocialMediaPostGenerator = () => {
                         </button>
                       </>
                     )}
-                    
+
                     {/* Image indicators */}
                     {generatedPost.imageUrls.length > 1 && (
                       <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
                         {generatedPost.imageUrls.map((_, index) => (
                           <button
                             key={index}
-                            onClick={() => setCurrentImageIndex(index)}
+                            onClick={() => handleImageIndicatorClick(index)}
                             className={`w-2 h-2 rounded-full transition-all duration-200 ${
                               index === currentImageIndex
                                 ? "bg-[#8F00FF]"
