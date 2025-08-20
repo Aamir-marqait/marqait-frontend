@@ -149,7 +149,6 @@ export default function Sidebar({
       );
     }
 
-    // Professional and Enterprise users see all items EXCEPT Logo Generator and Social Media Post Generator
     return navigationItems.filter(
       (item) =>
         item.url !== "/logo-generator" &&

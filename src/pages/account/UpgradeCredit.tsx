@@ -9,9 +9,10 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function SubscriptionPage() {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
   const { updateUserPlan, user } = useAuthStore();
-  
 
-  const handlePlanSelection = (plan: 'free' | 'professional' | 'enterprise') => {
+  const handlePlanSelection = (
+    plan: "free" | "professional" | "enterprise"
+  ) => {
     updateUserPlan(plan);
     // Don't redirect, just update the plan
   };
@@ -82,7 +83,7 @@ export default function SubscriptionPage() {
                     billingPeriod === "monthly"
                       ? "0px 1px 2px 0px rgba(10, 13, 18, 0.05)"
                       : "none",
-                  color: billingPeriod === "monthly" ? "#FFFFFF" : "#1D2127"
+                  color: billingPeriod === "monthly" ? "#FFFFFF" : "#1D2127",
                 }}
               >
                 Monthly
@@ -107,7 +108,7 @@ export default function SubscriptionPage() {
                     billingPeriod === "yearly"
                       ? "0px 1px 2px 0px rgba(10, 13, 18, 0.05)"
                       : "none",
-                  color: billingPeriod === "yearly" ? "#FFFFFF" : "#1D2127"
+                  color: billingPeriod === "yearly" ? "#FFFFFF" : "#1D2127",
                 }}
               >
                 Yearly <span className="text-[12px]">-20% off</span>
@@ -131,11 +132,17 @@ export default function SubscriptionPage() {
               "Lorem ipsum dolor sit amet",
               "Lorem ipsum dolor conset",
               "Lorem ipsum dolor prop",
-              "Lorem ipsum dolor"
+              "Lorem ipsum dolor",
             ]}
-            buttonText={!user?.plan || user?.plan === 'free' ? "Current Plan" : "Get Started"}
-            buttonVariant={!user?.plan || user?.plan === 'free' ? "secondary" : "default"}
-            onGetStarted={() => handlePlanSelection('free')}
+            buttonText={
+              !user?.plan || user?.plan === "free"
+                ? "Current Plan"
+                : "Get Started"
+            }
+            buttonVariant={
+              !user?.plan || user?.plan === "free" ? "secondary" : "default"
+            }
+            onGetStarted={() => handlePlanSelection("free")}
           />
 
           <PricingCard
@@ -150,11 +157,16 @@ export default function SubscriptionPage() {
               "Lorem ipsum dolor sit amet",
               "Lorem ipsum dolor conset",
               "Lorem ipsum dolor prop",
-              "Lorem ipsum dolor"
+              "Lorem ipsum dolor",
             ]}
-            buttonText={user?.plan === 'professional' ? 'Current Plan' : 'Get Started'}
-            buttonVariant={user?.plan === 'professional' ? 'secondary' : 'default'}
-            onGetStarted={() => handlePlanSelection('professional')}
+            buttonText={
+              user?.plan === "professional" ? "Current Plan" : "Get Started"
+            }
+            buttonVariant={
+              user?.plan === "professional" ? "secondary" : "default"
+            }
+            onGetStarted={() => handlePlanSelection("professional")}
+            disabled={true}
           />
 
           <PricingCard
@@ -169,11 +181,16 @@ export default function SubscriptionPage() {
               "Lorem ipsum dolor sit amet",
               "Lorem ipsum dolor conset",
               "Lorem ipsum dolor prop",
-              "Lorem ipsum dolor"
+              "Lorem ipsum dolor",
             ]}
-            buttonText={user?.plan === 'enterprise' ? 'Current Plan' : 'Get Started'}
-            buttonVariant={user?.plan === 'enterprise' ? 'secondary' : 'default'}
-            onGetStarted={() => handlePlanSelection('enterprise')}
+            buttonText={
+              user?.plan === "enterprise" ? "Current Plan" : "Get Started"
+            }
+            buttonVariant={
+              user?.plan === "enterprise" ? "secondary" : "default"
+            }
+            onGetStarted={() => handlePlanSelection("enterprise")}
+            disabled={true}
           />
         </div>
 
