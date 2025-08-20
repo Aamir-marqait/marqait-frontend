@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Download,
   Sparkles,
   RefreshCw,
   ChevronLeft,
-  ChevronDown,
 } from "lucide-react";
 import { LogoStyleModal } from "../components/ui/logo-style-modal";
 import { Badge } from "../components/ui/badge";
@@ -51,7 +50,6 @@ const LogoGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isStyleModalOpen, setIsStyleModalOpen] = useState(false);
-  const [generationProgress, setGenerationProgress] = useState<string>("");
 
   // Fetch credits on component mount
   useEffect(() => {
@@ -80,21 +78,6 @@ const LogoGenerator = () => {
 
     setIsGenerating(true);
     setError(null);
-    setGenerationProgress("Initializing logo generation...");
-
-    // Add progress updates with timeouts
-    const progressTimeout1 = setTimeout(() => {
-      if (isGenerating)
-        setGenerationProgress("Analyzing your brand requirements...");
-    }, 10000); // After 10 seconds
-
-    const progressTimeout2 = setTimeout(() => {
-      if (isGenerating) setGenerationProgress("Creating design concepts...");
-    }, 30000); // After 30 seconds
-
-    const progressTimeout3 = setTimeout(() => {
-      if (isGenerating) setGenerationProgress("Finalizing your logo...");
-    }, 60000); // After 1 minute
 
     try {
       // Map form style to API logo_type
@@ -167,13 +150,7 @@ const LogoGenerator = () => {
           : "Generation failed. Please try again.";
       setError(errorMessage);
     } finally {
-      // Clear progress timeouts
-      clearTimeout(progressTimeout1);
-      clearTimeout(progressTimeout2);
-      clearTimeout(progressTimeout3);
-
       setIsGenerating(false);
-      setGenerationProgress("");
     }
   };
 
@@ -448,7 +425,7 @@ const LogoGenerator = () => {
                     className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] border border-[#8F00FF] px-4 font-inter font-semibold text-sm leading-5 tracking-normal text-white transition hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
                   >
                     <Download className="h-4 w-4" />
-                    Download PNG
+                    Download
                   </button>
 
                   <button

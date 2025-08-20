@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import coinIcon from "../../assets/nav-icon/icon.png";
-import { useCreditsBalance } from "@/hooks/useCreditsBalance";
+import { useCreditStore } from "../../stores/creditStore";
 import { useSubscription } from "@/hooks/useSubscription";
 import { ChevronRight } from "lucide-react";
 import { Button } from "../ui/button";
@@ -10,7 +10,11 @@ export default function CreditDisplay() {
   const [isCreditHoverOpen, setIsCreditHoverOpen] = useState(false);
   const creditDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { creditsBalance } = useCreditsBalance();
+  const {
+    creditsBalance,
+    fetchCreditsBalance,
+    isLoading: isLoadingCredits,
+  } = useCreditStore();
   const { subscriptionStatus } = useSubscription();
 
   // Calculate credit limit based on current subscription
@@ -39,6 +43,11 @@ export default function CreditDisplay() {
     navigate("/account/upgrade/credit");
   };
 
+  // Fetch credits on component mount
+  useEffect(() => {
+    fetchCreditsBalance();
+  }, [fetchCreditsBalance]);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -60,15 +69,27 @@ export default function CreditDisplay() {
       <div className="flex items-center py-2 justify-center space-x-2 bg-[#F4EAFF] rounded-[100px] px-4">
         <img src={coinIcon} alt="Coin" className="w-5 h-5" />
         <div className="flex items-center gap-[1px]">
-          <span className="font-Inter font-medium text-[14px] leading-[100%] text-gray-700">
-            {totalAvailableCredits.toLocaleString()}
-          </span>
-          <span className="font-Inter font-medium text-[12px] leading-[100%] text-gray-700">
-            /
-          </span>
-          <span className="font-Inter font-medium text-[12px] leading-[100%] text-gray-700">
-            {creditLimit.toLocaleString()}
-          </span>
+          {isLoadingCredits ? (
+            <>
+              <div className="h-3 w-12  bg-[#e0c6fb] rounded animate-pulse"></div>
+              <span className="font-Inter font-medium text-[12px] leading-[100%] text-gray-700">
+                /
+              </span>
+              <div className="h-2 w-8 bg-[#e0c6fb] rounded animate-pulse"></div>
+            </>
+          ) : (
+            <>
+              <span className="font-Inter font-medium text-[14px] leading-[100%] text-gray-700">
+                {totalAvailableCredits.toLocaleString()}
+              </span>
+              <span className="font-Inter font-medium text-[12px] leading-[100%] text-gray-700">
+                /
+              </span>
+              <span className="font-Inter font-medium text-[12px] leading-[100%] text-gray-700">
+                {creditLimit.toLocaleString()}
+              </span>
+            </>
+          )}
         </div>
         <div className="py-3" style={{ border: "1px solid #1A1A1A40" }}></div>
         <div
@@ -141,9 +162,13 @@ export default function CreditDisplay() {
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2">
-                        <span className="font-Inter font-normal text-[16px] leading-[100%] text-[#1C1C1C]">
-                          {totalAvailableCredits.toLocaleString()}
-                        </span>
+                        {isLoadingCredits ? (
+                          <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                        ) : (
+                          <span className="font-Inter font-normal text-[16px] leading-[100%] text-[#1C1C1C]">
+                            {totalAvailableCredits.toLocaleString()}
+                          </span>
+                        )}
                         <span className="font-Inter font-normal text-[12px] leading-[100%] text-[#565E6C] mt-1">
                           0
                         </span>
