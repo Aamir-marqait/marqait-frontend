@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import UpgradeCredit from "./pages/account/UpgradeCredit";
 import LogoGenerator from "./pages/LogoGenerator";
 import SocialMediaPostGenerator from "./pages/SocialMediaPostGenerator";
+import HelpSupport from "./pages/HelpSupport";
 
 export const createRoutes = (
   isAuthenticated: boolean,
@@ -209,6 +210,14 @@ export const createRoutes = (
             description="Customize your MARQAIT experience"
           />
         </AppLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/help-support",
+    element: (
+      <ProtectedRoute>
+        <HelpSupport />
       </ProtectedRoute>
     ),
   },

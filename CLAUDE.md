@@ -142,3 +142,25 @@ const handleGenerate = async () => {
 - Refresh credits after API calls
 - Show backend error messages to user
 - Keep UI updated with latest credit state
+
+## Subscription Plans Status
+
+### Active Plans
+- **Free Plan**: Fully functional with 1000 one-time credits
+
+### Disabled Plans (Coming Soon)
+- **Professional Plan**: Currently disabled with "Coming Soon" status
+  - Price: $97/month 
+  - Credits: 10,000 credits
+  - Status: Disabled in UI with opacity reduction and non-functional button
+  
+- **Enterprise Plan**: Currently disabled with "Coming Soon" status  
+  - Price: $257/month
+  - Credits: 100,000 credits
+  - Status: Disabled in UI with opacity reduction and non-functional button
+
+### Implementation Details
+- Premium and Enterprise plans show "Coming Soon" text under the plan title
+- Disabled plans have reduced opacity (60%) and non-clickable buttons
+- Button text changes to "Coming Soon" for disabled plans
+- Plans remain visible for reference but cannot be selected

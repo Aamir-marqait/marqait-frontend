@@ -15,6 +15,7 @@ interface PricingCardProps {
   buttonText: string;
   buttonVariant?: "default" | "secondary";
   onGetStarted?: () => void;
+  disabled?: boolean;
 }
 
 export default function PricingCard({
@@ -29,10 +30,13 @@ export default function PricingCard({
   buttonText,
   buttonVariant = "default",
   onGetStarted,
+  disabled = false,
 }: PricingCardProps) {
   return (
     <Card
-      className={`border rounded-2xl overflow-hidden border-gray-200 hover:shadow-md ${
+      className={`border rounded-2xl overflow-hidden border-gray-200 ${
+        disabled ? "opacity-60" : "hover:shadow-md"
+      } ${
         buttonVariant === "secondary"
           ? "border-2 border-[#8F00FF]"
           : ""
@@ -49,13 +53,18 @@ export default function PricingCard({
       <CardContent className="">
         <div className="mb-6">
           <div className="flex justify-between items-start mb-6">
-            <h3
-              className={`text font-semibold leading-none tracking-normal align-middle ${
-                buttonVariant === "secondary" ? "text-[#8F00FF]" : "text-[#1A1A1AB2]"
-              }`}
-            >
-              {title}
-            </h3>
+            <div className="flex flex-col">
+              <h3
+                className={`text font-semibold leading-none tracking-normal align-middle ${
+                  buttonVariant === "secondary" ? "text-[#8F00FF]" : "text-[#1A1A1AB2]"
+                }`}
+              >
+                {title}
+              </h3>
+              {disabled && (
+                <span className="text-xs text-gray-400 mt-1">Coming Soon</span>
+              )}
+            </div>
             {(planType === "professional" || planType === "enterprise") && (
               <div
                 className="flex items-center justify-center text-right"
@@ -109,23 +118,24 @@ export default function PricingCard({
 
         <Button
           className={`w-full h-12 min-h-[44px] rounded-xl mb-6 gap-3 px-4 text-lg font-semibold leading-none tracking-normal text-center align-middle text-white ${
-            buttonVariant === "secondary"
+            buttonVariant === "secondary" || disabled
               ? "opacity-50 border border-gray-300 bg-[#1D1D20] cursor-default"
               : "cursor-pointer"
           }`}
           style={{
             background:
-              buttonVariant === "secondary"
+              buttonVariant === "secondary" || disabled
                 ? "#1D1D20"
                 : "linear-gradient(90deg, #7000CC 0%, #8000E5 50%, #8E07F8 100%)",
             boxShadow:
-              buttonVariant === "secondary"
+              buttonVariant === "secondary" || disabled
                 ? "none"
                 : "0px 1px 2px 0px #0A0D120D",
           }}
-          onClick={buttonVariant !== "secondary" ? onGetStarted : undefined}
+          onClick={buttonVariant !== "secondary" && !disabled ? onGetStarted : undefined}
+          disabled={disabled}
         >
-          {buttonText}
+          {disabled ? "Coming Soon" : buttonText}
         </Button>
 
         <div className="border-t border-dashed border-[#1A1A1A2E] mb-6"></div>
