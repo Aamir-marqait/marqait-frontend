@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState, useEffect, useRef } from "react";
-import { Download, Sparkles, RefreshCw, ChevronLeft, ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Download,
+  Sparkles,
+  RefreshCw,
+  ChevronLeft,
+} from "lucide-react";
 import { LogoStyleModal } from "../components/ui/logo-style-modal";
 import { Badge } from "../components/ui/badge";
 import { useCreditStore } from "../stores/creditStore";
@@ -19,6 +24,12 @@ interface LogoFormData {
 interface GeneratedLogo {
   imageUrl: string;
   explanation: string;
+  successMetrics?: {
+    recognition_projection?: string;
+    market_impact_timeline?: string;
+    competitive_advantage_score?: string;
+    global_readiness_rating?: string;
+  };
 }
 
 const LogoGenerator = () => {
@@ -39,26 +50,11 @@ const LogoGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isStyleModalOpen, setIsStyleModalOpen] = useState(false);
-  const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
-  const downloadDropdownRef = useRef<HTMLDivElement>(null);
 
   // Fetch credits on component mount
   useEffect(() => {
     fetchCreditsBalance();
   }, [fetchCreditsBalance]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (downloadDropdownRef.current && !downloadDropdownRef.current.contains(event.target as Node)) {
-        setIsDownloadDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   const handleInputChange = (field: keyof LogoFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -86,12 +82,12 @@ const LogoGenerator = () => {
     try {
       // Map form style to API logo_type
       const styleMapping: Record<string, string> = {
-        'WORDMARK': 'wordmark',
-        'LETTERMARK': 'lettermark', 
-        'PICTORIAL_MARK': 'pictorial',
-        'ABSTRACT': 'abstract',
-        'COMBINATION_MARK': 'combination',
-        'EMBLEM': 'emblem'
+        WORDMARK: "wordmark",
+        LETTERMARK: "lettermark",
+        PICTORIAL_MARK: "pictorial",
+        ABSTRACT: "abstract",
+        COMBINATION_MARK: "combination",
+        EMBLEM: "emblem",
       };
 
       // Prepare API request data
@@ -103,13 +99,17 @@ const LogoGenerator = () => {
 
       // Add optional fields if provided
       if (formData.preferredColors.trim()) {
-        apiRequest.preferred_colors = formData.preferredColors.split(',').map(color => color.trim());
+        apiRequest.preferred_colors = formData.preferredColors
+          .split(",")
+          .map((color) => color.trim());
       }
       if (formData.tone.trim()) {
         apiRequest.tone = formData.tone.trim();
       }
       if (formData.industryKeywords.trim()) {
-        apiRequest.industry_keywords = formData.industryKeywords.split(',').map(keyword => keyword.trim());
+        apiRequest.industry_keywords = formData.industryKeywords
+          .split(",")
+          .map((keyword) => keyword.trim());
       }
 
       // Call the API - backend handles credit deduction
@@ -117,74 +117,86 @@ const LogoGenerator = () => {
 
       setGeneratedLogo({
         imageUrl: result.output_data.logo_image_url,
-        explanation: result.output_data.explanation,
+        explanation:
+          result.output_data.brand_analysis?.competitive_differentiation
+            ?.market_positioning ||
+          result.output_data.explanation ||
+          "Your professional logo has been generated successfully.",
+        successMetrics: result.output_data.brand_analysis?.success_metrics
+          ? {
+              recognition_projection:
+                result.output_data.brand_analysis.success_metrics
+                  .recognition_projection,
+              market_impact_timeline:
+                result.output_data.brand_analysis.success_metrics
+                  .market_impact_timeline,
+              competitive_advantage_score:
+                result.output_data.brand_analysis.success_metrics
+                  .competitive_advantage_score,
+              global_readiness_rating:
+                result.output_data.brand_analysis.success_metrics
+                  .global_readiness_rating,
+            }
+          : undefined,
       });
 
       // Refresh credits after successful generation
       await fetchCreditsBalance();
-
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Backend returns appropriate error messages including credit errors
-      setError(error.message || "Generation failed. Please try again.");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Generation failed. Please try again.";
+      setError(errorMessage);
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const handleDownload = (format: 'png' | 'svg') => {
+  const handleDownload = async () => {
     if (!generatedLogo?.imageUrl) return;
 
-    const link = document.createElement("a");
-    const fileName = `${formData.companyName.replace(/\s+/g, "_")}_logo_${Date.now()}`;
-    
-    if (format === 'svg') {
-      // Convert the current SVG data URL to downloadable SVG
-      if (generatedLogo.imageUrl.startsWith('data:image/svg+xml;base64,')) {
-        const svgData = atob(generatedLogo.imageUrl.split(',')[1]);
-        const blob = new Blob([svgData], { type: 'image/svg+xml' });
-        link.href = URL.createObjectURL(blob);
-        link.download = `${fileName}.svg`;
-      }
-    } else {
-      // For PNG, we'll need to convert SVG to PNG using canvas
-      if (generatedLogo.imageUrl.startsWith('data:image/svg+xml;base64,')) {
-        atob(generatedLogo.imageUrl.split(',')[1]);
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          canvas.width = 800;
-          canvas.height = 800;
-          ctx?.drawImage(img, 0, 0, 800, 800);
-          
-          canvas.toBlob((blob) => {
-            if (blob) {
-              const url = URL.createObjectURL(blob);
-              const downloadLink = document.createElement("a");
-              downloadLink.href = url;
-              downloadLink.download = `${fileName}.png`;
-              document.body.appendChild(downloadLink);
-              downloadLink.click();
-              document.body.removeChild(downloadLink);
-              URL.revokeObjectURL(url);
-            }
-          }, 'image/png');
-        };
-        img.src = generatedLogo.imageUrl;
-        return;
-      } else {
-        // If it's already a PNG or other format
-        link.href = generatedLogo.imageUrl;
-        link.download = `${fileName}.png`;
-      }
+    const fileName = `${formData.companyName.replace(
+      /\s+/g,
+      "_"
+    )}_logo_${Date.now()}`;
+
+    try {
+      // Download as PNG
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = img.width || 1024;
+        canvas.height = img.height || 1024;
+        ctx?.drawImage(img, 0, 0);
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${fileName}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          }
+        }, "image/png");
+      };
+      img.src = generatedLogo.imageUrl;
+    } catch (error) {
+      // Fallback: direct download
+      const link = document.createElement("a");
+      link.href = generatedLogo.imageUrl;
+      link.download = `${fileName}.png`;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
-    
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    setIsDownloadDropdownOpen(false);
   };
 
   const handleBack = () => {
@@ -266,7 +278,7 @@ const LogoGenerator = () => {
                   <h3 className="font-inter font-semibold text-base text-[#8F00FF] mb-3">
                     Additional Brand Context (Optional)
                   </h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label
@@ -344,7 +356,7 @@ const LogoGenerator = () => {
                     {formData.style && (
                       <div className="flex items-center">
                         <Badge className="bg-gradient-to-r from-[#7000CC] to-[#8F00FF] text-white border-0 px-3 py-1 text-sm font-medium">
-                          {formData.style.replace(/_/g, ' ')}
+                          {formData.style.replace(/_/g, " ")}
                         </Badge>
                       </div>
                     )}
@@ -352,7 +364,6 @@ const LogoGenerator = () => {
                 </div>
 
                 <div className="space-y-3">
-                 
                   <button
                     onClick={handleGenerate}
                     disabled={!isFormValid || isGenerating}
@@ -409,33 +420,13 @@ const LogoGenerator = () => {
                 </div>
 
                 <div className="flex justify-center gap-3">
-                  <div className="relative" ref={downloadDropdownRef}>
-                    <button
-                      onClick={() => setIsDownloadDropdownOpen(!isDownloadDropdownOpen)}
-                      className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] border border-[#8F00FF] px-4 font-inter font-semibold text-sm leading-5 tracking-normal text-white transition hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
-                      <ChevronDown className="h-4 w-4" />
-                    </button>
-                    
-                    {isDownloadDropdownOpen && (
-                      <div className="absolute top-full left-0 mt-1 w-full bg-white border border-[#E0E0E0] rounded-lg shadow-lg z-10">
-                        <button
-                          onClick={() => handleDownload('png')}
-                          className="w-full px-4 py-2 text-left font-inter font-medium text-sm text-[#414651] hover:bg-[#F8F9FB] rounded-t-lg transition"
-                        >
-                          Download PNG
-                        </button>
-                        <button
-                          onClick={() => handleDownload('svg')}
-                          className="w-full px-4 py-2 text-left font-inter font-medium text-sm text-[#414651] hover:bg-[#F8F9FB] rounded-b-lg transition"
-                        >
-                          Download SVG
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <button
+                    onClick={handleDownload}
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] border border-[#8F00FF] px-4 font-inter font-semibold text-sm leading-5 tracking-normal text-white transition hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
+                  >
+                    <Download className="h-4 w-4" />
+                    Download
+                  </button>
 
                   <button
                     onClick={handleGenerate}
@@ -452,9 +443,43 @@ const LogoGenerator = () => {
                 <h3 className="font-inter font-semibold text-lg text-[#8F00FF] mb-4 italic">
                   "Why This Logo Works for Your Company"
                 </h3>
-                <p className="font-inter font-normal text-base text-[#4B4B4B] leading-6 italic">
+
+                <p className="font-inter font-normal text-base text-[#4B4B4B] leading-6 italic mb-4">
                   "{generatedLogo.explanation}"
                 </p>
+
+                {generatedLogo.successMetrics && (
+                  <div className="space-y-3 pt-4 border-t border-[#E0D3FA]">
+                    {generatedLogo.successMetrics.recognition_projection && (
+                      <p className="font-inter font-normal text-sm text-[#4B4B4B] leading-5">
+                        • {generatedLogo.successMetrics.recognition_projection}
+                      </p>
+                    )}
+
+                    {generatedLogo.successMetrics
+                      .competitive_advantage_score && (
+                      <p className="font-inter font-normal text-sm text-[#4B4B4B] leading-5">
+                        •{" "}
+                        {
+                          generatedLogo.successMetrics
+                            .competitive_advantage_score
+                        }
+                      </p>
+                    )}
+
+                    {generatedLogo.successMetrics.market_impact_timeline && (
+                      <p className="font-inter font-normal text-sm text-[#4B4B4B] leading-5">
+                        • {generatedLogo.successMetrics.market_impact_timeline}
+                      </p>
+                    )}
+
+                    {generatedLogo.successMetrics.global_readiness_rating && (
+                      <p className="font-inter font-normal text-sm text-[#4B4B4B] leading-5">
+                        • {generatedLogo.successMetrics.global_readiness_rating}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </>

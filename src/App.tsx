@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createRoutes } from "./routes";
 
-import Header from "./components/Header";
 import Sidebar from "./components/app-sidebar";
 import { useAuthStore } from "./stores/authStore";
+import Header from "./components/header";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

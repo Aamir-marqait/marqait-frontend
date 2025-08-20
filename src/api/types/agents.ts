@@ -13,7 +13,7 @@ export interface LogoGeneratorResponse {
   status: string;
   output_data: {
     logo_image_url: string;
-    explanation: string;
+    explanation?: string;
     logo_type: string;
     company_name: string;
     colors_used?: string[];
@@ -23,6 +23,26 @@ export interface LogoGeneratorResponse {
       generation_time_seconds: number;
       image_size: string;
       model_used: string;
+    };
+    brand_analysis?: {
+      brand_psychology_analysis?: {
+        emotional_impact?: string;
+        psychological_alignment?: string;
+        visual_communication?: string;
+        customer_connection?: string;
+      };
+      success_metrics?: {
+        recognition_projection?: string;
+        market_impact_timeline?: string;
+        competitive_advantage_score?: string;
+        global_readiness_rating?: string;
+      };
+      competitive_differentiation?: {
+        market_positioning?: string;
+        recognition_factors?: string;
+        differentiation_strength?: string;
+        competitive_advantage?: string;
+      };
     };
   };
 }
