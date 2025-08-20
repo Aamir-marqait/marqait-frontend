@@ -1,18 +1,15 @@
 import { useLocation, Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, LayoutDashboard, Lightbulb, BookOpen } from "lucide-react";
+import { FaRegShareFromSquare } from "react-icons/fa6";
 import { useCreditStore } from "../stores/creditStore";
-import dashboardIcon from "../assets/nav-icon/dashboard.svg";
 import adCampaign from "../assets/nav-icon/AdCampaigns.svg";
 import analytics from "../assets/nav-icon/analytics.svg";
 import campaignGenrator from "../assets/nav-icon/campaign.svg";
 import contentCalender from "../assets/nav-icon/content-calendar.svg";
 import contentGenerator from "../assets/nav-icon/content-generator.svg";
 import imageEditor from "../assets/nav-icon/image-editor.svg";
-import brandBook from "../assets/nav-icon/brand-book.svg";
-import strategyGenerator from "../assets/nav-icon/strategy-generator.svg";
-import socialPost from "../assets/nav-icon/social-post.svg";
 import setting from "../assets/nav-icon/settings.svg";
 import fullLogo from "../assets/app-logo/full-logo.png";
 import logo from "../assets/app-logo/logo.png";
@@ -23,22 +20,22 @@ const navigationItems = [
   {
     title: "Dashboard",
     url: "/dashboard",
-    icon: dashboardIcon,
+    icon: "LayoutDashboard",
   },
   {
     title: "Strategy generator",
     url: "/strategy",
-    icon: strategyGenerator,
+    icon: "Lightbulb",
   },
   {
     title: "Brand book creator",
     url: "/brand-book",
-    icon: brandBook,
+    icon: "BookOpen",
   },
   {
     title: "Logo Generator",
     url: "/logo-generator",
-    icon: brandBook,
+    icon: "BookOpen",
   },
   {
     title: "Campaign generator",
@@ -53,12 +50,12 @@ const navigationItems = [
   {
     title: "Social post creator",
     url: "/social-post",
-    icon: socialPost,
+    icon: "FaRegShareFromSquare",
   },
   {
     title: "Post Generator",
     url: "/social-media-post-generator",
-    icon: socialPost,
+    icon: "FaRegShareFromSquare",
   },
   {
     title: "Ad campaigns",
@@ -102,7 +99,11 @@ export default function Sidebar({
 }: SidebarProps) {
   const location = useLocation();
   const { user, userStats } = useAuthStore();
-  const { creditsBalance, isLoading: isLoadingCredits, fetchCreditsBalance } = useCreditStore();
+  const {
+    creditsBalance,
+    isLoading: isLoadingCredits,
+    fetchCreditsBalance,
+  } = useCreditStore();
 
   // Fetch credits balance on mount
   useEffect(() => {
@@ -229,20 +230,54 @@ export default function Sidebar({
                   isCollapsed ? "justify-center p-3 w-12" : "gap-3 px-4 py-3"
                 } ${
                   isActive
-                    ? "bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] text-white shadow-sm font-semibold"
+                    ? "bg-[#E6D4FF99] text-[#8905F1] shadow-sm font-semibold"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 }`}
                 title={isCollapsed ? item.title : undefined}
               >
-                <img
-                  src={item.icon}
-                  alt={item.title}
-                  className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
-                    isActive
-                      ? "brightness-0 invert"
-                      : "group-hover:brightness-110"
-                  }`}
-                />
+                {item.icon === "LayoutDashboard" ? (
+                  <LayoutDashboard
+                    className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                      isActive
+                        ? "text-[#8905F1]"
+                        : "text-gray-600 group-hover:text-gray-900"
+                    }`}
+                  />
+                ) : item.icon === "Lightbulb" ? (
+                  <Lightbulb
+                    className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                      isActive
+                        ? "text-[#8905F1]"
+                        : "text-gray-600 group-hover:text-gray-900"
+                    }`}
+                  />
+                ) : item.icon === "BookOpen" ? (
+                  <BookOpen
+                    className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                      isActive
+                        ? "text-[#8905F1]"
+                        : "text-gray-600 group-hover:text-gray-900"
+                    }`}
+                  />
+                ) : item.icon === "FaRegShareFromSquare" ? (
+                  <FaRegShareFromSquare
+                    className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                      isActive
+                        ? "text-[#8905F1]"
+                        : "text-gray-600 group-hover:text-gray-900"
+                    }`}
+                  />
+                ) : (
+                  <img
+                    src={item.icon}
+                    alt={item.title}
+                    className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
+                      isActive
+                        ? "brightness-0 text-[#8905F1] invert"
+                        : "group-hover:brightness-110"
+                    }`}
+                  />
+                )}
                 {!isCollapsed && (
                   <span className="truncate whitespace-nowrap overflow-hidden font-Inter">
                     {item.title}
