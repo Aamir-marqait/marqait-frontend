@@ -1,8 +1,15 @@
 import { useLocation, Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { useEffect } from "react";
-import { ChevronLeft, ChevronRight, LayoutDashboard, Lightbulb, BookOpen } from "lucide-react";
-import { FaRegShareFromSquare } from "react-icons/fa6";
+import {
+  ChevronLeft,
+  ChevronRight,
+  LayoutDashboard,
+  Lightbulb,
+  BookOpen,
+  SquareArrowOutUpRight,
+} from "lucide-react";
+
 import { useCreditStore } from "../stores/creditStore";
 import adCampaign from "../assets/nav-icon/AdCampaigns.svg";
 import analytics from "../assets/nav-icon/analytics.svg";
@@ -50,12 +57,12 @@ const navigationItems = [
   {
     title: "Social post creator",
     url: "/social-post",
-    icon: "FaRegShareFromSquare",
+    icon: "SquareArrowOutUpRight",
   },
   {
     title: "Post Generator",
     url: "/social-media-post-generator",
-    icon: "FaRegShareFromSquare",
+    icon: "SquareArrowOutUpRight",
   },
   {
     title: "Ad campaigns",
@@ -259,8 +266,8 @@ export default function Sidebar({
                         : "text-gray-600 group-hover:text-gray-900"
                     }`}
                   />
-                ) : item.icon === "FaRegShareFromSquare" ? (
-                  <FaRegShareFromSquare
+                ) : item.icon === "SquareArrowOutUpRight" ? (
+                  <SquareArrowOutUpRight
                     className={`h-5 w-5 flex-shrink-0 transition-all duration-200 ${
                       isActive
                         ? "text-[#8905F1]"
