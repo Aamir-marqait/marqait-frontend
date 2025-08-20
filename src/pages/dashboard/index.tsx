@@ -4,7 +4,7 @@ import { CreateTaskModal } from "@/components/ui/create-task-modal";
 import { useAuthStore } from "@/stores/authStore";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Plus, Crown } from "lucide-react";
+import { Plus } from "lucide-react";
 import campaignLogo from "../../assets/dashboard/campaign.svg";
 import social from "../../assets/dashboard/social.svg";
 import blog from "../../assets/dashboard/blog.svg";
@@ -121,29 +121,17 @@ export default function Dashboard() {
               const isRestricted = userPlan === "free" && !item.allowedInFree;
 
               return (
-                <div key={item.id} className="relative">
-                  <QuickLaunchCard
-                    title={item.title}
-                    description={item.description}
-                    iconSrc={item.iconSrc}
-                    backgroundColor={item.backgroundColor}
-                    iconBackgroundColor={item.iconBackgroundColor}
-                    className={
-                      isRestricted ? "blur-sm pointer-events-none" : ""
-                    }
-                  />
-                  {isRestricted && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Button
-                        onClick={handleUpgradeClick}
-                        className="bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-white px-4 py-2 rounded-lg font-[Inter] font-[600] text-[12px] shadow-[0px_2px_6px_0px_#7000CC40] z-10 cursor-pointer flex items-center gap-2"
-                      >
-                        <Crown className="w-4 h-4" />
-                        Upgrade to Premium
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                <QuickLaunchCard
+                  key={item.id}
+                  title={item.title}
+                  description={item.description}
+                  iconSrc={item.iconSrc}
+                  backgroundColor={item.backgroundColor}
+                  iconBackgroundColor={item.iconBackgroundColor}
+                  isPremium={isRestricted}
+                  upgradeText="Upgrade Premium"
+                  onClick={isRestricted ? handleUpgradeClick : undefined}
+                />
               );
             })}
           </div>
