@@ -19,6 +19,7 @@ class AgentsService {
           company_name: data.company_name,
           company_description: data.company_description,
           logo_type: data.logo_type,
+          logo_style: data.logo_type, // Backend expects both logo_type and logo_style
           ...(data.preferred_colors && { preferred_colors: data.preferred_colors }),
           ...(data.tone && { tone: data.tone }),
           ...(data.industry_keywords && { industry_keywords: data.industry_keywords })
@@ -30,7 +31,7 @@ class AgentsService {
       const response = await axiosInstance.post<LogoGeneratorResponse>(
         `${this.baseUrl}/logo_generator/execute`,
         requestPayload,
-        { timeout: 90000 } // 90 seconds for AI generation
+        { timeout: 300000 } // 5 minutes for AI generation
       );
 
       return response.data;
@@ -58,7 +59,7 @@ class AgentsService {
       const response = await axiosInstance.post<SocialMediaGeneratorResponse>(
         `${this.baseUrl}/social_media_generator/execute`,
         requestPayload,
-        { timeout: 90000 } // 90 seconds for AI generation
+        { timeout: 300000 } // 5 minutes for AI generation
       );
 
       return response.data;

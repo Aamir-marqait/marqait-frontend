@@ -127,9 +127,30 @@ const SocialMediaPostGenerator = () => {
       // Call the API - backend handles credit deduction
       const result = await agentsService.generateSocialMediaPost(apiRequest);
 
+      // Clean and parse the output data
+      const cleanedImageUrls = result.output_data.images.map(img => {
+        // Clean up malformed URLs (remove extra closing parentheses)
+        let cleanUrl = img.url;
+        if (cleanUrl.endsWith(')') && !cleanUrl.includes('(')) {
+          cleanUrl = cleanUrl.slice(0, -1);
+        }
+        return cleanUrl;
+      });
+
+      // Clean up caption - remove escaped quotes and fix malformed link syntax
+      let cleanedCaption = result.output_data.caption;
+      if (typeof cleanedCaption === 'string') {
+        // Remove escaped quotes
+        cleanedCaption = cleanedCaption.replace(/\\"/g, '"');
+        // Fix malformed link syntax [Link text](url)) -> [Link text](url)
+        cleanedCaption = cleanedCaption.replace(/\[([^\]]+)\]\(([^)]+)\)\)/g, '[$1]($2)');
+        // Remove any markdown links as they don't display well in social media
+        cleanedCaption = cleanedCaption.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+      }
+
       setGeneratedPost({
-        imageUrls: result.output_data.images.map(img => img.url),
-        caption: result.output_data.caption,
+        imageUrls: cleanedImageUrls,
+        caption: cleanedCaption,
         hashtags: result.output_data.hashtags.join(' '),
         bestTime: result.output_data.best_posting_times.join(', '),
       });
@@ -137,9 +158,10 @@ const SocialMediaPostGenerator = () => {
       // Refresh credits after successful generation
       await fetchCreditsBalance();
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Backend returns appropriate error messages including credit errors
-      setError(error.message || "Generation failed. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Generation failed. Please try again.";
+      setError(errorMessage);
     } finally {
       setIsGenerating(false);
     }

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import coinIcon from "../../assets/nav-icon/icon.png";
 import { useCreditsBalance } from "@/hooks/useCreditsBalance";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -8,6 +9,7 @@ import { Button } from "../ui/button";
 export default function CreditDisplay() {
   const [isCreditHoverOpen, setIsCreditHoverOpen] = useState(false);
   const creditDropdownRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const { creditsBalance } = useCreditsBalance();
   const { subscriptionStatus } = useSubscription();
 
@@ -32,6 +34,10 @@ export default function CreditDisplay() {
 
   // Show total available credits (subscription + custom credits)
   const totalAvailableCredits = creditsBalance?.total_available || 0;
+
+  const handleUpgradeClick = () => {
+    navigate("/account/upgrade/credit");
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -69,6 +75,7 @@ export default function CreditDisplay() {
           ref={creditDropdownRef}
           onMouseEnter={() => setIsCreditHoverOpen(true)}
           onMouseLeave={() => setIsCreditHoverOpen(false)}
+          onClick={handleUpgradeClick}
           className="text-[#8F00FF] cursor-pointer relative"
           style={{
             fontFamily: "Inter",
@@ -107,6 +114,7 @@ export default function CreditDisplay() {
                     </span>
                     <Button
                       size="sm"
+                      onClick={handleUpgradeClick}
                       className="text-white px-4 py-2 font-Inter font-semibold text-[14px] leading-[24px] rounded-[8px] border border-[#7F56D9] cursor-pointer hover:opacity-90 transition-opacity"
                       style={{
                         background:
@@ -119,36 +127,38 @@ export default function CreditDisplay() {
                   </div>
 
                   {/* Credits section */}
-                  <div className="p-4 space-y-3 cursor-default">
+                  <div className="p-4 cursor-default">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-start gap-3">
                         <img src={coinIcon} alt="Coin" className="w-5 h-5" />
+                        <div className="flex flex-col gap-2">
+                          <span className="font-Inter font-normal text-[16px] leading-[100%] text-[#1C1C1C]">
+                            Credits
+                          </span>
+                          <span className="font-Inter font-normal text-[12px] leading-[100%] text-[#565E6C] mt-1">
+                            Non-Expiring Credits
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
                         <span className="font-Inter font-normal text-[16px] leading-[100%] text-[#1C1C1C]">
-                          Credits
+                          {totalAvailableCredits.toLocaleString()}
+                        </span>
+                        <span className="font-Inter font-normal text-[12px] leading-[100%] text-[#565E6C] mt-1">
+                          0
                         </span>
                       </div>
-                      <span className="font-Inter font-normal text-[16px] leading-[100%] text-[#1C1C1C]">
-                        {totalAvailableCredits.toLocaleString()}
-                      </span>
-                    </div>
-
-                    <div className="flex items-end justify-between">
-                      <span className="text-gray-600">
-                        Non-Expiring Credits
-                      </span>
-                      <span className="text-gray-900 font-semibold">0</span>
                     </div>
                   </div>
 
                   {/* Usage Details section */}
-                  <div className="border-t border-gray-100">
-                    <button className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors">
-                      <span className="text-gray-900 font-medium">
-                        Usage Details
-                      </span>
-                      <ChevronRight className="w-4 h-4 text-gray-400" />
-                    </button>
-                  </div>
+
+                  <button className="cursor-pointer flex items-center gap-1 p-4 text-left hover:bg-gray-50 transition-colors">
+                    <span className="font-Inter font-normal text-[14px] leading-[100%] text-[#1C1C1C]">
+                      Usage Details
+                    </span>
+                    <ChevronRight className="w-4 h-4 text-[#1C1C1C]" />
+                  </button>
                 </div>
               </div>
             </>
