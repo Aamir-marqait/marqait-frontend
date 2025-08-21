@@ -5,7 +5,7 @@ export interface LogoGeneratorRequest {
   logo_type: string;
   preferred_colors?: string[];
   tone?: string;
-  industry_keywords?: string[];
+  industry_keywords?: string;
 }
 
 export interface LogoGeneratorResponse {

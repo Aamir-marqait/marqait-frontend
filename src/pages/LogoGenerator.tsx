@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
-import {
-  Download,
-  Sparkles,
-  RefreshCw,
-  ChevronLeft,
-} from "lucide-react";
+import { Download, Sparkles, RefreshCw, ChevronLeft } from "lucide-react";
 import { LogoStyleModal } from "../components/ui/logo-style-modal";
 import { Badge } from "../components/ui/badge";
 import { useCreditStore } from "../stores/creditStore";
@@ -107,9 +102,7 @@ const LogoGenerator = () => {
         apiRequest.tone = formData.tone.trim();
       }
       if (formData.industryKeywords.trim()) {
-        apiRequest.industry_keywords = formData.industryKeywords
-          .split(",")
-          .map((keyword) => keyword.trim());
+        apiRequest.industry_keywords = formData.industryKeywords.trim();
       }
 
       // Call the API - backend handles credit deduction
@@ -343,22 +336,28 @@ const LogoGenerator = () => {
                   <label className="font-inter font-medium text-sm leading-5 tracking-normal text-[#414651] block mb-2">
                     Logo Style
                   </label>
-                  <div className="space-y-3">
-                    <button
-                      type="button"
-                      onClick={() => setIsStyleModalOpen(true)}
-                      className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
-                    >
-                      {formData.style
-                        ? "Update Logo Style"
-                        : "Choose Logo Style"}
-                    </button>
-                    {formData.style && (
-                      <div className="flex items-center">
-                        <Badge className="bg-gradient-to-r from-[#7000CC] to-[#8F00FF] text-white border-0 px-3 py-1 text-sm font-medium">
+                  <div className="flex items-center gap-3">
+                    {!formData.style ? (
+                      <button
+                        type="button"
+                        onClick={() => setIsStyleModalOpen(true)}
+                        className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
+                      >
+                        Choose Logo Style
+                      </button>
+                    ) : (
+                      <>
+                        <Badge className="text-[#7000CC]  text-sm font-normal">
                           {formData.style.replace(/_/g, " ")}
                         </Badge>
-                      </div>
+                        <button
+                          type="button"
+                          onClick={() => setIsStyleModalOpen(true)}
+                          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#8F00FF] bg-white px-4 font-['Inter'] font-semibold text-sm leading-5 tracking-normal text-[#8F00FF] transition hover:bg-[#faf5ff] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
+                        >
+                          Update
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -386,8 +385,9 @@ const LogoGenerator = () => {
 
               {/* Error Message */}
               {error && (
-                <div className="mt-4 rounded-xl border border-[#ffd4d4] bg-[#fff2f2] p-3 text-sm text-[#b42318]">
-                  ⚠️ {error}
+                <div className="mt-4 text-sm text-[#b42318]">
+                  ⚠️ Oops! Something didn’t work as expected. Please try again
+                  shortly.
                 </div>
               )}
             </div>
