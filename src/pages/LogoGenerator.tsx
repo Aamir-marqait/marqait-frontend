@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
-import {
-  Download,
-  Sparkles,
-  RefreshCw,
-  ChevronLeft,
-} from "lucide-react";
+import { Download, Sparkles, RefreshCw, ChevronLeft } from "lucide-react";
 import { LogoStyleModal } from "../components/ui/logo-style-modal";
 import { Badge } from "../components/ui/badge";
 import { useCreditStore } from "../stores/creditStore";
@@ -107,9 +102,7 @@ const LogoGenerator = () => {
         apiRequest.tone = formData.tone.trim();
       }
       if (formData.industryKeywords.trim()) {
-        apiRequest.industry_keywords = formData.industryKeywords
-          .split(",")
-          .map((keyword) => keyword.trim());
+        apiRequest.industry_keywords = formData.industryKeywords.trim();
       }
 
       // Call the API - backend handles credit deduction
@@ -386,8 +379,9 @@ const LogoGenerator = () => {
 
               {/* Error Message */}
               {error && (
-                <div className="mt-4 rounded-xl border border-[#ffd4d4] bg-[#fff2f2] p-3 text-sm text-[#b42318]">
-                  ⚠️ {error}
+                <div className="mt-4 text-sm text-[#b42318]">
+                  ⚠️ Oops! Something didn’t work as expected. Please try again
+                  shortly.
                 </div>
               )}
             </div>
