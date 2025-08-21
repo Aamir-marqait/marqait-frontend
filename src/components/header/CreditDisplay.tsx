@@ -96,7 +96,7 @@ export default function CreditDisplay() {
           ref={creditDropdownRef}
           onMouseEnter={() => setIsCreditHoverOpen(true)}
           onMouseLeave={() => setIsCreditHoverOpen(false)}
-          onClick={handleUpgradeClick}
+          // onClick={handleUpgradeClick}
           className="text-[#8F00FF] cursor-pointer relative"
           style={{
             fontFamily: "Inter",

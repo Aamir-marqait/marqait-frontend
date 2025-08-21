@@ -338,8 +338,24 @@ export const generateImageVariants = async (
 
 // Helper function to validate image format
 export const validateImageFormat = (imageData: string): boolean => {
-  const validFormats = ['data:image/jpeg', 'data:image/jpg', 'data:image/png'];
-  return validFormats.some(format => imageData.startsWith(format));
+  // Check for data URLs (base64 encoded)
+  const validDataFormats = ['data:image/jpeg', 'data:image/jpg', 'data:image/png'];
+  if (validDataFormats.some(format => imageData.startsWith(format))) {
+    return true;
+  }
+  
+  // Check for HTTP/HTTPS URLs - be permissive since many APIs return images without file extensions
+  if (imageData.startsWith('http://') || imageData.startsWith('https://')) {
+    try {
+      // Basic URL validation - if we can create a URL object, it's probably valid
+      new URL(imageData);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  
+  return false;
 };
 
 export default {
