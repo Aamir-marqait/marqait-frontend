@@ -168,7 +168,6 @@ const SocialMediaPostGenerator = () => {
       setImageLoading(true);
       setImageError(false);
 
-
       // Refresh credits after successful generation
       await fetchCreditsBalance();
     } catch (error: unknown) {
@@ -277,7 +276,7 @@ const SocialMediaPostGenerator = () => {
     if (generatedPost && generatedPost.imageUrls.length > 1) {
       setImageLoading(true);
       setImageError(false);
-      setCurrentImageIndex(prev =>
+      setCurrentImageIndex((prev) =>
         prev === 0 ? generatedPost.imageUrls.length - 1 : prev - 1
       );
     }
@@ -287,7 +286,7 @@ const SocialMediaPostGenerator = () => {
     if (generatedPost && generatedPost.imageUrls.length > 1) {
       setImageLoading(true);
       setImageError(false);
-      setCurrentImageIndex(prev =>
+      setCurrentImageIndex((prev) =>
         prev === generatedPost.imageUrls.length - 1 ? 0 : prev + 1
       );
     }
@@ -305,14 +304,18 @@ const SocialMediaPostGenerator = () => {
 
   // Image skeleton component
   const ImageSkeleton = ({ contentType }: { contentType: string }) => (
-    <div 
+    <div
       className={`bg-gray-200 rounded-lg animate-pulse flex items-center justify-center ${
         contentType === "story" ? "w-60 h-[26.25rem]" : "w-80 h-80"
       }`}
     >
       <div className="text-gray-400">
         <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+          <path
+            fillRule="evenodd"
+            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+            clipRule="evenodd"
+          />
         </svg>
       </div>
     </div>
@@ -320,14 +323,18 @@ const SocialMediaPostGenerator = () => {
 
   // Image error component
   const ImageError = ({ contentType }: { contentType: string }) => (
-    <div 
+    <div
       className={`bg-red-50 border border-red-200 rounded-lg flex flex-col items-center justify-center ${
         contentType === "story" ? "w-60 h-[26.25rem]" : "w-80 h-80"
       }`}
     >
       <div className="text-red-400 mb-2">
         <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+          <path
+            fillRule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+            clipRule="evenodd"
+          />
         </svg>
       </div>
       <p className="text-red-600 text-sm font-medium">Failed to load image</p>
@@ -535,8 +542,9 @@ const SocialMediaPostGenerator = () => {
 
               {/* Error Message */}
               {error && (
-                <div className="mt-4 rounded-xl border border-[#ffd4d4] bg-[#fff2f2] p-3 text-sm text-[#b42318]">
-                  ⚠️ {error}
+                <div className="mt-4 text-sm text-[#b42318]">
+                  ⚠️ Oops! Something didn’t work as expected. Please try again
+                  shortly.
                 </div>
               )}
             </div>
@@ -583,11 +591,18 @@ const SocialMediaPostGenerator = () => {
                                     : "w-80 h-80"
                                 }`}
                                 onLoad={() => {
-                                  console.log("Main image loaded successfully:", generatedPost.imageUrls[currentImageIndex]);
+                                  console.log(
+                                    "Main image loaded successfully:",
+                                    generatedPost.imageUrls[currentImageIndex]
+                                  );
                                   setImageLoading(false);
                                 }}
                                 onError={(e) => {
-                                  console.error("Main image failed to load:", generatedPost.imageUrls[currentImageIndex], e);
+                                  console.error(
+                                    "Main image failed to load:",
+                                    generatedPost.imageUrls[currentImageIndex],
+                                    e
+                                  );
                                   setImageLoading(false);
                                   setImageError(true);
                                 }}
@@ -607,7 +622,7 @@ const SocialMediaPostGenerator = () => {
                                       d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
                                     />
                                   </svg>
-                                  </div>
+                                </div>
                               </div>
                             </>
                           )}
@@ -642,29 +657,51 @@ const SocialMediaPostGenerator = () => {
                             )}
 
                             {imageLoading && !imageError ? (
-                              <div className={`bg-gray-200 animate-pulse flex items-center justify-center ${
-                                formData.contentType === "story"
-                                  ? "w-[50vh] h-[88vh]"
-                                  : "w-[80vh] h-[80vh]"
-                              }`}>
+                              <div
+                                className={`bg-gray-200 animate-pulse flex items-center justify-center ${
+                                  formData.contentType === "story"
+                                    ? "w-[50vh] h-[88vh]"
+                                    : "w-[80vh] h-[80vh]"
+                                }`}
+                              >
                                 <div className="text-gray-400">
-                                  <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                                  <svg
+                                    className="w-16 h-16"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                                      clipRule="evenodd"
+                                    />
                                   </svg>
                                 </div>
                               </div>
                             ) : imageError ? (
-                              <div className={`bg-red-50 border border-red-200 flex flex-col items-center justify-center ${
-                                formData.contentType === "story"
-                                  ? "w-[50vh] h-[88vh]"
-                                  : "w-[80vh] h-[80vh]"
-                              }`}>
+                              <div
+                                className={`bg-red-50 border border-red-200 flex flex-col items-center justify-center ${
+                                  formData.contentType === "story"
+                                    ? "w-[50vh] h-[88vh]"
+                                    : "w-[80vh] h-[80vh]"
+                                }`}
+                              >
                                 <div className="text-red-400 mb-2">
-                                  <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                  <svg
+                                    className="w-16 h-16"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                      clipRule="evenodd"
+                                    />
                                   </svg>
                                 </div>
-                                <p className="text-red-600 font-medium">Failed to load image</p>
+                                <p className="text-red-600 font-medium">
+                                  Failed to load image
+                                </p>
                               </div>
                             ) : (
                               <img
@@ -676,11 +713,18 @@ const SocialMediaPostGenerator = () => {
                                     : "w-[80vh] h-[80vh]"
                                 } object-cover`}
                                 onLoad={() => {
-                                  console.log("Modal image loaded successfully:", generatedPost.imageUrls[currentImageIndex]);
+                                  console.log(
+                                    "Modal image loaded successfully:",
+                                    generatedPost.imageUrls[currentImageIndex]
+                                  );
                                   setImageLoading(false);
                                 }}
                                 onError={(e) => {
-                                  console.error("Modal image failed to load:", generatedPost.imageUrls[currentImageIndex], e);
+                                  console.error(
+                                    "Modal image failed to load:",
+                                    generatedPost.imageUrls[currentImageIndex],
+                                    e
+                                  );
                                   setImageLoading(false);
                                   setImageError(true);
                                 }}
