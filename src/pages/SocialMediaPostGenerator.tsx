@@ -66,7 +66,6 @@ const SocialMediaPostGenerator = () => {
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isDownloadDropdownOpen, setIsDownloadDropdownOpen] = useState(false);
   const [isEditDropdownOpen, setIsEditDropdownOpen] = useState(false);
   const [copiedCaption, setCopiedCaption] = useState(false);
   const [copiedHashtags, setCopiedHashtags] = useState(false);
@@ -74,7 +73,6 @@ const SocialMediaPostGenerator = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
-  const downloadDropdownRef = useRef<HTMLDivElement>(null);
   const editDropdownRef = useRef<HTMLDivElement>(null);
 
   // Edit mode state
@@ -90,12 +88,6 @@ const SocialMediaPostGenerator = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        downloadDropdownRef.current &&
-        !downloadDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDownloadDropdownOpen(false);
-      }
       if (
         editDropdownRef.current &&
         !editDropdownRef.current.contains(event.target as Node)
@@ -196,7 +188,7 @@ const SocialMediaPostGenerator = () => {
       // Reset loading states for new post
       setImageLoading(true);
       setImageError(false);
-      
+
       // Debug: Check if imageUrls are valid
       console.log("Generated post imageUrls:", cleanedImageUrls);
 
@@ -270,12 +262,10 @@ const SocialMediaPostGenerator = () => {
       }
     }
 
-    link.target = "_blank";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    setIsDownloadDropdownOpen(false);
   };
 
   const handleCopy = async (text: string, type: "caption" | "hashtags") => {
@@ -442,7 +432,6 @@ const SocialMediaPostGenerator = () => {
     }
     setCurrentImageIndex(index);
   };
-
 
   return (
     <div className="p-8 bg-[#FAFAFB]">
@@ -888,14 +877,22 @@ const SocialMediaPostGenerator = () => {
                                 setImageError(true);
                               }}
                             />
-                            
+
                             {/* Show skeleton overlay only while loading */}
                             {imageLoading && !imageError && (
-                              <div className={`absolute inset-0 bg-gray-200 rounded-lg animate-pulse flex items-center justify-center ${
-                                formData.contentType === "story" ? "w-60 h-[26.25rem]" : "w-80 h-80"
-                              }`}>
+                              <div
+                                className={`absolute inset-0 bg-gray-200 rounded-lg animate-pulse flex items-center justify-center ${
+                                  formData.contentType === "story"
+                                    ? "w-60 h-[26.25rem]"
+                                    : "w-80 h-80"
+                                }`}
+                              >
                                 <div className="text-gray-400">
-                                  <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                                  <svg
+                                    className="w-12 h-12"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
                                     <path
                                       fillRule="evenodd"
                                       d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
@@ -905,14 +902,22 @@ const SocialMediaPostGenerator = () => {
                                 </div>
                               </div>
                             )}
-                            
+
                             {/* Show error overlay if image failed */}
                             {imageError && (
-                              <div className={`absolute inset-0 bg-red-50 border border-red-200 rounded-lg flex flex-col items-center justify-center ${
-                                formData.contentType === "story" ? "w-60 h-[26.25rem]" : "w-80 h-80"
-                              }`}>
+                              <div
+                                className={`absolute inset-0 bg-red-50 border border-red-200 rounded-lg flex flex-col items-center justify-center ${
+                                  formData.contentType === "story"
+                                    ? "w-60 h-[26.25rem]"
+                                    : "w-80 h-80"
+                                }`}
+                              >
                                 <div className="text-red-400 mb-2">
-                                  <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                                  <svg
+                                    className="w-12 h-12"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
                                     <path
                                       fillRule="evenodd"
                                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -920,10 +925,12 @@ const SocialMediaPostGenerator = () => {
                                     />
                                   </svg>
                                 </div>
-                                <p className="text-red-600 text-sm font-medium">Failed to load image</p>
+                                <p className="text-red-600 text-sm font-medium">
+                                  Failed to load image
+                                </p>
                               </div>
                             )}
-                            
+
                             {/* Hover overlay for zoom effect */}
                             {!imageError && (
                               <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
@@ -1002,16 +1009,22 @@ const SocialMediaPostGenerator = () => {
                                   setImageError(true);
                                 }}
                               />
-                              
+
                               {/* Show skeleton overlay only while loading in modal */}
                               {imageLoading && !imageError && (
-                                <div className={`absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center ${
-                                  formData.contentType === "story"
-                                    ? "w-[50vh] h-[88vh]"
-                                    : "w-[80vh] h-[80vh]"
-                                }`}>
+                                <div
+                                  className={`absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center ${
+                                    formData.contentType === "story"
+                                      ? "w-[50vh] h-[88vh]"
+                                      : "w-[80vh] h-[80vh]"
+                                  }`}
+                                >
                                   <div className="text-gray-400">
-                                    <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg
+                                      className="w-16 h-16"
+                                      fill="currentColor"
+                                      viewBox="0 0 20 20"
+                                    >
                                       <path
                                         fillRule="evenodd"
                                         d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
@@ -1021,16 +1034,22 @@ const SocialMediaPostGenerator = () => {
                                   </div>
                                 </div>
                               )}
-                              
+
                               {/* Show error overlay if modal image failed */}
                               {imageError && (
-                                <div className={`absolute inset-0 bg-red-50 border border-red-200 flex flex-col items-center justify-center ${
-                                  formData.contentType === "story"
-                                    ? "w-[50vh] h-[88vh]"
-                                    : "w-[80vh] h-[80vh]"
-                                }`}>
+                                <div
+                                  className={`absolute inset-0 bg-red-50 border border-red-200 flex flex-col items-center justify-center ${
+                                    formData.contentType === "story"
+                                      ? "w-[50vh] h-[88vh]"
+                                      : "w-[80vh] h-[80vh]"
+                                  }`}
+                                >
                                   <div className="text-red-400 mb-2">
-                                    <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg
+                                      className="w-16 h-16"
+                                      fill="currentColor"
+                                      viewBox="0 0 20 20"
+                                    >
                                       <path
                                         fillRule="evenodd"
                                         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -1038,7 +1057,9 @@ const SocialMediaPostGenerator = () => {
                                       />
                                     </svg>
                                   </div>
-                                  <p className="text-red-600 font-medium">Failed to load image</p>
+                                  <p className="text-red-600 font-medium">
+                                    Failed to load image
+                                  </p>
                                 </div>
                               )}
                             </>
@@ -1093,35 +1114,13 @@ const SocialMediaPostGenerator = () => {
                 </div>
 
                 <div className="flex justify-center gap-3">
-                  <div className="relative" ref={downloadDropdownRef}>
-                    <button
-                      onClick={() =>
-                        setIsDownloadDropdownOpen(!isDownloadDropdownOpen)
-                      }
-                      className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] border border-[#8F00FF] px-4 font-inter font-semibold text-sm leading-5 tracking-normal text-white transition hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download
-                      <ChevronDown className="h-4 w-4" />
-                    </button>
-
-                    {isDownloadDropdownOpen && (
-                      <div className="absolute top-full left-0 mt-1 w-full bg-white border border-[#E0E0E0] rounded-lg shadow-lg z-10">
-                        <button
-                          onClick={() => handleDownload("png")}
-                          className="w-full px-4 py-2 text-left font-inter font-medium text-sm text-[#414651] hover:bg-[#F8F9FB] rounded-t-lg transition"
-                        >
-                          Download PNG
-                        </button>
-                        <button
-                          onClick={() => handleDownload("svg")}
-                          className="w-full px-4 py-2 text-left font-inter font-medium text-sm text-[#414651] hover:bg-[#F8F9FB] rounded-b-lg transition"
-                        >
-                          Download SVG
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <button
+                    onClick={() => handleDownload("png")}
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[linear-gradient(90deg,#7000CC_0%,#8000E5_50%,#8E07F8_100%)] border border-[#8F00FF] px-4 font-inter font-semibold text-sm leading-5 tracking-normal text-white transition hover:shadow-[0_10px_22px_rgba(106,0,255,0.28)] shadow-[0px_1px_2px_0px_#0A0D120D] cursor-pointer"
+                  >
+                    <Download className="h-4 w-4" />
+                    Download
+                  </button>
 
                   <div className="relative" ref={editDropdownRef}>
                     <button
@@ -1134,10 +1133,10 @@ const SocialMediaPostGenerator = () => {
                     </button>
 
                     {isEditDropdownOpen && (
-                      <div className="absolute top-full left-0 mt-1 w-full bg-white border border-[#E0E0E0] rounded-lg shadow-lg z-10">
+                      <div className="absolute top-full -left-8 mt-1 min-w-36 bg-white border border-[#E0E0E0] rounded-lg shadow-lg z-10">
                         <button
                           onClick={handleEditViaPrompt}
-                          className="w-full px-4 py-2 text-left font-inter font-medium text-sm text-[#414651] hover:bg-[#F8F9FB] rounded-lg transition"
+                          className="w-full cursor-pointer px-4 py-2 text-left font-inter font-medium text-sm text-[#414651] hover:bg-[#F8F9FB] rounded-lg transition"
                         >
                           Edit Via Prompt
                         </button>
