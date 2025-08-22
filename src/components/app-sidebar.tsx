@@ -105,6 +105,20 @@ export default function Sidebar({
   const { isCollapsed, toggleCollapsed } = useSidebarStore();
   const location = useLocation();
   const { user, userStats } = useAuthStore();
+
+  // Add keyboard shortcut for sidebar toggle
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Check for Cmd+B on Mac or Win+B on Windows
+      if (event.key === 'b' && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        toggleCollapsed();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleCollapsed]);
   const {
     creditsBalance,
     isLoading: isLoadingCredits,
