@@ -1,4 +1,4 @@
-import { ArrowRight, Crown, LockKeyhole } from "lucide-react";
+import { ArrowRight, Crown } from "lucide-react";
 import { Card, CardContent } from "./card";
 import { useState } from "react";
 
