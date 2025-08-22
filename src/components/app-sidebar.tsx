@@ -1,6 +1,7 @@
 import { useLocation, Link } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { useEffect } from "react";
+import { useSidebarStore } from "../stores/sidebarStore";
 import {
   ChevronLeft,
   ChevronRight,
@@ -95,18 +96,29 @@ const navigationItems = [
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
 }
 
 export default function Sidebar({
   isOpen,
   onClose,
-  isCollapsed = false,
-  onToggleCollapse,
 }: SidebarProps) {
+  const { isCollapsed, toggleCollapsed } = useSidebarStore();
   const location = useLocation();
   const { user, userStats } = useAuthStore();
+
+  // Add keyboard shortcut for sidebar toggle
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Check for Cmd+B on Mac or Win+B on Windows
+      if (event.key === 'b' && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        toggleCollapsed();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleCollapsed]);
   const {
     creditsBalance,
     isLoading: isLoadingCredits,
@@ -201,18 +213,16 @@ export default function Sidebar({
               </div>
             )}
 
-            {onToggleCollapse && (
-              <button
-                onClick={onToggleCollapse}
-                className={`hidden lg:flex items-center cursor-pointer justify-center w-8 h-8  bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:shadow-sm ${
-                  isCollapsed ? "" : "ml-3"
-                }`}
-                title={isCollapsed ? "Expand sidebar " : "Collapse sidebar"}
-              >
-                <ChevronLeft className="h-4 w-4 text-black" />
-                <ChevronRight className="h-4 w-4 text-black" />
-              </button>
-            )}
+            <button
+              onClick={toggleCollapsed}
+              className={`hidden lg:flex items-center cursor-pointer justify-center w-8 h-8  bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800 transition-all duration-200 hover:shadow-sm ${
+                isCollapsed ? "" : "ml-3"
+              }`}
+              title={isCollapsed ? "Expand sidebar " : "Collapse sidebar"}
+            >
+              <ChevronLeft className="h-4 w-4 text-black" />
+              <ChevronRight className="h-4 w-4 text-black" />
+            </button>
           </div>
         </div>
 

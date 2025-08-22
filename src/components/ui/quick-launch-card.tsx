@@ -1,4 +1,4 @@
-import { ArrowRight, Crown, LockKeyhole } from "lucide-react";
+import { ArrowRight, Crown } from "lucide-react";
 import { Card, CardContent } from "./card";
 import { useState } from "react";
 
@@ -63,8 +63,8 @@ export function QuickLaunchCard({
         <>
           {!isHovered && (
             <div className="absolute top-2 right-2 flex flex-col items-center">
-              <LockKeyhole className="w-4 h-4 text-[#6D03C1] mb-1" />
-              <span className="font-[Inter] font-[500] text-[12px] leading-[100%] text-[#6D03C1]">
+              <Crown className="w-4 h-4 text-[#FF9A0C] mb-1" />
+              <span className="font-[Inter] font-[500] text-[12px] leading-[100%] text-[#FF9A0C]">
                 Premium
               </span>
             </div>
