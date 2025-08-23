@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { QuickLaunchCard } from "@/components/ui/quick-launch-card";
 import { CreateTaskModal } from "@/components/ui/create-task-modal";
@@ -86,25 +88,25 @@ export default function Dashboard() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gray-50 p-3 sm:p-4 md:p-6">
+      <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
         {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="font-[Inter] text-[33.92px] font-[700] leading-[100%] tracking-[0%] text-gray-900 mb-2">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex-1">
+            <h1 className="font-[Inter] text-2xl sm:text-3xl lg:text-[33.92px] font-[700] leading-[100%] tracking-[0%] text-gray-900 mb-2">
               Hello {firstName}
-              <span className="font-[Inter] text-[33.92px] font-[700] leading-[100%] tracking-[0%]">
+              <span className="font-[Inter] text-2xl sm:text-3xl lg:text-[33.92px] font-[700] leading-[100%] tracking-[0%]">
                 {" "}
                 👋
               </span>
             </h1>
-            <p className="font-[Inter] font-[400] text-[20.49px] leading-[100%] tracking-[0%] text-[#4B4B4B]">
+            <p className="font-[Inter] font-[400] text-base sm:text-lg lg:text-[20.49px] leading-[100%] tracking-[0%] text-[#4B4B4B]">
               Ready to create something amazing today?
             </p>
           </div>
           <Button
             onClick={() => setIsCreateTaskModalOpen(true)}
-            className="cursor-pointer bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-[#FFFFFF] px-6 py-3 rounded-[8px] font-[Inter] font-[700] text-[14px] leading-[20px] tracking-[0px] text-center shadow-[0px_2px_6px_0px_#7000CC40]"
+            className="cursor-pointer bg-gradient-to-r from-[#7000CC] via-[#8000E6] to-[#8E07F8] hover:from-[#6000BB] hover:via-[#7000D5] hover:to-[#7D06E7] text-[#FFFFFF] px-4 sm:px-6 py-3 rounded-[8px] font-[Inter] font-[700] text-[14px] leading-[20px] tracking-[0px] text-center shadow-[0px_2px_6px_0px_#7000CC40] w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" />
             New Task
@@ -113,10 +115,10 @@ export default function Dashboard() {
 
         {/* Quick Launch */}
         <div>
-          <h2 className="font-[Inter] font-[600] text-[20px] leading-[100%] tracking-[0%] text-[#161E54] mb-6">
+          <h2 className="font-[Inter] font-[600] text-lg sm:text-[20px] leading-[100%] tracking-[0%] text-[#161E54] mb-4 sm:mb-6">
             Quick Launch
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
             {quickLaunchItems.map((item) => {
               const isRestricted = userPlan === "free" && !item.allowedInFree;
 
@@ -138,10 +140,10 @@ export default function Dashboard() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="max-w-7xl mx-auto space-y-8">
+        <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
           {/* Top Row - Chart and Calendar */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+            <div className="xl:col-span-2">
               <EngagementChart />
             </div>
             <div>
@@ -150,8 +152,8 @@ export default function Dashboard() {
           </div>
 
           {/* Bottom Row - Campaigns Table and Agent Activity */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+            <div className="xl:col-span-2">
               <CampaignsTable />
             </div>
             <div>
