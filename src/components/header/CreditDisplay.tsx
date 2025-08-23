@@ -3,11 +3,31 @@ import { useNavigate } from "react-router-dom";
 import coinIcon from "../../assets/nav-icon/icon.png";
 import { useCreditStore } from "../../stores/creditStore";
 import { useSubscription } from "@/hooks/useSubscription";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
 import { Button } from "../ui/button";
+import { Dialog, DialogContent } from "../ui/dialog";
+
+const serviceData = [
+  {
+    service: "Logo Generator",
+    date: "2025-08-01 12:07:23",
+    credits: -23,
+  },
+  {
+    service: "Image Generator",
+    date: "2025-08-01 12:07:23",
+    credits: -23,
+  },
+  {
+    service: "Social Post Creator",
+    date: "2025-08-01 12:07:23",
+    credits: -45,
+  },
+];
 
 export default function CreditDisplay() {
   const [isCreditHoverOpen, setIsCreditHoverOpen] = useState(false);
+  const [isUsageModalOpen, setIsUsageModalOpen] = useState(false);
   const creditDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const {
@@ -178,7 +198,13 @@ export default function CreditDisplay() {
 
                   {/* Usage Details section */}
 
-                  <button className="cursor-pointer flex items-center gap-1 p-4 text-left hover:bg-gray-50 transition-colors">
+                  <button
+                    onClick={() => {
+                      setIsUsageModalOpen(true);
+                      setIsCreditHoverOpen(false);
+                    }}
+                    className="cursor-pointer flex items-center gap-1 p-4 text-left hover:bg-gray-50 transition-colors"
+                  >
                     <span className="font-Inter font-normal text-[14px] leading-[100%] text-[#1C1C1C]">
                       Usage Details
                     </span>
@@ -190,6 +216,149 @@ export default function CreditDisplay() {
           )}
         </div>
       </div>
+
+      {/* Credit Usage Modal */}
+      <Dialog open={isUsageModalOpen} onOpenChange={setIsUsageModalOpen}>
+        <DialogContent
+          className="bg-[#FFFFFFFA] rounded-2xl border-0 p-0 max-w-none w-full h-full sm:w-[1034px] sm:h-[686px] sm:max-h-[90vh] flex flex-col"
+          style={{
+            boxShadow:
+              "0px 8px 8px -4px #0A0D120A, 0px 20px 24px -4px #0A0D121A",
+          }}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 flex-shrink-0">
+            <div className="flex items-center gap-3">
+              <img src={coinIcon} alt="Coin" className="w-6 h-6" />
+              <h2
+                className="text-[#181D27]"
+                style={{
+                  fontFamily: "Inter",
+                  fontWeight: 600,
+                  fontSize: "24px",
+                  lineHeight: "28px",
+                  letterSpacing: "0%",
+                }}
+              >
+                Credit Usage
+              </h2>
+            </div>
+            <button
+              onClick={() => setIsUsageModalOpen(false)}
+              className="rounded-sm opacity-70 cursor-pointer transition-opacity hover:opacity-100"
+            >
+              <X className="h-6 w-6 text-[#181D27]" />
+            </button>
+          </div>
+
+          {/* Content - Scrollable */}
+          <div className="flex-1 overflow-hidden px-6 pb-6">
+            <div className="h-full">
+              {/* Table Container with scroll */}
+              <div className="h-full overflow-auto">
+                <div className="min-w-full">
+                  <table className="w-full">
+                    {/* Header */}
+                    <thead className="sticky top-0 bg-[#F0E5FF] z-10">
+                      <tr>
+                        <th
+                          className="px-4 py-4 text-left text-[#8905F1]"
+                          style={{
+                            fontFamily: "Inter",
+                            fontWeight: 600,
+                            fontSize: "16px",
+                            lineHeight: "100%",
+                            letterSpacing: "0px",
+                          }}
+                        >
+                          Service
+                        </th>
+                        <th
+                          className="px-4 py-4 text-left text-[#8905F1]"
+                          style={{
+                            fontFamily: "Inter",
+                            fontWeight: 600,
+                            fontSize: "16px",
+                            lineHeight: "100%",
+                            letterSpacing: "0px",
+                          }}
+                        >
+                          Date
+                        </th>
+                        <th
+                          className="px-4 py-4 text-left text-[#8905F1]"
+                          style={{
+                            fontFamily: "Inter",
+                            fontWeight: 600,
+                            fontSize: "16px",
+                            lineHeight: "100%",
+                            letterSpacing: "0px",
+                          }}
+                        >
+                          Credits Charged
+                        </th>
+                      </tr>
+                    </thead>
+
+                    {/* Body */}
+                    <tbody>
+                      {serviceData.map((item, index) => (
+                        <tr key={index} className="hover:bg-gray-50">
+                          <td
+                            className="px-4 py-4 text-[#1F2937]"
+                            style={{
+                              fontFamily: "Inter",
+                              fontWeight: 500,
+                              fontSize: "15px",
+                              lineHeight: "14px",
+                              letterSpacing: "0%",
+                            }}
+                          >
+                            {item.service}
+                          </td>
+                          <td
+                            className="px-4 py-4 text-[#1F2937]"
+                            style={{
+                              fontFamily: "Inter",
+                              fontWeight: 500,
+                              fontSize: "15px",
+                              lineHeight: "14px",
+                              letterSpacing: "0%",
+                            }}
+                          >
+                            {item.date}
+                          </td>
+                          <td
+                            className="px-4 py-4 text-[#1F2937]"
+                            style={{
+                              fontFamily: "Inter",
+                              fontWeight: 500,
+                              fontSize: "15px",
+                              lineHeight: "14px",
+                              letterSpacing: "0%",
+                            }}
+                          >
+                            {item.credits}
+                          </td>
+                        </tr>
+                      ))}
+
+                      
+                    </tbody>
+                  </table>
+
+                  {/* No More Data Message */}
+                  <div className="py-6 text-center">
+                    <p className="text-sm text-gray-500 sm:text-base">
+                      No More Data
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
