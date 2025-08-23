@@ -51,26 +51,35 @@ export const useAuthStore = create<AuthState>()(
       },
       initialize: async () => {
         const user = authService.getCurrentUser();
-        const isAuthenticated = authService.isAuthenticated();
+        const hasToken = authService.isAuthenticated();
         
-        if (user && isAuthenticated) {
+        if (user && hasToken) {
+          // First set as authenticated to prevent flickering
           set({ user, isAuthenticated: true });
           
-          // Try to fetch fresh user profile and stats
+          // Try to validate the token by fetching user data
           try {
             const [userProfile, userStats] = await Promise.all([
               authService.fetchUserProfile(),
               authService.fetchUserStats()
             ]);
             
+            // If we get here, token is valid
             set((state) => ({ 
               ...state, 
               user: userProfile || state.user,
-              userStats: userStats || state.userStats
+              userStats: userStats || state.userStats,
+              isAuthenticated: true
             }));
           } catch (error) {
-            console.warn('Failed to refresh user data on initialization:', error);
+            // Token is invalid, clear auth state
+            console.warn('Token validation failed during initialization:', error);
+            await authService.logout();
+            set({ user: null, userStats: null, isAuthenticated: false });
           }
+        } else {
+          // No user data or token, ensure we're not authenticated
+          set({ user: null, userStats: null, isAuthenticated: false });
         }
       },
       updateUserPlan: (plan: 'free' | 'professional' | 'enterprise') => {
