@@ -182,7 +182,7 @@ const SocialMediaPostGenerator = () => {
         imageUrls: cleanedImageUrls,
         caption: cleanedCaption,
         hashtags: result.output_data.hashtags.join(" "),
-        bestTime: result.output_data.best_posting_times.join(", "),
+        bestTime: result.output_data.best_posting_times?.join(", ") || "No specific time recommended",
       });
 
       // Reset loading states for new post
@@ -265,7 +265,6 @@ const SocialMediaPostGenerator = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
   };
 
   const handleCopy = async (text: string, type: "caption" | "hashtags") => {
