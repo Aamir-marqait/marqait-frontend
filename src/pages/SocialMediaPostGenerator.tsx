@@ -165,7 +165,7 @@ const SocialMediaPostGenerator = () => {
       });
 
       // Clean up caption - remove escaped quotes and fix malformed link syntax
-      let cleanedCaption = result.output_data.caption;
+      let cleanedCaption = result.output_data.captions;
       if (typeof cleanedCaption === "string") {
         // Remove escaped quotes
         cleanedCaption = cleanedCaption.replace(/\\"/g, '"');

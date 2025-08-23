@@ -82,13 +82,13 @@ export interface SocialMediaGeneratorResponse {
   status: string;
   output_data: {
     images: SocialMediaImage[];
-    caption: string;
+    captions: string;
     hashtags: string[];
     platform: string;
     content_type: string;
     is_carousel: boolean;
-    engagement_tips: string[];
-    best_posting_times: string[];
+    engagement_tips?: string[];
+    best_posting_times?: string[];
     character_count: number;
     metadata: {
       generation_time_seconds: number;
