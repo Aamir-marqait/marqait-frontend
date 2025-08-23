@@ -26,13 +26,13 @@ export function EngagementChart() {
   const maxValue = Math.max(...data.map((d) => d.value));
 
   return (
-    <Card className="w-[770px] h-[459px] rounded-lg bg-[#FFFFFF] opacity-100 border-none shadow-none">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="font-[Inter] font-[600] text-[20px] leading-[100%] tracking-[0%] text-[#161E54]">
+    <Card className="w-full h-[400px] sm:h-[459px] rounded-lg bg-[#FFFFFF] opacity-100 border-none shadow-none">
+      <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+        <CardTitle className="font-[Inter] font-[600] text-lg sm:text-[20px] leading-[100%] tracking-[0%] text-[#161E54]">
           Engagement Over Time
         </CardTitle>
         <Select defaultValue="last-year">
-          <SelectTrigger className="w-[109px] h-[38px] rounded-lg gap-3 border border-[#F2F2F2] p-[10px] bg-white shadow-[0px_2px_4px_0px_#0000000A] font-[Inter] font-[600] text-[14px] leading-[18px] tracking-[-0.5px] text-center text-[#7A7A7A] cursor-pointer">
+          <SelectTrigger className="w-full sm:w-[109px] h-[38px] rounded-lg gap-3 border border-[#F2F2F2] p-[10px] bg-white shadow-[0px_2px_4px_0px_#0000000A] font-[Inter] font-[600] text-[14px] leading-[18px] tracking-[-0.5px] text-center text-[#7A7A7A] cursor-pointer">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-white border-none shadow-none mr-10">
@@ -42,10 +42,10 @@ export function EngagementChart() {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent>
-        <div className="relative w-[706px] h-[300px] mt-5">
+      <CardContent className="p-3 sm:p-6">
+        <div className="relative w-full h-[250px] sm:h-[300px] mt-2 sm:mt-5">
           {/* Y-axis labels */}
-          <div className="absolute left-0 top-0 h-full flex flex-col justify-between font-[Inter] font-[400] text-[14px] leading-[21.1px] tracking-[0%] text-right text-[#7D7D7D] pr-4">
+          <div className="absolute left-0 top-0 h-full flex flex-col justify-between font-[Inter] font-[400] text-xs sm:text-[14px] leading-[21.1px] tracking-[0%] text-right text-[#7D7D7D] pr-2 sm:pr-4">
             <span>10k+</span>
             <span>1k+</span>
             <span>800</span>
@@ -56,7 +56,7 @@ export function EngagementChart() {
           </div>
 
           {/* Chart area */}
-          <div className="ml-12 h-full relative">
+          <div className="ml-8 sm:ml-12 h-full relative">
             <svg
               className="w-full h-full"
               viewBox="0 0 800 300"
@@ -121,7 +121,7 @@ export function EngagementChart() {
 
             {/* Peak label */}
             <div
-              className="absolute text-purple-600 font-semibold text-sm"
+              className="absolute text-purple-600 font-semibold text-xs sm:text-sm"
               style={{
                 left: `${(9 / 11) * 100}%`,
                 top: `${((maxValue - data[9].value) / maxValue) * 280 - 25}px`,
@@ -133,7 +133,7 @@ export function EngagementChart() {
           </div>
 
           {/* X-axis labels */}
-          <div className="ml-12 flex justify-between font-[Inter] font-[400] text-[14px] leading-[21.1px] tracking-[0%] text-[#7D7D7D] mt-4">
+          <div className="ml-8 sm:ml-12  flex justify-between font-[Inter] font-[400] text-xs sm:text-[14px] leading-[21.1px] tracking-[0%] text-[#7D7D7D] mt-2 sm:mt-">
             {data.map((item) => (
               <span key={item.month}>{item.month}</span>
             ))}

@@ -1,10 +1,14 @@
+"use client";
+
+import type React from "react";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createRoutes } from "./routes";
 
-import Sidebar from "./components/app-sidebar";
 import { useAuthStore } from "./stores/authStore";
 import { useSidebarStore } from "./stores/sidebarStore";
+import Sidebar from "./components/app-sidebar";
 import Header from "./components/header";
 
 function App() {
@@ -18,7 +22,7 @@ function App() {
 
   const AppLayout = ({ children }: { children: React.ReactNode }) => {
     const { isCollapsed } = useSidebarStore();
-    
+
     return (
       <div className="flex min-h-screen">
         <Sidebar
@@ -26,13 +30,17 @@ function App() {
           onClose={() => setIsSidebarOpen(false)}
         />
 
-        <div 
+        <div
           className={`fixed top-0 right-0 bottom-0 left-0 flex flex-col transition-all duration-300 ${
-            isCollapsed ? "lg:left-16" : "lg:left-64"
+            isCollapsed
+              ? "lg:left-12 xl:left-16"
+              : "lg:left-64 xl:left-72 2xl:left-64"
           }`}
         >
           <Header onMenuClick={() => setIsSidebarOpen(true)} />
-          <main className="flex-1 overflow-auto">{children}</main>
+          <main className="flex-1 overflow-auto">
+            <div className="max-w-full mx-auto">{children}</div>
+          </main>
         </div>
       </div>
     );

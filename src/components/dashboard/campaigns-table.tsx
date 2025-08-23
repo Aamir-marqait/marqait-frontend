@@ -101,13 +101,13 @@ export function CampaignsTable() {
   };
 
   return (
-    <Card className="bg-white border-none shadow-none h-[400px]">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="font-[Inter] font-[600] text-[20px] leading-[100%] tracking-[0%] text-[#161E54]">
+    <Card className="bg-white border-none shadow-none h-[400px] w-full">
+      <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+        <CardTitle className="font-[Inter] font-[600] text-lg sm:text-[20px] leading-[100%] tracking-[0%] text-[#161E54]">
           Current Campaigns Overview
         </CardTitle>
         <Select defaultValue="today">
-          <SelectTrigger className="w-[109px] h-[38px] rounded-lg gap-3 border border-[#F2F2F2] p-[10px] bg-white shadow-[0px_2px_4px_0px_#0000000A] font-[Inter] font-[600] text-[14px] leading-[18px] tracking-[-0.5px] text-center text-[#7A7A7A] cursor-pointer">
+          <SelectTrigger className="w-full sm:w-[109px] h-[38px] rounded-lg gap-3 border border-[#F2F2F2] p-[10px] bg-white shadow-[0px_2px_4px_0px_#0000000A] font-[Inter] font-[600] text-[14px] leading-[18px] tracking-[-0.5px] text-center text-[#7A7A7A] cursor-pointer">
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-white border-none shadow-none mr-10">
@@ -117,27 +117,27 @@ export function CampaignsTable() {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className="overflow-y-auto max-h-[300px] ">
+      <CardContent className="overflow-y-auto max-h-[300px] p-3 sm:p-6">
         <div className="overflow-x-auto rounded-t-lg">
-          <table className="w-full border border-[#EAECF0] rounded-t-lg">
+          <table className="w-full min-w-[600px] border border-[#EAECF0] rounded-t-lg">
             <thead className=" bg-[#f9f5f5] border border-[#EAECF0] ">
               <tr>
-                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085]">
+                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085] whitespace-nowrap">
                   Campaign Name
                 </th>
-                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085]">
+                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085] whitespace-nowrap">
                   Reach
                 </th>
-                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085]">
+                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085] whitespace-nowrap">
                   Engagement
                 </th>
-                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085]">
+                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085] whitespace-nowrap">
                   Conversions
                 </th>
-                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085]">
+                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085] whitespace-nowrap">
                   Budget
                 </th>
-                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085]">
+                <th className="text-left py-3 px-2 font-[Inter] font-[500] text-[12px] leading-[18px] tracking-[0%] text-[#667085] whitespace-nowrap">
                   Status
                 </th>
               </tr>
@@ -145,22 +145,22 @@ export function CampaignsTable() {
             <tbody>
               {campaigns.map((campaign, index) => (
                 <tr key={index} className="border-b border-gray-100">
-                  <td className="py-4 px-2 font-[Inter] font-[500] text-[14px] leading-[20px] tracking-[0%] text-[#1C1C1C]">
+                  <td className="py-4 px-2 font-[Inter] font-[500] text-[14px] leading-[20px] tracking-[0%] text-[#1C1C1C] whitespace-nowrap">
                     {campaign.name}
                   </td>
-                  <td className="py-4 px-2 font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] text-[#667085]">
+                  <td className="py-4 px-2 font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] text-[#667085] whitespace-nowrap">
                     {campaign.reach}
                   </td>
-                  <td className="py-4 px-2 font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] text-[#667085]">
+                  <td className="py-4 px-2 font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] text-[#667085] whitespace-nowrap">
                     {campaign.engagement}
                   </td>
-                  <td className="py-4 px-2 font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] text-[#667085]">
+                  <td className="py-4 px-2 font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] text-[#667085] whitespace-nowrap">
                     {campaign.conversions}
                   </td>
-                  <td className="py-4 px-2 font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] text-[#667085]">
+                  <td className="py-4 px-2 font-[Inter] font-[400] text-[14px] leading-[20px] tracking-[0%] text-[#667085] whitespace-nowrap">
                     {campaign.budget}
                   </td>
-                  <td className="py-4 px-2">
+                  <td className="py-4 px-2 whitespace-nowrap">
                     {getStatusBadge(campaign.status)}
                   </td>
                 </tr>
