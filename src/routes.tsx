@@ -14,6 +14,7 @@ import UpgradeCredit from "./pages/account/UpgradeCredit";
 import LogoGenerator from "./pages/LogoGenerator";
 import SocialMediaPostGenerator from "./pages/SocialMediaPostGenerator";
 import HelpSupport from "./pages/HelpSupport";
+import SupportArticle from "./pages/SupportArticle";
 
 export const createRoutes = (
   isAuthenticated: boolean,
@@ -218,6 +219,14 @@ export const createRoutes = (
     element: (
       <ProtectedRoute>
         <HelpSupport />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/help-support/:id",
+    element: (
+      <ProtectedRoute>
+        <SupportArticle />
       </ProtectedRoute>
     ),
   },
