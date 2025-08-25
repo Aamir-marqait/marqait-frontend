@@ -31,10 +31,10 @@ function App() {
         />
 
         <div
-          className={`fixed top-0 right-0 bottom-0 left-0 flex flex-col transition-all duration-300 ${
+          className={`fixed top-0 right-0 bottom-0 flex flex-col transition-all duration-300 ${
             isCollapsed
-              ? "lg:left-12 xl:left-16"
-              : "lg:left-64 xl:left-72 2xl:left-64"
+              ? "left-0 lg:left-12 xl:left-16"
+              : "left-0 lg:left-64 xl:left-[15.9rem] 2xl:left-64"
           }`}
         >
           <Header onMenuClick={() => setIsSidebarOpen(true)} />

@@ -1,19 +1,22 @@
 import { ArrowUpRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { supportCards } from "@/data/supportCards";
 
 export function SupportGrid() {
-  const supportCards = Array(9).fill({
-    title: "Tech Support",
-    description:
-      "Secure, convenient digital payments with wide acceptance globally.",
-  });
+  const navigate = useNavigate();
+
+  const handleCardClick = (cardId: string) => {
+    navigate(`/help-support/${cardId}`);
+  };
 
   return (
-    <section className="py-10 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-10 ">
+      <div className="max-w-[95rem] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {supportCards.map((card, index) => (
+          {supportCards.map((card) => (
             <div
-              key={index}
+              key={card.id}
+              onClick={() => handleCardClick(card.id)}
               className="bg-[#FFFFFF] flex flex-col gap-3 rounded-lg border border-[#DCDFE1] p-6 hover:shadow-md transition-shadow duration-200 cursor-pointer group"
             >
               <h3 className="font-bold text-[20px] leading-[100%] tracking-[0%] text-[#21242A] font-[Inter] mb-3">
