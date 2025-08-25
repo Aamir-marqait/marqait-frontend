@@ -212,7 +212,6 @@ const SocialMediaPostGenerator = () => {
 
     // Download current image or all images if multiple
     const imageToDownload = generatedPost.imageUrls[currentImageIndex];
-    const link = document.createElement("a");
     const fileName =
       generatedPost.imageUrls.length > 1
         ? `social_media_post_${formData.platform}_${
@@ -225,13 +224,18 @@ const SocialMediaPostGenerator = () => {
       if (imageToDownload.startsWith("data:image/svg+xml;base64,")) {
         const svgData = atob(imageToDownload.split(",")[1]);
         const blob = new Blob([svgData], { type: "image/svg+xml" });
-        link.href = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
         link.download = `${fileName}.svg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
       }
     } else {
       // For PNG, we'll need to convert SVG to PNG using canvas
       if (imageToDownload.startsWith("data:image/svg+xml;base64,")) {
-        atob(imageToDownload.split(",")[1]);
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement("canvas");
@@ -256,15 +260,24 @@ const SocialMediaPostGenerator = () => {
         img.src = imageToDownload;
         return;
       } else {
-        // If it's already a PNG or other format
-        link.href = imageToDownload;
-        link.download = `${fileName}.png`;
+        // For regular image URLs (PNG, JPG, etc.), fetch and download as blob
+        fetch(imageToDownload)
+          .then(response => response.blob())
+          .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${fileName}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          })
+          .catch(error => {
+            console.error('Download failed:', error);
+          });
       }
     }
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   const handleCopy = async (text: string, type: "caption" | "hashtags") => {
