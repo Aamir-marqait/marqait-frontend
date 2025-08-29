@@ -15,6 +15,7 @@ interface PricingCardProps {
   buttonText: string;
   buttonVariant?: "default" | "secondary";
   onGetStarted?: () => void;
+  onRequestAccess?: () => void;
   disabled?: boolean;
 }
 
@@ -30,6 +31,7 @@ export default function PricingCard({
   buttonText,
   buttonVariant = "default",
   onGetStarted,
+  onRequestAccess,
   disabled = false,
 }: PricingCardProps) {
   return (
@@ -132,7 +134,13 @@ export default function PricingCard({
                 ? "none"
                 : "0px 1px 2px 0px #0A0D120D",
           }}
-          onClick={buttonVariant !== "secondary" && !disabled ? onGetStarted : undefined}
+          onClick={
+            buttonVariant !== "secondary" && !disabled 
+              ? (planType === "professional" || planType === "enterprise") 
+                ? onRequestAccess 
+                : onGetStarted 
+              : undefined
+          }
           disabled={disabled}
         >
           {disabled ? "Coming Soon" : buttonText}
