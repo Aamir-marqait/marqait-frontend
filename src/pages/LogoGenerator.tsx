@@ -6,6 +6,8 @@ import { Badge } from "../components/ui/badge";
 import { useCreditStore } from "../stores/creditStore";
 import { agentsService } from "../api/services";
 import type { LogoGeneratorRequest } from "../api/types";
+import { useLowCreditError } from "../hooks/useLowCreditError";
+import { LowCreditModal } from "../components/ui/low-credit-modal";
 
 interface LogoFormData {
   companyName: string;
@@ -29,6 +31,7 @@ interface GeneratedLogo {
 
 const LogoGenerator = () => {
   const { fetchCreditsBalance } = useCreditStore();
+  const { showLowCreditModal, handleApiError, closeLowCreditModal } = useLowCreditError();
 
   const [formData, setFormData] = useState<LogoFormData>({
     companyName: "",
@@ -136,12 +139,17 @@ const LogoGenerator = () => {
       // Refresh credits after successful generation
       await fetchCreditsBalance();
     } catch (error: unknown) {
-      // Backend returns appropriate error messages including credit errors
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Generation failed. Please try again.";
-      setError(errorMessage);
+      // Check if it's a 402 Payment Required error
+      const wasHandled = handleApiError(error);
+      
+      if (!wasHandled) {
+        // Backend returns appropriate error messages including credit errors
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Generation failed. Please try again.";
+        setError(errorMessage);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -491,6 +499,11 @@ const LogoGenerator = () => {
         onOpenChange={setIsStyleModalOpen}
         currentStyle={formData.style}
         onStyleSelect={handleStyleSelect}
+      />
+      
+      <LowCreditModal
+        open={showLowCreditModal}
+        onOpenChange={closeLowCreditModal}
       />
     </div>
   );

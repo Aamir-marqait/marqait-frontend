@@ -1,6 +1,7 @@
 import UpgradeHeader from "../../components/UpgradeHeader";
 import PricingCard from "../../components/credits/PricingCard";
 import FAQSection from "../../components/credits/FAQSection";
+import { PlanRequestModal } from "../../components/ui/plan-request-modal";
 import { useAuthStore } from "../../stores/authStore";
 
 import { useState } from "react";
@@ -8,6 +9,10 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function SubscriptionPage() {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<
+    "professional" | "enterprise"
+  >("professional");
   const { updateUserPlan, user } = useAuthStore();
 
   const handlePlanSelection = (
@@ -15,6 +20,11 @@ export default function SubscriptionPage() {
   ) => {
     updateUserPlan(plan);
     // Don't redirect, just update the plan
+  };
+
+  const handleRequestAccess = (planType: "professional" | "enterprise") => {
+    setSelectedPlan(planType);
+    setModalOpen(true);
   };
 
   const faqItems = [
@@ -166,7 +176,7 @@ export default function SubscriptionPage() {
               user?.plan === "professional" ? "secondary" : "default"
             }
             onGetStarted={() => handlePlanSelection("professional")}
-            disabled={true}
+            onRequestAccess={() => handleRequestAccess("professional")}
           />
 
           <PricingCard
@@ -190,13 +200,20 @@ export default function SubscriptionPage() {
               user?.plan === "enterprise" ? "secondary" : "default"
             }
             onGetStarted={() => handlePlanSelection("enterprise")}
-            disabled={true}
+            onRequestAccess={() => handleRequestAccess("enterprise")}
           />
         </div>
 
         {/* FAQ Section */}
         <FAQSection items={faqItems} />
       </div>
+
+      {/* Plan Request Modal */}
+      <PlanRequestModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        planType={selectedPlan}
+      />
     </div>
   );
 }

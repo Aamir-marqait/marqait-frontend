@@ -20,6 +20,8 @@ import { Dialog, DialogContent, DialogTrigger } from "../components/ui/dialog";
 import { agentsService } from "../api/services";
 import type { SocialMediaGeneratorRequest } from "../api/types";
 import { generateImageVariants, validateImageFormat } from "../services/falAI";
+import { useLowCreditError } from "../hooks/useLowCreditError";
+import { LowCreditModal } from "../components/ui/low-credit-modal";
 import prompts from "../assets/image-editor/prompt.svg";
 
 interface PostFormData {
@@ -41,6 +43,7 @@ interface GeneratedPost {
 
 const SocialMediaPostGenerator = () => {
   const { fetchCreditsBalance } = useCreditStore();
+  const { showLowCreditModal, handleApiError, closeLowCreditModal } = useLowCreditError();
   const {
     currentImage,
     originalPost,
@@ -195,12 +198,17 @@ const SocialMediaPostGenerator = () => {
       // Refresh credits after successful generation
       await fetchCreditsBalance();
     } catch (error: unknown) {
-      // Backend returns appropriate error messages including credit errors
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Generation failed. Please try again.";
-      setError(errorMessage);
+      // Check if it's a 402 Payment Required error
+      const wasHandled = handleApiError(error);
+      
+      if (!wasHandled) {
+        // Backend returns appropriate error messages including credit errors
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "Generation failed. Please try again.";
+        setError(errorMessage);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -1238,6 +1246,11 @@ const SocialMediaPostGenerator = () => {
           </>
         )}
       </div>
+      
+      <LowCreditModal
+        open={showLowCreditModal}
+        onOpenChange={closeLowCreditModal}
+      />
     </div>
   );
 };
