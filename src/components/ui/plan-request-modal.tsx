@@ -68,7 +68,7 @@ export function PlanRequestModal({
     try {
       // Web3Forms submission
       const formData = new FormData();
-      formData.append("access_key", "a9fb22de-f839-4f38-9eac-60f966f8349f");
+      formData.append("access_key", "0a3a70cf-9b31-4dcd-9b68-934df7b505fa");
       formData.append("subject", `${config.title} Request`);
       formData.append(
         "message",
